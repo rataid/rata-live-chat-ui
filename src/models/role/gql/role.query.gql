@@ -1,0 +1,13 @@
+query Role($id: Cuid!) {
+  role(id: $id) {
+    id
+    title
+    abbr
+    color
+    permissions {
+      id
+      group
+      action
+    }
+  }
+}

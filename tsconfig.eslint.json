@@ -1,0 +1,14 @@
+{
+  "include": [
+    ".eslintrc.cjs",
+    "node-env.ts",
+    "codegen.ts",
+    "graphql.config.cjs",
+    "tailwind.config.js",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "generated",
+    "trash"
+  ]
+}

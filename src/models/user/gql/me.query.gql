@@ -1,0 +1,10 @@
+query Me {
+  me {
+    id
+    name
+    phone
+    email
+    notes
+    isActive
+  }
+}

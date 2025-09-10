@@ -1,0 +1,5 @@
+mutation UpdateRole($data: UpdateRoleInput!, $where: RoleWhereUniqueInput!) {
+  updateRole(data: $data, where: $where) {
+    id
+  }
+}

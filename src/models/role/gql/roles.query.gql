@@ -1,0 +1,32 @@
+query Roles(
+  $where: RoleWhereInput
+  $orderBy: [RoleOrderByWithRelationInput!]
+  $first: Int
+  $after: String
+  $last: Int
+  $before: String
+) {
+  roles(
+    where: $where
+    orderBy: $orderBy
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+  ) {
+    nodes {
+      id
+      title
+      abbr
+      color
+    }
+    totalCount
+    totalPages
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

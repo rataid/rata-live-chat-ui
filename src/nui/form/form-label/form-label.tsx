@@ -1,0 +1,28 @@
+import { useFormControl } from '@nui/form'
+import Icon from '@nui/ui/icon'
+
+import {
+  FormLabelMain,
+  FormLabelOptional,
+  FormLabelRequired,
+  FormLabelWrapper,
+} from './form-label.style'
+import { FormLabelProps } from './types'
+
+export function FormLabel({ children }: FormLabelProps) {
+  const [required, optional] = useFormControl((s) => [s.required, s.optional])
+
+  return (
+    <FormLabelWrapper>
+      <FormLabelMain>
+        {children || <div tw="whitespace-pre"> </div>}
+      </FormLabelMain>
+      {optional && <FormLabelOptional>(optional)</FormLabelOptional>}
+      {required && (
+        <FormLabelRequired>
+          <Icon icon="lucide-asterisk" size="2xs" />
+        </FormLabelRequired>
+      )}
+    </FormLabelWrapper>
+  )
+}

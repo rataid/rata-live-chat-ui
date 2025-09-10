@@ -1,0 +1,5 @@
+mutation DeleteRoles($ids: [Cuid!]!) {
+  deleteRoles(ids: $ids) {
+    count
+  }
+}
