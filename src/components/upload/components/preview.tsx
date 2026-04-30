@@ -18,7 +18,7 @@ export default function UploadPreview() {
       <PreviewFiles>
         {items.map((item) => (
           <PreviewFile
-            key={item?.id}
+            // key={item?.id}
             title={item?.title ?? ''}
             size={item?.size}
             body={item?.name}
@@ -33,7 +33,7 @@ export default function UploadPreview() {
     <PreviewImages>
       {items.map((item) => (
         <PreviewImage
-          key={item?.id}
+          // key={item?.id}
           src={item?.url}
           alt={item?.title ?? ''}
           onClick={() => removeItem(item?.id as string)}

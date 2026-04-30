@@ -1,7 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   color: #484848;
+
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 197 100% 40%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 197 100% 40%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 197 100% 40%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 197 100% 40%;
 }
 
 :root {
@@ -16,6 +63,16 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbColor) var(--trackColor);
+}
+
+.ant-table-wrapper {
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  overflow: overlay;
+}
+
+.ant-table-thead .ant-table-cell {
+  background-color: white !important;
 }
 
 /* Chrome, Edge, and Safari */
@@ -63,4 +120,36 @@
 .hidden-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+/* Remove arrows in Chrome, Safari, Edge */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove arrows in Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.rdp-root {
+  --rdp-accent-color: #0077a6 !important;
+  --rdp-accent-background-color: #e0f6fa !important;
+  --rdp-range_start-date-background-color: #0077a6 !important;
+  --rdp-range_end-date-background-color: #0077a6 !important;
+  --rdp-range_middle-background-color: #e0f6fa !important;
+  --rdp-today-color: #ffffff !important;
+  --rdp-today-border-radius: 6px !important;
+  --rdp-selected-border: 2px solid #0077a6 !important;
+
+  --rdp-day-width: 36px;
+  --rdp-day-height: 36px;
+  --rdp-day_button-width: 34px;
+  --rdp-day_button-height: 34px;
+}
+
+.rdp-selected {
+  font-size: 0.75rem !important;
 }

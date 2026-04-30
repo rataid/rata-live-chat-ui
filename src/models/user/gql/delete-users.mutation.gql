@@ -1,5 +1,0 @@
-mutation DeleteUsers($ids: [Cuid!]!) {
-  deleteUsers(ids: $ids) {
-    count
-  }
-}

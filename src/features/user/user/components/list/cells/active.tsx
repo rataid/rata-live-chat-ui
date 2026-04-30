@@ -4,19 +4,16 @@ import Cell from '@nui/ui/cell'
 import Center from '@nui/ui/center'
 import Dot from '@nui/ui/dot'
 
-import { User } from '@gql/graphql'
-
 type ActiveCellProps = {
-  row: Row<User>
+  row: Row<any>
 }
 
 export default function ActiveCell({ row }: ActiveCellProps) {
-  const { isActive } = row.original
 
   return (
     <Cell>
       <Center>
-        <Dot size="sm" outline color={isActive ? 'success' : 'disable'} />
+        <Dot size="sm" outline color={true ? 'success' : 'disable'} />
       </Center>
     </Cell>
   )

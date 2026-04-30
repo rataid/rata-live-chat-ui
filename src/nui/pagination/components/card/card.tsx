@@ -17,7 +17,7 @@ export function PaginatedCard({
 }: PaginatedCardProps) {
   return (
     <Paginated
-      key={query}
+      // key={query}
       query={query}
       args={args}
       filter={filter}

@@ -19,7 +19,7 @@ export default function DatetimePickerMinuteSelect({
 }: MinuteSelectProps) {
   const items = []
 
-  for (let i = 0; i < 60; i += 1) {
+  for (let i = 0; i < 60; i++) {
     const minute = i < 10 ? `0${i}` : i.toString()
     items.push({ value: minute, label: minute })
   }

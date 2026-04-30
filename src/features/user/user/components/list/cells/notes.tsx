@@ -2,18 +2,15 @@ import { Row } from '@tanstack/react-table'
 
 import Cell from '@nui/ui/cell'
 
-import { User } from '@gql/graphql'
-
 type NotesCellProps = {
-  row: Row<User>
+  row: Row<any>
 }
 
 export default function NotesCell({ row }: NotesCellProps) {
-  const { notes } = row.original
 
   return (
     <Cell>
-      <div>{notes}</div>
+      <div>{"notes"}</div>
     </Cell>
   )
 }

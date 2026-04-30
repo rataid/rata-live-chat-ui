@@ -68,16 +68,19 @@ export function parseToken(token: string | null) {
 
   const permissions = getPermissions()
 
-  decodedToken.permissions =
-    decodedToken?.permissions.map((dp) => {
-      const record = permissions.find((p) => p.code === dp)
+  if(decodedToken.permissions){
+    decodedToken.permissions =
+      decodedToken?.permissions.map((dp) => {
+        const record = permissions.find((p) => p.code === dp)
+  
+        if (record) {
+          return `${record.group}.${record.action}`
+        }
+  
+        return dp
+      }) ?? []
+  }
 
-      if (record) {
-        return `${record.group}.${record.action}`
-      }
-
-      return dp
-    }) ?? []
 
   return decodedToken
 }

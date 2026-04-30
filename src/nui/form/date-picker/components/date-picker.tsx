@@ -8,9 +8,10 @@ import {
   useFloating,
   useInteractions,
 } from '@floating-ui/react'
+import { cn } from '@utils/cn'
 import { isValid } from 'date-fns'
 import { ChangeEvent, forwardRef, useEffect, useState } from 'react'
-import { DayPicker } from 'react-day-picker'
+import { DayPicker, getDefaultClassNames } from 'react-day-picker'
 import { shallow } from 'zustand/shallow'
 
 import { Input, useFormControl } from '@nui/form'
@@ -47,6 +48,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     forwardedRef
   ) {
     const [isOpen, setIsOpen] = useState(false)
+    const defaultClassNames = getDefaultClassNames()
 
     const [setError] = useFormControl((s) => [s.setError], shallow)
 
@@ -187,14 +189,14 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         <FloatingPortal id={portalId}>
           {isOpen && (
             <div
-              tw="relative z-[6666]"
-              style={floatingStyles}
+              tw="relative"
+              style={{ ...floatingStyles, zIndex: 9999 }}
               ref={floatingRef}
               {...getFloatingProps()}
             >
               <div tw="w-fit h-fit">
                 <DayPicker
-                  captionLayout="dropdown-buttons"
+                  captionLayout="dropdown"
                   mode="single"
                   disabled={disabledDays}
                   fromYear={Number(new Date().getFullYear()) - 100}
@@ -203,9 +205,29 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                   defaultMonth={selected}
                   onSelect={handleDateSelect}
                   components={{
-                    IconLeft: DatePickerIconLeft,
-                    IconRight: DatePickerIconRight,
+                    PreviousMonthButton: (props) => (
+                      <button {...props}>
+                        <DatePickerIconLeft />
+                      </button>
+                    ),
+                    NextMonthButton: (props) => (
+                      <button {...props}>
+                        <DatePickerIconRight />
+                      </button>
+                    ),
                     Dropdown: DateSelect,
+                  }}
+                  className={cn(
+                    'group/calendar bg-background p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent',
+                    String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
+                    String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`
+                  )}
+                  classNames={{
+                    today: cn(
+                      'bg-primary-300 text-primary-foreground rounded-md data-[selected=true]:rounded-sm',
+                      defaultClassNames.today
+                    ),
+                    selected: cn(defaultClassNames.selected, '!text-xs'),
                   }}
                 />
               </div>

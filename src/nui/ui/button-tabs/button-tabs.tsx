@@ -21,7 +21,7 @@ export function ButtonTabs({
               fit={fit}
               isActive={item.isActive}
               isButton
-              key={key(item)}
+              // key={key(item)}
               onClick={item.onClick}
             >
               {item.name}
@@ -34,7 +34,7 @@ export function ButtonTabs({
             link={`${link}${item.link}`}
             isActive={item.isActive}
             name={item.name}
-            key={key(item)}
+            // key={key(item)}
           />
         )
       })}

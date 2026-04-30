@@ -8,33 +8,30 @@ import Pane from '@nui/ui/pane'
 import Segment from '@nui/ui/segment'
 import Side from '@nui/ui/side'
 
-import { createUserSchema } from '@models/user/user'
-
 import UserForm from '../components/form'
 import UserSide from '../components/side'
 
 export * from './create.route'
 
 export function UserCreatePage() {
-  const schema = createUserSchema.superRefine(
-    ({ retypePassword, password }, ctx) => {
-      if (retypePassword !== password) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'The passwords did not match',
-          path: ['retypePassword'],
-        })
-      }
-    }
-  )
+  // const schema = createUserSchema.superRefine(
+  //   ({ retypePassword, password }, ctx) => {
+  //     if (retypePassword !== password) {
+  //       ctx.addIssue({
+  //         code: z.ZodIssueCode.custom,
+  //         message: 'The passwords did not match',
+  //         path: ['retypePassword'],
+  //       })
+  //     }
+  //   }
+  // )
 
-  const { methods, onSubmit } = useFormHelper({
-    schema,
-  })
+  // const { methods, onSubmit } = useFormHelper({
+  //   schema,
+  // })
 
   return (
-    <FormProvider {...methods}>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={()=> {}}>
         <Segment>
           <Container>
             <Pane>
@@ -48,6 +45,5 @@ export function UserCreatePage() {
           </Container>
         </Segment>
       </Form>
-    </FormProvider>
   )
 }

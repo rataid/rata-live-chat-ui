@@ -1,10 +1,10 @@
 import { ChangeEvent, forwardRef, useEffect, useState } from 'react'
 
-import upload from '@/components/upload/utils'
 import Button from '@nui/ui/button'
 import Icon from '@nui/ui/icon'
 import Image from '@nui/ui/image'
 
+import upload from '../upload/utils'
 import { UploadPictureProps } from './types'
 import {
   UploadPictureContent,

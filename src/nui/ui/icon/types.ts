@@ -19,4 +19,6 @@ export type IconProps = {
   icon?: string | IconifyIcon
   size?: keyof typeof sizes
   stroke?: IconStroke
+  color?: string
+  className?: string
 }

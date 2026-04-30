@@ -52,6 +52,10 @@ export default defineConfig({
               exclude: [
                 // https://github.com/ben-rogerson/babel-plugin-twin/issues/9
                 '\x00commonjsHelpers.js', // Avoid build error
+                'node_modules',
+                'dist',
+                'build',
+                'vite.config.ts',
               ],
             },
           ],

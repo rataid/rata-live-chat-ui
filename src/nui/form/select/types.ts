@@ -2,6 +2,7 @@ import { UseSelectProps, UseSelectStateChange } from 'downshift'
 import { FocusEventHandler } from 'react'
 
 import { InputPropsWithoutRef } from '@nui/types'
+import { BadgeColor } from '@nui/ui/badge'
 
 export type SelectProps<T> = {
   options: UseSelectProps<T>
@@ -18,15 +19,19 @@ export type SelectProps<T> = {
 }
 
 export type SelectItemDefaultType = {
-  value: number
+  value: number | string
   label: string
 }
-
 export type SelectItemProps = {
   item: SelectItemDefaultType
   isSelected: boolean
   itemToString?: (item: any) => string
 }
+
+export type SelectItemBadgeProps = SelectItemProps & {
+  badgeColor?: BadgeColor
+}
+
 
 export type SelectSelectedProps = {
   selectedItem: any
@@ -35,17 +40,18 @@ export type SelectSelectedProps = {
 
 export type SimpleSelectOption =
   | {
-      value: string | number
-      label: string
-    }
+    value: string | number
+    label: string
+  }
   | null
   | undefined
 
-export type SimpleSelectProps = {
+export type SimpleSelectProps<T extends SimpleSelectOption = SimpleSelectOption> = {
   simpleControl?: boolean
-  items?: SimpleSelectOption[]
+  items?: T[]
   onSelectedItemChange?: (
-    changes: UseSelectStateChange<SimpleSelectOption>
+    changes: UseSelectStateChange<T>
   ) => void
   portalId?: string
+  renderItem?: (item: T, isSelected: boolean) => React.ReactNode
 } & InputPropsWithoutRef

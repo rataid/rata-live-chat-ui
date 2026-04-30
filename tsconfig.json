@@ -22,12 +22,24 @@
       "@libs/*": ["libs/*"],
       "@models/*": ["models/*"],
       "@nui/*": ["nui/*"],
+      "@utils/*": ["utils/*"],
       "@utils": ["utils/index"],
       "@shared/*": ["shared/*"],
       "@/*": ["*"],
       "@gql/*": ["../generated/gql/*"]
     }
   },
-  "exclude": ["generated", "trash"],
+  "exclude": [
+    "generated",
+    "trash",
+    "node_modules",
+    "dist",
+    "build",
+    "vite.config.ts",
+    "vite.config.js",
+    "**/*.config.ts",
+    "**/*.config.mts",
+    "**/*.config.cts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

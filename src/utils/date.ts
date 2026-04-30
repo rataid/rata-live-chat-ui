@@ -25,6 +25,9 @@ export const DATE_LOCALE = enUS
 // eslint-disable-next-line quotes
 export const DATETIME_ISO = "yyyy-MM-dd'T'HH:mm:ssXXX"
 
+// eslint-disable-next-line quotes
+export const DATE_ISO = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
 // Get today date
 export const today = () => {
   return new Date()

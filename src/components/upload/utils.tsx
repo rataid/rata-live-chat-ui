@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-import { getToken } from '../auth'
+import { getToken } from '@/components/auth'
+
 import { UploadQueueItem, UploadQueueStatus } from './types'
 
 export default async function upload(

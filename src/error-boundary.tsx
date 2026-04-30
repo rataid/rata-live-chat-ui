@@ -10,6 +10,8 @@ import { key } from './utils/common'
 
 export default function ErrorBoundary() {
   const error = useRouteError() as any
+
+  console.log(error)
   const navigate = useNavigate()
 
   if (
@@ -47,7 +49,7 @@ export default function ErrorBoundary() {
 
   return (
     <GeneralError
-      key={key(data)}
+      // key={key(data)}
       status={error?.status}
       title={data?.title}
       icon={data?.icon ?? <NotfoundSvg />}

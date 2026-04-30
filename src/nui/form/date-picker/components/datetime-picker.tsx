@@ -160,7 +160,7 @@ export const DatetimePicker = forwardRef<HTMLInputElement, DatetimePickerProps>(
             <div tw="w-fit h-fit mx-auto">
               <div tw="py-4 px-5">
                 <DayPicker
-                  captionLayout="dropdown-buttons"
+                  captionLayout="dropdown"
                   classNames={{
                     root: 'rdp-time',
                     months: 'rdp-time-months',
@@ -174,8 +174,16 @@ export const DatetimePicker = forwardRef<HTMLInputElement, DatetimePickerProps>(
                   defaultMonth={selected ? new Date(selected) : undefined}
                   onSelect={handleDateSelect}
                   components={{
-                    IconLeft: DatePickerIconLeft,
-                    IconRight: DatePickerIconRight,
+                    PreviousMonthButton: (props) => (
+                      <button {...props}>
+                        <DatePickerIconLeft />
+                      </button>
+                    ),
+                    NextMonthButton: (props) => (
+                      <button {...props}>
+                        <DatePickerIconRight />
+                      </button>
+                    ),
                     Dropdown: DateSelect,
                   }}
                 />

@@ -33,7 +33,9 @@ export default function TableHeadSide<T>({
           tableHeaderGroups[index]?.column.columnDef.header
 
         return (
-          <Fragment key={headerGroup.id}>
+          <Fragment 
+          // key={headerGroup.id}
+          >
             {isPlaceholder || columnDefId ? (
               filterRows.map((item) => (
                 <TableHeadSideWrapper key={item.id}>

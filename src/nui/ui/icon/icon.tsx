@@ -7,14 +7,17 @@ export function Icon({
   icon = 'lucide:circle',
   size = 'md',
   stroke = 'sm',
+  color,
+  className,
 }: IconProps) {
   return (
-    <div tw="inline-block">
+    <div tw="inline-block" className={className}>
       <Iconify
         icon={icon}
         width={sizes[size]}
         height={sizes[size]}
         css={sizeStrokes[stroke]}
+        color={color}
       />
     </div>
   )

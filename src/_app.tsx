@@ -20,10 +20,11 @@ import { AppLayout } from '@nui/layouts'
 
 import authRoutes from '@features/auth/routes'
 import dashboardRoutes from '@features/dashboard/routes'
-import profileRoutes from '@features/profile/routes'
+import liveRoutes from '@features/live/routes'
+import readyRoutes from '@features/ready/routes'
 import userRoutes from '@features/user/routes'
-import { meQuery } from '@models/user/user'
 
+// import { meQuery } from '@models/user/user'
 import AppSidebarNavBottom from './components/app/sidebar/nav-bottom'
 import AppSidebarNavTop from './components/app/sidebar/nav-top'
 import AppSidebarProfile from './components/app/sidebar/profile'
@@ -47,12 +48,17 @@ export async function appLoader({ request }: LoaderFunctionArgs) {
   }
 
   try {
-    const q = meQuery({})
-    const userData = await queryClient.fetchQuery(q)
+    // const q = meQuery({})
+    // const userData = await queryClient.fetchQuery(q)
 
+    // assign(decodedToken, {
+    //   username: userData?.email,
+    //   fullname: userData?.name,
+    //   avatar: null,
+    // })
     assign(decodedToken, {
-      username: userData?.email,
-      fullname: userData?.name,
+      username: 'test@rata.id',
+      fullname: 'testing',
       avatar: null,
     })
   } catch (error: any) {
@@ -84,8 +90,10 @@ const router = createBrowserRouter([
     ),
 
     errorElement: <ErrorBoundary />,
-    children: [...dashboardRoutes, ...profileRoutes, ...userRoutes],
+    children: [...dashboardRoutes, ...userRoutes],
   },
+  ...readyRoutes,
+  ...liveRoutes,
 ])
 
 export default function App() {

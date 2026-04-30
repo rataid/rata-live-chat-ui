@@ -18,6 +18,8 @@ import {
 } from 'lodash'
 import isSlugify from 'slugify'
 
+import notify from '@nui/hooks/use-notif'
+
 export const key = (obj: unknown) => {
   return Symbol(JSON.stringify(obj)).toString()
 }
@@ -34,6 +36,10 @@ export const pascalCase = (str: string) => {
 
 export const slugify = (str?: string) => {
   return kebabCase(str)
+}
+
+export const snakeCase = (text: string) => {
+  return text.toLowerCase().trim().replace(/\s+/g, '_')
 }
 
 // Get enum value from slug string
@@ -512,3 +518,10 @@ export const checkStatusEnumExists = (
 export const padNumberStart = (num?: number, length = 2, char = '0') => {
   return padStart(String(num ?? 0), length, char)
 }
+
+export const notifySuccess = (message: string) =>
+  notify({
+    title: 'Success',
+    message,
+    type: 'success',
+  })

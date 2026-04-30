@@ -1,5 +1,6 @@
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
+import { login } from '@/api/login'
 import {
   AuthenticatedUser,
   getToken,
@@ -9,10 +10,8 @@ import {
   setPermissions,
   setToken,
 } from '@/components/auth'
+import { loginSchema } from '@/model/user'
 import { queryClient } from '@libs/query-client'
-
-import { allPermissionsQuery } from '@models/permission/permission'
-import { login, loginSchema } from '@models/user/user'
 
 export async function authLoginLoader({ request }: ActionFunctionArgs) {
   const token = getToken()
@@ -36,20 +35,13 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
   const data = loginSchema.parse(Object.fromEntries(formData))
 
   try {
-    const result = await login({ data })
-
-    const tokenResult = result?.login?.accessToken || null
+    const result = await login( data )
+    const tokenResult = result?.data?.data?.access_token || null
 
     if (tokenResult && isTokenValid(tokenResult)) {
-      const decodeToken = parseToken(tokenResult) as AuthenticatedUser
+      queryClient.invalidateQueries()
 
-      await queryClient.invalidateQueries()
-
-      const permissions = await queryClient.fetchQuery(allPermissionsQuery({}))
-
-      setPermissions(JSON.stringify(permissions))
-
-      setToken(tokenResult, decodeToken.exp - decodeToken.iat)
+      setToken(tokenResult)
 
       const params = new URL(request.url).searchParams
       const from = params.get('from') || '/dashboard'
@@ -62,7 +54,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
       message: 'Invalid credentials',
     }
   } catch (error: any) {
-    const message = await error?.text()
+    const message = error?.response?.data?.message
 
     return {
       success: false,

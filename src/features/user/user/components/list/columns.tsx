@@ -6,14 +6,12 @@ import {
 } from '@nui/pagination'
 import { pickColumns } from '@utils'
 
-import { User } from '@gql/graphql'
-
 import ActionCell from './cells/action'
 import ActiveCell from './cells/active'
 import NotesCell from './cells/notes'
 import UserCell from './cells/user'
 
-const columnDefs: ColumnDef<User>[] = [
+const columnDefs: ColumnDef<any>[] = [
   {
     id: 'select',
     header: () => <PaginatedTableSelectHeader />,

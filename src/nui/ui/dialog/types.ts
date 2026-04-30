@@ -22,5 +22,5 @@ export type DialogContentProps = {
 export type DialogHeadingProps = {
   title?: React.ReactNode
   inline?: boolean
-} & Omit<HTMLProps<HTMLDivElement>, 'title'> &
+} & Omit<HTMLProps<HTMLHeadingElement>, 'title' | 'as'> &
   PropsWithChildren

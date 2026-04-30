@@ -15,8 +15,6 @@ import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
 import Typo from '@nui/ui/typo'
 
-import { loginSchema } from '@models/user/user'
-
 import {
   AuthFormLoginForm,
   AuthFormLoginHeading,
@@ -26,6 +24,7 @@ import {
   AuthFormLoginSubtitle,
   AuthFormLoginTitle,
 } from './form-login.style'
+import { loginSchema } from '@/model/user'
 
 export default function AuthFormLogin() {
   const { success, message } =
@@ -60,7 +59,7 @@ export default function AuthFormLogin() {
           )}
           <Form onSubmit={onSubmit}>
             <FormMain gap="xs">
-              <FormControl error={errors.email} required>
+              <FormControl required error={errors.email}>
                 <FormLabel>Email</FormLabel>
                 <Controller
                   name="email"
@@ -75,7 +74,7 @@ export default function AuthFormLogin() {
                   )}
                 />
               </FormControl>
-              <FormControl error={errors.password} required>
+              <FormControl required error={errors.password}>
                 <FormLabel>Password</FormLabel>
                 <Controller
                   name="password"
@@ -84,26 +83,6 @@ export default function AuthFormLogin() {
                   render={({ field }) => <Input type="password" {...field} />}
                 />
               </FormControl>
-              {/* <AuthFormLoginMore>
-                <FormInline>
-                  <Controller
-                    name="remember"
-                    defaultValue=""
-                    control={control}
-                    render={({ field }) => (
-                      <Checkbox {...field}>Remember me</Checkbox>
-                    )}
-                  />
-                </FormInline>
-                <Button
-                  variant="link"
-                  size="sm"
-                  noPadding
-                  to="/forgot-password"
-                >
-                  Forgot password?
-                </Button>
-              </AuthFormLoginMore> */}
             </FormMain>
             <FormAction>
               <Button type="submit" wider="full">

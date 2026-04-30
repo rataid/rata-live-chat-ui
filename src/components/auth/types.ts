@@ -1,9 +1,21 @@
-import { Role } from '@gql/graphql'
 
 // Store
 export type AuthOption = Role
 
 export type AuthItem = Role
+
+type Role = {
+  abbr:string
+    color: string
+    createdAt: Date;
+    id: string;
+    permissions: string[]
+    rolePermissions?: string[]
+    title: string;
+    updatedAt: Date
+    userRoles?: string[]
+    users: string[]
+}
 
 export type AuthenticatedUser = {
   sub: string
@@ -14,6 +26,8 @@ export type AuthenticatedUser = {
   permissions: string[]
   iat: number
   exp: number
+  id?: string | number
+  approval_line?: string | number
 }
 
 export type AuthState = {

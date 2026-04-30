@@ -1,7 +1,0 @@
-query Permission($id: Cuid!) {
-  permission(id: $id) {
-    id
-    group
-    action
-  }
-}

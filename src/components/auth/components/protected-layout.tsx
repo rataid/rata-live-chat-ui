@@ -6,11 +6,11 @@ import { AuthProtectedLayoutProps, AuthenticatedUser } from '../types'
 import { AuthGuard } from './guard'
 
 export function AuthProtectedLayout({ children }: AuthProtectedLayoutProps) {
-  const { userData } = useLoaderData() as { userData: AuthenticatedUser }
+  // const { userData } = useLoaderData() as { userData: AuthenticatedUser }
 
   return (
     <Suspense>
-      <Await resolve={userData}>
+      <Await resolve={false}>
         {(user) => (
           <AuthProvider userData={user ?? null}>
             <AuthGuard>{children}</AuthGuard>

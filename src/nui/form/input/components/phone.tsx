@@ -135,7 +135,7 @@ export const InputPhone = forwardRef<HTMLInputElement, InputPhoneProps>(
                   </InputIcon>
                 )}
                 <PatternFormat
-                  key={String(isFocused)}
+                  // key={String(isFocused)}
                   value={
                     !resetInput
                       ? removeCountryCode(phoneNumber?.toString())

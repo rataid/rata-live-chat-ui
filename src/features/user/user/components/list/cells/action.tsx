@@ -9,10 +9,8 @@ import DeleteConfirm from '@nui/ui/delete-confirm'
 import Icon from '@nui/ui/icon'
 import Tooltip from '@nui/ui/tooltip'
 
-import { User } from '@gql/graphql'
-
 type ActionCellProps = {
-  row: Row<User>
+  row: Row<any>
 }
 
 export default function ActionCell({ row }: ActionCellProps) {

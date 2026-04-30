@@ -116,7 +116,7 @@ export function Table<T>({
                   {getVisibleCells.map((cell, index) => {
                     return (
                       <TableCell<T>
-                        key={cell.id}
+                        // key={cell.id}
                         index={index}
                         cell={cell}
                         isMobile={xl}

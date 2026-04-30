@@ -22,4 +22,4 @@ export type DrawerContentProps = {
 export type DrawerHeadingProps = {
   title?: React.ReactNode
   children?: React.ReactNode
-} & Omit<HTMLProps<HTMLDivElement>, 'title'>
+} & Omit<React.HTMLAttributes<HTMLHeadingElement>, 'title'>

@@ -4,20 +4,18 @@ import { queryClient } from '@libs/query-client'
 import notify, { DeleteFailed, DeleteSuccess } from '@nui/hooks/use-notif'
 import { listArgs } from '@utils'
 
-import { SortOrder, UsersQueryVariables } from '@gql/graphql'
-import { deleteUsers, userKey, usersQuery } from '@models/user/user'
-
 export const usersArgs = () =>
-  listArgs<UsersQueryVariables>({
+  listArgs({
     orderBy: {
-      createdAt: SortOrder.Desc,
+      createdAt: 'Desc',
     },
   })
 
 export async function userListLoader() {
-  const query = usersQuery(usersArgs())
+  // const query = usersQuery(usersArgs())
 
-  return queryClient.ensureQueryData(query)
+  // return queryClient.ensureQueryData(query)
+  return null
 }
 
 async function deleteAction(formData: FormData) {
@@ -25,8 +23,8 @@ async function deleteAction(formData: FormData) {
   const ids = JSON.parse(stringIds as string)
 
   try {
-    await deleteUsers({ ids })
-    await queryClient.invalidateQueries({ queryKey: [userKey] })
+    // await deleteUsers({ ids })
+    // await queryClient.invalidateQueries({ queryKey: [userKey] })
     notify(DeleteSuccess)
   } catch (err) {
     notify(DeleteFailed)

@@ -1,5 +1,0 @@
-mutation CreateRole($data: CreateRoleInput!) {
-  createRole(data: $data) {
-    id
-  }
-}

@@ -8,8 +8,8 @@ import Field, { Fields } from '@nui/ui/field'
 import Icon from '@nui/ui/icon'
 import Typo from '@nui/ui/typo'
 
-import { User } from '@gql/graphql'
-import { userQuery } from '@models/user/user'
+// import { User } from '@gql/graphql'
+// import { userQuery } from '@models/user/user'
 
 import { userArgs } from '../pages/list/detail.route'
 import UserStatusBadge from './status-badge'
@@ -19,13 +19,26 @@ export default function UserDetail() {
 
   const navigate = useNavigate()
 
-  const { data: user } = useFormHelper<User>({
-    args: userArgs(id),
-    query: userQuery,
-  })
+  // const { data: user } = useFormHelper<User>({
+  //   args: userArgs(id),
+  //   query: userQuery,
+  // })
 
-  if (!user) return null
+  // if (!user) return null
 
+  const user = {
+    name: 'test',
+    email: 'test@rata.id',
+    phone: '00000',
+    isActive: true,
+    notes: 'heheh',
+    userRoles: [{
+      id: 'test',
+        role: {
+          title: 'test'
+        }
+    }]
+  }
   const {
     name,
     email,

@@ -19,7 +19,7 @@ export default function DatetimePickerHourSelect({
 }: HourSelectProps) {
   const items = []
 
-  for (let i = 0; i < 24; i += 1) {
+  for (let i = 0; i < 24; i++) {
     const hour = i < 10 ? `0${i}` : i.toString()
     items.push({ value: hour, label: hour })
   }

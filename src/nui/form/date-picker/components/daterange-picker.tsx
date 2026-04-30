@@ -14,6 +14,7 @@ import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker'
 import { Input } from '@nui/form'
 import { DATE_DB, DATE_DISPLAY, formatDate, parseDate, today } from '@utils'
 
+import 'react-day-picker/style.css'
 import '../style.css'
 import { DaterangePickerProps } from '../types'
 import DatePickerIconLeft from './icon-left'
@@ -189,7 +190,7 @@ export const DaterangePicker = forwardRef<
 
       <FloatingPortal id={portalId}>
         {isOpen && (
-          <div style={floatingStyles} ref={floatingRef}>
+          <div style={{ ...floatingStyles, zIndex: 9999 }} ref={floatingRef}>
             <div ref={floatingClickRef} tw="w-fit h-fit">
               <DayPicker
                 mode="range"
@@ -197,8 +198,16 @@ export const DaterangePicker = forwardRef<
                 selected={range}
                 onSelect={handleSelectRange}
                 components={{
-                  IconLeft: DatePickerIconLeft,
-                  IconRight: DatePickerIconRight,
+                  PreviousMonthButton: (props) => (
+                    <button {...props}>
+                      <DatePickerIconLeft />
+                    </button>
+                  ),
+                  NextMonthButton: (props) => (
+                    <button {...props}>
+                      <DatePickerIconRight />
+                    </button>
+                  ),
                 }}
               />
             </div>

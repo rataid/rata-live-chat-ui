@@ -10,7 +10,7 @@ import Icon from './icon'
 function CrumbSeparator() {
   return (
     <CrumbItemSeparator>
-      <Icon icon="lucide:chevron-right" size="xs" tw="stroke-[8px]" />
+      <Icon icon="lucide:chevron-right" size="xs" />
     </CrumbItemSeparator>
   )
 }
@@ -25,20 +25,28 @@ export default function Crumbs() {
   return (
     <CrumbWrapper>
       {crumbs.map((crumb, index) => (
-        <Fragment key={key(index)}>
+        <Fragment
+        // key={key(index)}
+        >
           {/* Don't add separator on last crumb */}
           {index > 0 && index <= crumbs.length - 1 && <CrumbSeparator />}
 
           {/* If crumb is Array, render each item in the array with a separator */}
           {isArray(crumb) ? (
             crumb.map((item, subIndex) => (
-              <Fragment key={`${key(subIndex)}-subkey`}>
+              <Fragment
+              // key={`${key(subIndex)}-subkey`}
+              >
                 {subIndex > 0 && <CrumbSeparator />}
-                <CrumbItem>{item}</CrumbItem>
+                <CrumbItem className={index === 0 ? 'active' : ''}>
+                  {item}
+                </CrumbItem>
               </Fragment>
             ))
           ) : (
-            <CrumbItem>{crumb}</CrumbItem>
+            <CrumbItem className={index === 0 ? 'active' : ''}>
+              {crumb}
+            </CrumbItem>
           )}
         </Fragment>
       ))}

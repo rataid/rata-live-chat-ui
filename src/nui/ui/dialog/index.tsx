@@ -4,6 +4,7 @@ import { DialogProps } from './types'
 export * from './components/content'
 export * from './components/heading'
 export * from './components/trigger'
+export * from './components/description'
 
 export default function Dialog({
   children,

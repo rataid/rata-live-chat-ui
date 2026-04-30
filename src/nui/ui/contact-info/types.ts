@@ -1,5 +1,3 @@
-import { Maybe } from '@gql/graphql'
-
 export type ContactInfoSize = '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
 export type ContactInfoProps = {
@@ -12,5 +10,5 @@ export type ContactInfoProps = {
   size?: ContactInfoSize
   nameSemibold?: boolean
   email?: string
-  isDoctorRecommendedForAds?: Maybe<boolean>
+  isDoctorRecommendedForAds?: boolean
 } & React.PropsWithChildren

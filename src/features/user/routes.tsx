@@ -2,7 +2,6 @@ import { NavLink, RouteObject } from 'react-router-dom'
 
 import ErrorBoundary from '@/error-boundary'
 
-import roleRoutes from './role/routes'
 import userRoutes from './user/routes'
 
 const routes: RouteObject[] = [
@@ -18,7 +17,7 @@ const routes: RouteObject[] = [
     handle: {
       crumb: () => <NavLink to="/user">User</NavLink>,
     },
-    children: [...userRoutes, ...roleRoutes],
+    children: [...userRoutes],
   },
 ]
 
