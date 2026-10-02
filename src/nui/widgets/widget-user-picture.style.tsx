@@ -1,13 +1,14 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const WidgetUserPictureWrapper = tw.div``
+export const WidgetUserPictureWrapper = styled.div.attrs({ className: tw`` })``
 
-export const WidgetUserPictureImage = tw.div`m-auto mb-6 w-fit`
+export const WidgetUserPictureImage = styled.div.attrs({ className: tw`m-auto mb-6 w-fit` })``
 
-export const WidgetUserPictureImageStyle = tw.img`h-full w-full object-cover`
+export const WidgetUserPictureImageStyle = styled.img.attrs({ className: tw`h-full w-full object-cover` })``
 
-export const WidgetUserPictureContent = tw.div`flex flex-col items-center justify-center gap-2 px-8`
+export const WidgetUserPictureContent = styled.div.attrs({ className: tw`flex flex-col items-center justify-center gap-2 px-8` })``
 
-export const WidgetUserPictureInfo = tw.div`text-center text-xs text-gray-700`
+export const WidgetUserPictureInfo = styled.div.attrs({ className: tw`text-center text-xs text-gray-700` })``
 
-export const WidgetUserPictureFormUpload = tw.label`cursor-pointer`
+export const WidgetUserPictureFormUpload = styled.label.attrs({ className: tw`cursor-pointer` })``

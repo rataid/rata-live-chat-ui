@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { defineConfig, normalizePath } from 'vite'
@@ -43,28 +43,7 @@ export default defineConfig({
   },
   plugins: [
     tsconfigPaths(),
-    react({
-      babel: {
-        plugins: [
-          [
-            'babel-plugin-twin',
-            {
-              exclude: [
-                // https://github.com/ben-rogerson/babel-plugin-twin/issues/9
-                '\x00commonjsHelpers.js', // Avoid build error
-                'node_modules',
-                'dist',
-                'build',
-                'vite.config.ts',
-              ],
-            },
-          ],
-          'babel-plugin-macros',
-          'babel-plugin-styled-components',
-        ],
-        compact: true,
-      },
-    }),
+    react(),
     viteStaticCopy({
       targets: [
         { src: cMapsDir, dest: '' },

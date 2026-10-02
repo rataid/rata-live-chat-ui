@@ -2,7 +2,7 @@ export function LogoSmiledental() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      tw="fill-current"
+      className="fill-current"
       viewBox="0 0 48 36"
     >
       <circle

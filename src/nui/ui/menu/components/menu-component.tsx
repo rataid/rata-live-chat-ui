@@ -194,7 +194,7 @@ export const MenuComponent = forwardRef<
       >
         {label}
         {isNested && (
-          <span aria-hidden tw="absolute right-0">
+          <span aria-hidden className="absolute right-0">
             <Icon icon="lucide:chevron-right" size="xs" />
           </span>
         )}

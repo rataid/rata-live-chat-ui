@@ -13,7 +13,7 @@ export function Layout() {
     <BlankLayout>
       <AuthFormLoginWrapper>
         <AuthFormLoginImage>
-          <div tw="w-[6rem] text-white">
+          <div className="w-[6rem] text-white">
             <LogoSmiledental />
           </div>
         </AuthFormLoginImage>

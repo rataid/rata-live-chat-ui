@@ -6,7 +6,6 @@ module.exports = {
 
   plugins: [
     require.resolve('@trivago/prettier-plugin-sort-imports'),
-    require.resolve('prettier-plugin-twin.macro'),
     require.resolve('prettier-plugin-tailwindcss'),
   ],
 

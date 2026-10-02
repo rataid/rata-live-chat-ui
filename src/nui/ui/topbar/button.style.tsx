@@ -1,3 +1,4 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const TopbarButtonWrapper = tw.div`w-9 h-9 inline-flex items-center cursor-pointer hover:text-primary-600`
+export const TopbarButtonWrapper = styled.div.attrs({ className: tw`w-9 h-9 inline-flex items-center cursor-pointer hover:text-primary-600` })``

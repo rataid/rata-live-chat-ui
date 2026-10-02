@@ -19,7 +19,7 @@ export const MultipleComboboxSelected = forwardRef<
   }
 
   if (renderSelected) {
-    return <div tw="w-full">{renderSelected(selectedItem)}</div>
+    return <div className="w-full">{renderSelected(selectedItem)}</div>
   }
 
   return (

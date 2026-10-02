@@ -61,7 +61,7 @@ export function TabsSelector({
             onClick={onClick}
           >
             <TabsSelectorMain>
-              <div tw="whitespace-nowrap w-fit">{children}</div>
+              <div className="whitespace-nowrap w-fit">{children}</div>
               {showIndicator && (
                 <div>
                   <Dot
@@ -85,7 +85,7 @@ export function TabsSelector({
         disabled={disabled}
       >
         <TabsSelectorMain>
-          <div tw="whitespace-nowrap w-fit">{children}</div>
+          <div className="whitespace-nowrap w-fit">{children}</div>
           {showIndicator && (
             <div>
               <Dot color={isActive ? 'primary' : 'disable'} />

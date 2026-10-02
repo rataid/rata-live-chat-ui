@@ -1,4 +1,5 @@
-import tw, { TwStyle, styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw, TwStyle } from '@nui/utils/tw'
 
 export type BoxPadding = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
@@ -49,8 +50,7 @@ const roundedMap: Record<BoxRounded, TwStyle> = {
   xl: tw`rounded-xl`,
 }
 
-const Box = styled.div<BoxProps>(
-  ({
+const Box = styled.div.attrs<BoxProps>(({
     fit = false,
     flow = 'row',
     align = 'none',
@@ -59,16 +59,6 @@ const Box = styled.div<BoxProps>(
     noborder = false,
     background = false,
     divide = false,
-  }) => [
-    !noborder && tw`border border-gray-200`,
-    divide && tw`divide-y divide-gray-200`,
-    fit ? tw`w-fit` : tw`w-full`,
-    background && tw`bg-white`,
-    flowMap[flow],
-    alignMap[align],
-    paddingMap[padding],
-    roundedMap[rounded],
-  ]
-)
+  }) => ({ className: [!noborder && tw`border border-gray-200`, divide && tw`divide-y divide-gray-200`, fit ? tw`w-fit` : tw`w-full`, background && tw`bg-white`, flowMap[flow], alignMap[align], paddingMap[padding], roundedMap[rounded]].filter(Boolean).join(' ') }))<BoxProps>``
 
 export default Box

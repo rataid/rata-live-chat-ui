@@ -99,7 +99,7 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="app" tw="font-sans bg-gray-50 xl:bg-none">
+      <div className="app font-sans bg-gray-50 xl:bg-none">
         <RouterProvider router={router} />
       </div>
     </QueryClientProvider>

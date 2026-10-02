@@ -1,4 +1,5 @@
-import tw, { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { StackWrapperProps } from './types'
 
@@ -16,31 +17,24 @@ const justifyMap = {
   end: tw`justify-end`,
 }
 
-export const StackWrapper = styled.div<StackWrapperProps>(
-  ({ flow, spacing, fit, width, align, justify }) => [
-    tw`flex`,
-    flow === 'row'
-      ? tw`flex-row`
-      : [
-          tw`flex-col`,
-          css`
-            > .nui-item {
-              width: 100%;
-            }
-          `,
-        ],
+export const StackWrapper = styled.div.attrs<StackWrapperProps>(({ flow, spacing, fit, width, align, justify }) => ({ className: [tw`flex`, fit ? tw`w-fit` : tw`w-full`, align && alignMap[align], justify && justifyMap[justify]].filter(Boolean).join(' ') }))<StackWrapperProps>`
+  ${({ flow }) => flow === 'row'
+      ? css`
+          flex-direction: row;
+        `
+      : css`
+          flex-direction: column;
 
-    spacing &&
+          > .nui-item {
+            width: 100%;
+          }
+        `}
+  ${({ spacing }) => spacing &&
       css`
         gap: ${spacing};
-      `,
-    width
-      ? css`
-          width: ${width}px;
-        `
-      : tw`w-full`,
-    fit ? tw`w-fit` : tw`w-full`,
-    align && alignMap[align],
-    justify && justifyMap[justify],
-  ]
-)
+      `}
+  ${({ width }) => width &&
+      css`
+        width: ${width}px;
+      `}
+`

@@ -15,7 +15,7 @@ export function ComboboxItem({
 
   // If it has a custom render function, use it
   if (renderItem) {
-    return <div tw="w-full">{renderItem(item)}</div>
+    return <div className="w-full">{renderItem(item)}</div>
   }
 
   // If it has a custom itemToString function, use it

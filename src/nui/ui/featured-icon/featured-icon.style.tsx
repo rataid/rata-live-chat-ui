@@ -1,9 +1,9 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { FeaturedIconMainProps } from './types'
 
-export const FeaturedIconMain = styled.div<FeaturedIconMainProps>(
-  ({ size, variant, rounded, outline }) => {
+export const FeaturedIconMain = styled.div.attrs<FeaturedIconMainProps>(({ size, variant, rounded, outline }) =>  {
     const sizes = {
       xs: [tw`h-6 w-6`, outline && tw`border-2`],
       sm: [tw`h-8 w-8`, outline && tw`border-4`],
@@ -34,11 +34,5 @@ export const FeaturedIconMain = styled.div<FeaturedIconMainProps>(
       successDark: tw`bg-success-500 text-white border-success-600`,
     }
 
-    return [
-      tw`inline-flex items-center focus:(outline outline-none) shrink-0 justify-center p-1 outline-offset-[-0.5px]`,
-      size && sizes[size],
-      variant && variants[variant],
-      rounded && roundeds[rounded],
-    ]
-  }
-)
+    return { className: [tw`inline-flex items-center focus:outline focus:outline-none shrink-0 justify-center p-1 outline-offset-[-0.5px]`, size && sizes[size], variant && variants[variant], rounded && roundeds[rounded]].filter(Boolean).join(' ') }
+  })<FeaturedIconMainProps>``

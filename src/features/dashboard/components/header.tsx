@@ -5,7 +5,7 @@ export default function DashboardHeader() {
   // const { userData } = useAuth()
 
   return (
-    <div tw="flex flex-col gap-y-1">
+    <div className="flex flex-col gap-y-1">
       <Typo size="3xl" color="gray-900" fontWeight="semibold">
         Welcome back User
       </Typo>

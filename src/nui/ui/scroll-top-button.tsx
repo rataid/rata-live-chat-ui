@@ -47,9 +47,9 @@ export default function ScrollTopButton({
   }, [handleScroll])
 
   return (
-    <div tw="relative">
+    <div className="relative">
       {isVisible && (
-        <div tw="fixed z-[40] bottom-6 right-6">
+        <div className="fixed z-[40] bottom-6 right-6">
           <Tooltip content="Back to top" placement="left">
             <Button
               icon="lucide:arrow-up"

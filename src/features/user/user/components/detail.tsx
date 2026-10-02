@@ -58,12 +58,12 @@ export default function UserDetail() {
       <DrawerContent drawerSize="sm" initialFocus={-1}>
         <DrawerHeading title="User Profile" />
         <Box flow="column" padding="none">
-          <div tw="flex justify-between items-start p-6 border-b border-gray-200">
-            <div tw="flex gap-x-3">
+          <div className="flex justify-between items-start p-6 border-b border-gray-200">
+            <div className="flex gap-x-3">
               <Avatar size="2xl" src="" alt="">
                 <Icon icon="lucide-user" size="lg" />
               </Avatar>
-              <div tw="w-full flex flex-col gap-y-1 items-start">
+              <div className="w-full flex flex-col gap-y-1 items-start">
                 <Typo fontWeight="semibold" color="gray-900">
                   {name}
                 </Typo>
@@ -75,17 +75,17 @@ export default function UserDetail() {
                 </Typo>
               </div>
             </div>
-            <div tw="flex flex-col items-end gap-y-1">
+            <div className="flex flex-col items-end gap-y-1">
               <UserStatusBadge isActive={isActive} />
             </div>
           </div>
-          <div tw="flex flex-col gap-y-6 p-6">
+          <div className="flex flex-col gap-y-6 p-6">
             <Box noborder padding="none">
               <Fields>
                 <Field label="Role">
-                  <ol tw="pl-4 pt-1">
+                  <ol className="pl-4 pt-1">
                     {userRoles.map((role) => (
-                      <li key={role.id} tw="list-disc text-gray-500 ">
+                      <li key={role.id} className="list-disc text-gray-500">
                         {role.role.title}
                       </li>
                     ))}
@@ -93,7 +93,7 @@ export default function UserDetail() {
                 </Field>
               </Fields>
             </Box>
-            <div tw="border-b border-gray-200 h-1 w-full" />
+            <div className="border-b border-gray-200 h-1 w-full" />
             <Fields>
               <Field label="Notes">{notes ?? '-'}</Field>
             </Fields>

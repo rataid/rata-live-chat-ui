@@ -18,7 +18,7 @@ export default function WidgetHints({ title, children }: WidgetHintsProps) {
       <Content>
         <Image>
           <img
-            css={ImageStyle}
+            className={ImageStyle}
             src="https://i.ibb.co/Vx0DRGK/cobas.png"
             alt="smiledental"
           />

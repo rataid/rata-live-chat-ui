@@ -11,12 +11,12 @@ export function Icon({
   className,
 }: IconProps) {
   return (
-    <div tw="inline-block" className={className}>
+    <div className={['inline-block', className].filter(Boolean).join(' ')}>
       <Iconify
         icon={icon}
         width={sizes[size]}
         height={sizes[size]}
-        css={sizeStrokes[stroke]}
+        className={sizeStrokes[stroke]}
         color={color}
       />
     </div>

@@ -1,4 +1,5 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 type InfoWrapperProps = {
   noBorder?: boolean
@@ -20,17 +21,10 @@ const borderVariantMap = {
   solid: tw`border-solid`,
 }
 
-export const InfoWrapper = styled.div<InfoWrapperProps>(
-  ({ noBorder, hideTitle, borderColor, borderVariant }) => [
-    !noBorder && borderColorMap[borderColor || 'gray'],
-    !noBorder && borderVariant && borderVariantMap[borderVariant],
-    !noBorder && tw`border p-3 rounded-lg`,
-    hideTitle ? tw`flex items-center gap-2` : tw`flex items-start gap-2 `,
-  ]
-)
+export const InfoWrapper = styled.div.attrs<InfoWrapperProps>(({ noBorder, hideTitle, borderColor, borderVariant }) => ({ className: [!noBorder && borderColorMap[borderColor || 'gray'], !noBorder && borderVariant && borderVariantMap[borderVariant], !noBorder && tw`border p-3 rounded-lg`, hideTitle ? tw`flex items-center gap-2` : tw`flex items-start gap-2 `].filter(Boolean).join(' ') }))<InfoWrapperProps>``
 
-export const InfoMain = tw.div`text-start text-xs text-gray-700`
+export const InfoMain = styled.div.attrs({ className: tw`text-start text-xs text-gray-700` })``
 
-export const InfoTitle = tw.div`text-gray-900 font-semibold`
+export const InfoTitle = styled.div.attrs({ className: tw`text-gray-900 font-semibold` })``
 
-export const InfoDescription = tw.div`mt-1`
+export const InfoDescription = styled.div.attrs({ className: tw`mt-1` })``

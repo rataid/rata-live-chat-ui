@@ -1,5 +1,6 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-const Right = tw.div`w-full xl:(flex items-center justify-end)`
+const Right = styled.div.attrs({ className: tw`w-full xl:flex xl:items-center xl:justify-end` })``
 
 export default Right

@@ -1,13 +1,14 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const UploadDropzoneWrapper = tw.div`relative pb-5 flex flex-col items-center cursor-pointer`
+export const UploadDropzoneWrapper = styled.div.attrs({ className: tw`relative pb-5 flex flex-col items-center cursor-pointer` })``
 
-export const UploadDropzoneIcon = tw.div`mb-3`
+export const UploadDropzoneIcon = styled.div.attrs({ className: tw`mb-3` })``
 
-export const UploadDropzoneInfo = tw.div`text-center`
+export const UploadDropzoneInfo = styled.div.attrs({ className: tw`text-center` })``
 
-export const UploadDropzoneInfoAccent = tw.span`text-primary-700 font-semibold`
+export const UploadDropzoneInfoAccent = styled.span.attrs({ className: tw`text-primary-700 font-semibold` })``
 
-export const UploadDropzoneToggle = tw.div`px-2 w-full h-8 text-right text-xs z-50`
+export const UploadDropzoneToggle = styled.div.attrs({ className: tw`px-2 w-full h-8 text-right text-xs z-50` })``
 
-export const UploadDropzoneOverlay = tw.label`absolute inset-0`
+export const UploadDropzoneOverlay = styled.label.attrs({ className: tw`absolute inset-0` })``

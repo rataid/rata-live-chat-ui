@@ -5,12 +5,7 @@ import twColors from 'tailwindcss/colors'
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx}',
-    './src/components/**/*.{js,ts,jsx,tsx}',
-    './src/app/**/*.{js,ts,jsx,tsx}',
-    './src/features/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
 
   theme: {
     container: {

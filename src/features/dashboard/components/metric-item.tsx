@@ -37,7 +37,7 @@ export default function MetricItem({
             {title}
           </Typo>
           <Button
-            tw="-mr-3.5"
+            className="-mr-3.5"
             noPadding
             variant="linkGray"
             onClick={onClick}

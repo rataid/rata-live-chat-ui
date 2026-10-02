@@ -1,10 +1,14 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+
+import { tw } from '@nui/utils/tw'
 
 import { StepperProps } from './types'
 
-export const StepperWrapper = tw.div`relative w-fit min-h-full`
+export const StepperWrapper = styled.div.attrs({
+  className: tw`relative w-fit min-h-full`,
+})``
 
-export const StepperContent = styled.div<Pick<StepperProps, 'position'>>(
+export const StepperContent = styled.div.attrs<Pick<StepperProps, 'position'>>(
   ({ position }) => {
     const positionMap = {
       top: tw`items-start pt-4`,
@@ -12,14 +16,18 @@ export const StepperContent = styled.div<Pick<StepperProps, 'position'>>(
       bottom: tw`items-end pb-4`,
     }
 
-    return [
-      position && positionMap[position],
-      tw`flex h-full w-full  justify-center`,
-    ]
+    return {
+      className: [
+        position && positionMap[position],
+        tw`flex h-full w-full  justify-center`,
+      ]
+        .filter(Boolean)
+        .join(' '),
+    }
   }
-)
+)<Pick<StepperProps, 'position'>>``
 
-export const StepperMain = styled.div<Pick<StepperProps, 'phase'>>(
+export const StepperMain = styled.div.attrs<Pick<StepperProps, 'phase'>>(
   ({ phase: status }) => {
     const statusMap = {
       default: tw`border border-primary-500 bg-white h-6 w-6 rounded-full`,
@@ -27,14 +35,18 @@ export const StepperMain = styled.div<Pick<StepperProps, 'phase'>>(
       done: tw`border bg-primary-500 border-primary-500 h-6 w-6 rounded-full`,
     }
 
-    return [
-      tw`relative flex justify-center items-center`,
-      status && statusMap[status],
-    ]
+    return {
+      className: [
+        tw`relative flex justify-center items-center`,
+        status && statusMap[status],
+      ]
+        .filter(Boolean)
+        .join(' '),
+    }
   }
-)
+)<Pick<StepperProps, 'phase'>>``
 
-export const BoxIcon = styled.div<Pick<StepperProps, 'phase'>>(
+export const BoxIcon = styled.div.attrs<Pick<StepperProps, 'phase'>>(
   ({ phase: status }) => {
     const statusMap = {
       default: tw``,
@@ -42,53 +54,65 @@ export const BoxIcon = styled.div<Pick<StepperProps, 'phase'>>(
       done: tw`text-white`,
     }
 
-    return [
-      tw`flex justify-center items-center scale-75`,
-      status && statusMap[status],
-    ]
+    return {
+      className: [
+        tw`flex justify-center items-center scale-75`,
+        status && statusMap[status],
+      ]
+        .filter(Boolean)
+        .join(' '),
+    }
   }
-)
+)<Pick<StepperProps, 'phase'>>``
 
-export const LineTop = styled.div<Pick<StepperProps, 'phase' | 'position'>>(
-  ({ phase: status, position }) => {
-    const statusMap = {
-      default: tw`bg-gray-200`,
-      current: tw`bg-primary-500`,
-      done: tw`bg-primary-500`,
-    }
+export const LineTop = styled.div.attrs<
+  Pick<StepperProps, 'phase' | 'position'>
+>(({ phase: status, position }) => {
+  const statusMap = {
+    default: tw`bg-gray-200`,
+    current: tw`bg-primary-500`,
+    done: tw`bg-primary-500`,
+  }
 
-    const positionMap = {
-      top: tw`bottom-0 h-[80%]`,
-      middle: tw`top-0 h-[65%]`,
-      bottom: tw`top-0 h-[80%]`,
-    }
+  const positionMap = {
+    top: tw`bottom-0 h-[80%]`,
+    middle: tw`top-0 h-[65%]`,
+    bottom: tw`top-0 h-[80%]`,
+  }
 
-    return [
+  return {
+    className: [
       tw`absolute bottom-0 left-1/2 top-0 h-full w-[1px] rounded-full`,
       status && statusMap[status],
       position && positionMap[position],
     ]
+      .filter(Boolean)
+      .join(' '),
   }
-)
+})<Pick<StepperProps, 'phase' | 'position'>>``
 
-export const LineBottom = styled.div<Pick<StepperProps, 'phase' | 'position'>>(
-  ({ phase: status, position }) => {
-    const statusMap = {
-      default: tw`bg-primary-500`,
-      current: tw`bg-primary-500`,
-      done: tw`bg-primary-500`,
-    }
+export const LineBottom = styled.div.attrs<
+  Pick<StepperProps, 'phase' | 'position'>
+>(({ phase: status, position }) => {
+  const statusMap = {
+    default: tw`bg-primary-500`,
+    current: tw`bg-primary-500`,
+    done: tw`bg-primary-500`,
+  }
 
-    const positionMap = {
-      top: tw`bottom-0 h-[80%]`,
-      middle: tw`bottom-0 h-[65%]`,
-      bottom: tw`top-0 h-[80%]`,
-    }
+  const positionMap = {
+    top: tw`bottom-0 h-[80%]`,
+    middle: tw`bottom-0 h-[65%]`,
+    bottom: tw`top-0 h-[80%]`,
+  }
 
-    return [
+  return {
+    className: [
       tw`absolute left-1/2 w-[1px] rounded-full`,
       status && statusMap[status],
       position && positionMap[position],
     ]
+      .filter(Boolean)
+      .join(' '),
   }
-)
+})<Pick<StepperProps, 'phase' | 'position'>>``

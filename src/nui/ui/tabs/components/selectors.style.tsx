@@ -1,4 +1,6 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+
+import { tw } from '@nui/utils/tw'
 
 import { VariantTabs } from '../types'
 
@@ -6,14 +8,18 @@ type TabsSelectorsWrapperProps = {
   variant?: VariantTabs
 }
 
-const variantMap = {
-  tabs: tw`flex flex-row justify-start text-sm font-medium text-gray-600 border-b border-gray-200`,
-  bar: tw`flex items-center overflow-hidden text-sm h-fit w-fit rounded-lg border border-gray-200`,
+const variantMap: Record<VariantTabs, string> = {
+  tabs: 'flex flex-row justify-start text-sm font-medium text-gray-600 border-b border-gray-200',
+  bar: 'flex items-center overflow-hidden text-sm h-fit w-fit rounded-lg border border-gray-200',
 }
 
-export const TabsSelectorsWrapper = styled.div<TabsSelectorsWrapperProps>(
-  ({ variant }) => [
-    variant && variantMap[variant],
-    tw`overflow-x-auto overflow-y-hidden`,
-  ]
-)
+export const TabsSelectorsWrapper = styled.div.attrs<TabsSelectorsWrapperProps>(
+  ({ variant }) => ({
+    className: [
+      variant && variantMap[variant],
+      tw`overflow-x-auto overflow-y-hidden`,
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<TabsSelectorsWrapperProps>``
