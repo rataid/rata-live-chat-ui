@@ -67,3 +67,10 @@ export const InputIcon = styled.div<InputInternalProps>(
 export const InputStepperWrapper = tw.div`absolute right-2 top-1/2 -translate-y-3`
 
 export const InputStepperArrow = tw.button`w-4 h-3 flex items-center justify-center text-gray-300 hover:(text-gray-900 rounded-sm) outline-none focus:(text-primary-400)`
+
+export const InputOtpWrapper = tw.div`grid w-full gap-2`
+
+export const InputOtpBox = styled.input<{ danger?: boolean }>(({ danger }) => [
+  tw`h-10 w-full min-w-0 rounded-lg border border-gray-200 bg-white text-center text-sm text-gray-900 outline-none duration-300 ease-in-out hover:border-gray-300 focus:border-primary-400 disabled:(cursor-not-allowed bg-gray-50)`,
+  danger && tw`border-danger-300 focus:border-danger-400`,
+])

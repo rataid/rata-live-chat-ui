@@ -1,5 +1,4 @@
 import { useFormControl } from '@nui/form'
-import Icon from '@nui/ui/icon'
 
 import {
   FormLabelMain,
@@ -19,9 +18,7 @@ export function FormLabel({ children }: FormLabelProps) {
       </FormLabelMain>
       {optional && <FormLabelOptional>(optional)</FormLabelOptional>}
       {required && (
-        <FormLabelRequired>
-          <Icon icon="lucide-asterisk" size="2xs" />
-        </FormLabelRequired>
+        <FormLabelRequired>*</FormLabelRequired>
       )}
     </FormLabelWrapper>
   )

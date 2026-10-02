@@ -525,3 +525,26 @@ export const notifySuccess = (message: string) =>
     message,
     type: 'success',
   })
+
+export const maskEmail = (email?: string | null) => {
+  if (!email) return ''
+
+  const [local, domain] = email.split('@')
+
+  if (!local || !domain) return email
+
+  const last = local.length > 1 ? local.at(-1) : ''
+
+  return `${local[0]}***${last}@${domain}`
+}
+
+// 6285712341234 -> +6285***234
+export const maskPhone = (phone?: string | null) => {
+  if (!phone) return ''
+
+  const digits = phone.replace(/\D/g, '')
+
+  if (digits.length < 8) return `+${digits}`
+
+  return `+${digits.slice(0, 4)}***${digits.slice(-3)}`
+}

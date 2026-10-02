@@ -1,24 +1,31 @@
 import { Outlet } from 'react-router-dom'
 
 import { LogoSmiledental } from '@/assets'
-import { BlankLayout } from '@nui/layouts'
 
 import {
-  AuthFormLoginImage,
-  AuthFormLoginWrapper,
+  AuthBrand,
+  AuthBrandLogo,
+  AuthBrandSubtitle,
+  AuthBrandTitle,
+  AuthLayoutContainer,
+  AuthLayoutWrapper,
 } from './components/form-login.style'
 
 export function Layout() {
   return (
-    <BlankLayout>
-      <AuthFormLoginWrapper>
-        <AuthFormLoginImage>
-          <div tw="w-[6rem] text-white">
-            <LogoSmiledental />
-          </div>
-        </AuthFormLoginImage>
+    <AuthLayoutWrapper>
+      <AuthLayoutContainer>
+        <AuthBrand>
+          <AuthBrandLogo>
+            <div tw="w-1/2">
+              <LogoSmiledental />
+            </div>
+          </AuthBrandLogo>
+          <AuthBrandTitle>Tanam Patient Portal</AuthBrandTitle>
+          <AuthBrandSubtitle>Online Platform</AuthBrandSubtitle>
+        </AuthBrand>
         <Outlet />
-      </AuthFormLoginWrapper>
-    </BlankLayout>
+      </AuthLayoutContainer>
+    </AuthLayoutWrapper>
   )
 }

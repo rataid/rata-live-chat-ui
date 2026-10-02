@@ -33,11 +33,18 @@ export const LayoutUiNotifWrapper = styled.div(() => [
     .Toastify__progress-bar {
       height: 2px;
     }
-    @media only screen and (max-width: 480px) {
-      .Toastify__toast-container {
-        left: auto;
+    @media only screen and (max-width: 639px) {
+      &&& .Toastify__toast-container {
         top: 12px;
-        right: 12px;
+        left: 50%;
+        right: auto;
+        width: calc(100% - 24px);
+        max-width: 23.75rem;
+        padding: 0;
+        transform: translateX(-50%);
+      }
+      &&& .Toastify__toast {
+        ${tw`mb-2 rounded-lg`}
       }
     }
   `,

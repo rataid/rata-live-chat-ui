@@ -1,0 +1,161 @@
+import { Controller } from 'react-hook-form'
+import { useActionData, useNavigation } from 'react-router-dom'
+
+import { registerSchema } from '@/model/user'
+import {
+  Form,
+  FormAction,
+  FormControl,
+  FormLabel,
+  FormMain,
+  Input,
+  InputIcase,
+} from '@nui/form'
+import { InputPhone } from '@nui/form/input/components/phone'
+import useFormHelper from '@nui/hooks/use-form-helper'
+import Button from '@nui/ui/button'
+import Icon from '@nui/ui/icon'
+
+import {
+  AuthBackLink,
+  AuthFormLoginError,
+  AuthFormLoginHeading,
+  AuthFormLoginMain,
+  AuthFormLoginSubtitle,
+  AuthFormLoginTitle,
+} from '../../login/components/form-login.style'
+import { AuthRegisterActionData } from '../pages/register.route'
+
+export default function AuthFormRegister() {
+  const actionData = useActionData() as AuthRegisterActionData | undefined
+
+  const isSubmitting = useNavigation().state !== 'idle'
+
+  const { methods, onSubmit } = useFormHelper({
+    schema: registerSchema,
+  })
+
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = methods
+
+  const values = watch([
+    'name',
+    'email',
+    'phone',
+    'password',
+    'password_confirmation',
+  ])
+
+  const isFilled = values.every(Boolean)
+
+  return (
+    <AuthFormLoginMain>
+      <AuthBackLink to="/login">
+        <Icon icon="lucide-arrow-left" size="2xs" />
+        Back to Login
+      </AuthBackLink>
+      <AuthFormLoginHeading>
+        <AuthFormLoginTitle>Account Activation</AuthFormLoginTitle>
+        <AuthFormLoginSubtitle>
+          Enter your registered clinic details and create a password to get
+          started.
+        </AuthFormLoginSubtitle>
+      </AuthFormLoginHeading>
+      {actionData?.success === false && (
+        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
+      )}
+      <Form onSubmit={onSubmit}>
+        <FormMain gap="sm">
+          <FormControl required error={errors.name}>
+            <FormLabel>Nama Lengkap</FormLabel>
+            <Controller
+              name="name"
+              defaultValue=""
+              control={control}
+              render={({ field }) => (
+                <Input
+                  placeholder="e.g. Budi Santoso"
+                  autoComplete="name"
+                  {...field}
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl required error={errors.email}>
+            <FormLabel>Email</FormLabel>
+            <Controller
+              name="email"
+              defaultValue=""
+              control={control}
+              render={({ field }) => (
+                <InputIcase
+                  displayCase="lower"
+                  allowSpace={false}
+                  placeholder="you@email.com"
+                  autoComplete="email"
+                  {...field}
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl required error={errors.phone}>
+            <FormLabel>Phone Number</FormLabel>
+            <Controller
+              name="phone"
+              defaultValue=""
+              control={control}
+              render={({ field }) => (
+                <InputPhone placeholder="8XX-XXXX-XXXX" {...field} />
+              )}
+            />
+          </FormControl>
+          <FormControl required error={errors.password}>
+            <FormLabel>Password</FormLabel>
+            <Controller
+              name="password"
+              defaultValue=""
+              control={control}
+              render={({ field }) => (
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  {...field}
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl required error={errors.password_confirmation}>
+            <FormLabel>Confirm Password</FormLabel>
+            <Controller
+              name="password_confirmation"
+              defaultValue=""
+              control={control}
+              render={({ field }) => (
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  {...field}
+                />
+              )}
+            />
+          </FormControl>
+        </FormMain>
+        <FormAction tw="!pt-3">
+          <Button
+            type="submit"
+            wider="full"
+            fontWeight="medium"
+            disabled={!isFilled || isSubmitting}
+          >
+            {isSubmitting ? 'Activating...' : 'Activate Account'}
+          </Button>
+        </FormAction>
+      </Form>
+    </AuthFormLoginMain>
+  )
+}

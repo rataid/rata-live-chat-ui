@@ -13,13 +13,24 @@ import {
 import { loginSchema } from '@/model/user'
 import { queryClient } from '@libs/query-client'
 
+export const LOGIN_ERROR_ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE'
+
+const DUMMY_INACTIVE_EMAIL = 'inactive@rata.id'
+
+export type AuthLoginActionData = {
+  success: boolean
+  message?: string
+  code?: string
+  email?: string
+}
+
 export async function authLoginLoader({ request }: ActionFunctionArgs) {
   const token = getToken()
 
   if (token) {
     if (isTokenValid(token)) {
       const params = new URL(request.url).searchParams
-      const from = params.get('from') || '/dashboard'
+      const from = params.get('from') || '/chat'
 
       return redirect(from)
     }
@@ -34,8 +45,17 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const data = loginSchema.parse(Object.fromEntries(formData))
 
+  // @todo: remove this dummy once the backend returns the inactive account error
+  if (data.email === DUMMY_INACTIVE_EMAIL) {
+    return {
+      success: false,
+      code: LOGIN_ERROR_ACCOUNT_INACTIVE,
+      email: data.email,
+    }
+  }
+
   try {
-    const result = await login( data )
+    const result = await login(data)
     const tokenResult = result?.data?.data?.access_token || null
 
     if (tokenResult && isTokenValid(tokenResult)) {
@@ -44,7 +64,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
       setToken(tokenResult)
 
       const params = new URL(request.url).searchParams
-      const from = params.get('from') || '/dashboard'
+      const from = params.get('from') || '/chat'
 
       return redirect(from)
     }
