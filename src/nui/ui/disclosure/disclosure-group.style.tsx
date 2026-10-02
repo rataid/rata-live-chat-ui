@@ -1,3 +1,4 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const DisclosureGroupMain = tw.div`flex flex-col gap-y-6`
+export const DisclosureGroupMain = styled.div.attrs({ className: tw`flex flex-col gap-y-6` })``

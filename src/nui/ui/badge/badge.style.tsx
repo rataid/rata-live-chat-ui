@@ -1,4 +1,5 @@
-import tw, { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { BadgeWrapperProps } from './types'
 
@@ -60,8 +61,7 @@ const roundeds = {
   full: tw`rounded-full`,
 }
 
-export const BadgeWrapper = styled.div<BadgeWrapperProps>(
-  ({ noBackground, color, rounded, size, width, hasChildren }) => {
+export const BadgeWrapper = styled.div.attrs<BadgeWrapperProps>(({ noBackground, color, rounded, size, width, hasChildren }) =>  {
     const sizeMapText = {
       xs: tw`px-2 py-1 text-[0.6875rem] leading-3 font-semibold`,
       sm: tw`px-3 py-1 text-xs leading-4 font-semibold`,
@@ -80,16 +80,11 @@ export const BadgeWrapper = styled.div<BadgeWrapperProps>(
 
     const isBackground = !noBackground ? colorMap : colorMapNoBackground
 
-    return [
-      tw`inline-flex h-fit w-fit items-center justify-center gap-0.5 overflow-hidden whitespace-nowrap`,
-      color && isBackground[color],
-      rounded && roundeds[rounded],
-      size && (hasChildren ? sizeMapText[size] : sizeMapBoxIcon[size]),
-      width && css({ width }),
-    ]
-  }
-)
+    return { className: [tw`inline-flex h-fit w-fit items-center justify-center gap-0.5 overflow-hidden whitespace-nowrap`, color && isBackground[color], rounded && roundeds[rounded], size && (hasChildren ? sizeMapText[size] : sizeMapBoxIcon[size])].filter(Boolean).join(' ') }
+  })<BadgeWrapperProps>`
+  ${({ noBackground, color, rounded, size, width, hasChildren }) => width && css({ width })}
+`
 
-export const BadgeMain = styled.div<BadgeWrapperProps>(({ color }) => {
-  return [tw`flex justify-center items-center`, color && colorIconMap[color]]
-})
+export const BadgeMain = styled.div.attrs<BadgeWrapperProps>(({ color }) =>  {
+  return { className: [tw`flex justify-center items-center`, color && colorIconMap[color]].filter(Boolean).join(' ') }
+})<BadgeWrapperProps>``

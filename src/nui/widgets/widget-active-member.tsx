@@ -1,6 +1,7 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-const Wrapper = tw.div`w-full`
+const Wrapper = styled.div.attrs({ className: tw`w-full` })``
 
 export default function WidgetActiveMember() {
   return (

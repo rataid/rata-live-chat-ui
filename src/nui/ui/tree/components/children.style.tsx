@@ -1,4 +1,4 @@
-import { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
 
 import { useTree } from '../hooks'
 import { TreeChildrenProps } from '../types'

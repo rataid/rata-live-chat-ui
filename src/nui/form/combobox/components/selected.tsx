@@ -25,7 +25,7 @@ export function ComboboxSelected({
 
   // If it has a custom render function, use it
   if (renderSelected) {
-    return <div tw="w-full">{renderSelected(selectedItem)}</div>
+    return <div className="w-full">{renderSelected(selectedItem)}</div>
   }
 
   // If it has a custom itemToString function, use it

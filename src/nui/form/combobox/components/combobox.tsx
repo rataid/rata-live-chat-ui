@@ -181,7 +181,7 @@ export function Combobox<T>({
       {isOpen && (
         <FloatingPortal id={portalId}>
           <div
-            tw="relative z-[9999]"
+            className="relative z-[9999]"
             style={floatingStyles}
             ref={refs.setFloating}
           >

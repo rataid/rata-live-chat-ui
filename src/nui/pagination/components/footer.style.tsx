@@ -1,14 +1,15 @@
 /* eslint-disable import/no-cycle */
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const PaginationFooterWrapper = tw.div`mt-4 h-[4.25rem] flex items-center justify-between text-sm`
+export const PaginationFooterWrapper = styled.div.attrs({ className: tw`mt-4 h-[4.25rem] flex items-center justify-between text-sm` })``
 
-export const PaginationFooterPerPage = tw.div`pr-6 shrink-0 flex items-center gap-x-2`
+export const PaginationFooterPerPage = styled.div.attrs({ className: tw`pr-6 shrink-0 flex items-center gap-x-2` })``
 
-export const PaginationFooterPerPageLabel = tw.div`font-medium text-gray-700`
+export const PaginationFooterPerPageLabel = styled.div.attrs({ className: tw`font-medium text-gray-700` })``
 
-export const PaginationFooterPerPageSelect = tw.div`font-semibold w-[4.9375rem]`
+export const PaginationFooterPerPageSelect = styled.div.attrs({ className: tw`font-semibold w-[4.9375rem]` })``
 
-export const PaginationFooterInfo = tw.div`px-6 flex-1 text-center font-medium text-gray-700`
+export const PaginationFooterInfo = styled.div.attrs({ className: tw`px-6 flex-1 text-center font-medium text-gray-700` })``
 
-export const PaginationFooterPagination = tw.div`shrink-0 w-full xl:(pl-6 w-auto)`
+export const PaginationFooterPagination = styled.div.attrs({ className: tw`shrink-0 w-full xl:pl-6 xl:w-auto` })``

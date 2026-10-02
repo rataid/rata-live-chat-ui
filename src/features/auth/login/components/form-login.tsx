@@ -43,7 +43,7 @@ export default function AuthFormLogin() {
     <AuthFormLoginMain>
       <AuthFormLoginMainInner>
         <AuthFormLoginMainImage>
-          <div tw="w-[8.125rem]">
+          <div className="w-[8.125rem]">
             <LogoSmiledental />
           </div>
         </AuthFormLoginMainImage>
@@ -55,7 +55,7 @@ export default function AuthFormLogin() {
         </AuthFormLoginHeading>
         <AuthFormLoginForm>
           {success === false && (
-            <div tw="text-red-500 text-sm my-4">{message}</div>
+            <div className="text-red-500 text-sm my-4">{message}</div>
           )}
           <Form onSubmit={onSubmit}>
             <FormMain gap="xs">
@@ -91,7 +91,7 @@ export default function AuthFormLogin() {
             </FormAction>
           </Form>
         </AuthFormLoginForm>
-        <Typo tw="text-center">© 2023 - Rata Apps</Typo>
+        <Typo className="text-center">© 2023 - Rata Apps</Typo>
       </AuthFormLoginMainInner>
     </AuthFormLoginMain>
   )

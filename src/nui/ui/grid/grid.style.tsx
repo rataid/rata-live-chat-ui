@@ -1,4 +1,5 @@
-import tw, { TwStyle, css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw, TwStyle } from '@nui/utils/tw'
 
 import { GridCols, GridProps } from './types'
 
@@ -22,39 +23,37 @@ const gapMap: Record<number, TwStyle> = {
   8: tw`gap-8`,
 }
 
-export const GridWrapper = styled.div<GridProps>(
-  ({ cols: colsValue, gap = 6 }) => {
+export const GridWrapper = styled.div.attrs<GridProps>(({ gap = 6 }) => ({
+  className: [tw`grid`, gapMap[gap]].filter(Boolean).join(' '),
+}))<GridProps>`
+  ${({ cols: colsValue }) => {
     const cols = colsValue ?? defaultCols
 
-    return [
-      tw`grid`,
-      gapMap[gap],
-      css`
-        /* Always apply default cols-1 for sm as fallback */
-        @media (min-width: 640px) {
-          grid-template-columns: repeat(${cols?.sm ?? 1}, minmax(0, 1fr));
-        }
+    return css`
+      /* Always apply default cols-1 for sm as fallback */
+      @media (min-width: 640px) {
+        grid-template-columns: repeat(${cols?.sm ?? 1}, minmax(0, 1fr));
+      }
 
-        ${cols?.md &&
-        `@media (min-width: 768px) {
-          grid-template-columns: repeat(${cols?.md}, minmax(0, 1fr));
-        }`}
+      ${cols?.md &&
+      `@media (min-width: 768px) {
+        grid-template-columns: repeat(${cols?.md}, minmax(0, 1fr));
+      }`}
 
-        ${cols?.lg &&
-        `@media (min-width: 1024px) {
-          grid-template-columns: repeat(${cols?.lg}, minmax(0, 1fr));
-        }`}
+      ${cols?.lg &&
+      `@media (min-width: 1024px) {
+        grid-template-columns: repeat(${cols?.lg}, minmax(0, 1fr));
+      }`}
 
-        ${cols?.xl &&
-        `@media (min-width: 1280px) {
-          grid-template-columns: repeat(${cols?.xl}, minmax(0, 1fr));
-        }`}
+      ${cols?.xl &&
+      `@media (min-width: 1280px) {
+        grid-template-columns: repeat(${cols?.xl}, minmax(0, 1fr));
+      }`}
 
-        ${cols?.['2xl'] &&
-        `@media (min-width: 1536px) {
-          grid-template-columns: repeat(${cols?.['2xl']}, minmax(0, 1fr));
-        }`}
-      `,
-    ]
-  }
-)
+      ${cols?.['2xl'] &&
+      `@media (min-width: 1536px) {
+        grid-template-columns: repeat(${cols?.['2xl']}, minmax(0, 1fr));
+      }`}
+    `
+  }}
+`

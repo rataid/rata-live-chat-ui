@@ -158,8 +158,8 @@ export const InputPhone = forwardRef<HTMLInputElement, InputPhoneProps>(
             </InputWrapper>
           </TipTrigger>
           <TipContent>
-            <div tw="xl:w-[26.875rem] bg-white text-gray-200 border border-gray-200 rounded-lg">
-              <div tw="px-4 py-3 border-b border-gray-200">
+            <div className="xl:w-[26.875rem] bg-white text-gray-200 border border-gray-200 rounded-lg">
+              <div className="px-4 py-3 border-b border-gray-200">
                 <Input
                   leadingIcon="lucide:search"
                   placeholder="Search country"
@@ -179,14 +179,14 @@ export const InputPhone = forwardRef<HTMLInputElement, InputPhoneProps>(
                         setSearch('')
                         setResetInput(true)
                       }}
-                      tw="py-2.5 px-4 flex w-full hover:bg-gray-50 items-center gap-1 text-sm font-medium"
+                      className="py-2.5 px-4 flex w-full hover:bg-gray-50 items-center gap-1 text-sm font-medium"
                     >
-                      <div tw="text-gray-700">{item.country}</div>
-                      <div tw="text-gray-400">+{item.code}</div>
+                      <div className="text-gray-700">{item.country}</div>
+                      <div className="text-gray-400">+{item.code}</div>
                     </button>
                   ))
                 ) : (
-                  <div tw="py-2 px-3 leading-10 text-center text-xs text-gray-500">
+                  <div className="py-2 px-3 leading-10 text-center text-xs text-gray-500">
                     No results found
                   </div>
                 )}

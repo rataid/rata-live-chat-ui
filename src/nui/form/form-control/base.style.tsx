@@ -1,5 +1,7 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
 
 import { FormHelperWrapper } from '../form-helper/form-helper.style'
 
-export const FormControlBaseError = tw(FormHelperWrapper)`text-danger-500`
+export const FormControlBaseError = styled(FormHelperWrapper)`
+  color: var(--nui-color-danger-500);
+`

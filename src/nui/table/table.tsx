@@ -144,7 +144,7 @@ export function Table<T>({
           ) : (
             <TableRow isMobile={xl}>
               <TableCellWrapper colSpan={columns?.length} isMobile={xl}>
-                <div tw="py-10 text-center">No data available</div>
+                <div className="py-10 text-center">No data available</div>
               </TableCellWrapper>
             </TableRow>
           )}

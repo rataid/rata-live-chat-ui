@@ -15,13 +15,13 @@ export default function PreviewImage({ src, alt, onClick }: PreviewImageProps) {
   return (
     <PreviewImageItem className="group">
       <Image
-        // tw="w-[70px] h-[70px] md:(w-[6.375rem] h-[6.375rem])"
-        tw="w-[48px] h-[48px]"
+        // className="w-[70px] h-[70px] md:w-[6.375rem] md:h-[6.375rem]"
+        className="w-[48px] h-[48px]"
         src={src}
         alt={alt}
         object="cover"
       />
-      <PreviewImageDelete tw="group-hover:visible">
+      <PreviewImageDelete className="group-hover:visible">
         <Button
           type="button"
           variant="secondary"

@@ -15,7 +15,7 @@ export function FormLabel({ children }: FormLabelProps) {
   return (
     <FormLabelWrapper>
       <FormLabelMain>
-        {children || <div tw="whitespace-pre"> </div>}
+        {children || <div className="whitespace-pre"> </div>}
       </FormLabelMain>
       {optional && <FormLabelOptional>(optional)</FormLabelOptional>}
       {required && (

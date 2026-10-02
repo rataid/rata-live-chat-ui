@@ -34,7 +34,7 @@ export default function PreviewFile({
           </Typo>
           <Typo size="xs" color="gray-500">
             {body}
-            <span tw="pl-1">| {formatBytes(size)}</span>
+            <span className="pl-1">| {formatBytes(size)}</span>
           </Typo>
         </PreviewFileMain>
       </PreviewFileContainer>

@@ -1,4 +1,5 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 export type ButtonStackJustify =
   | 'none'
@@ -12,7 +13,7 @@ type ButtonStackProps = {
   justify?: ButtonStackJustify
 }
 
-const ButtonStack = styled.div<ButtonStackProps>(({ justify = 'none' }) => {
+const ButtonStack = styled.div.attrs<ButtonStackProps>(({ justify = 'none' }) =>  {
   const justifyMap = {
     none: tw``,
     start: tw`justify-start`,
@@ -22,7 +23,7 @@ const ButtonStack = styled.div<ButtonStackProps>(({ justify = 'none' }) => {
     around: tw`justify-around`,
   }
 
-  return [tw`w-full flex gap-x-3 items-center`, justifyMap[justify]]
-})
+  return { className: [tw`w-full flex gap-x-3 items-center`, justifyMap[justify]].filter(Boolean).join(' ') }
+})<ButtonStackProps>``
 
 export default ButtonStack

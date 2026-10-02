@@ -1,4 +1,4 @@
-import tw from 'twin.macro'
+import { tw } from '@nui/utils/tw'
 
 import { IconSize } from './types'
 
@@ -15,19 +15,19 @@ export const sizes: Record<IconSize, number> = {
 
 export const sizeStrokes = {
   xs: tw`
-  [g]:(stroke-[1px])
-  [path]:(stroke-[1px])
+  [&_g]:stroke-[1px]
+  [&_path]:stroke-[1px]
 `,
   sm: tw`
-  [g]:(stroke-[1.5px])
-  [path]:(stroke-[1.5px])
+  [&_g]:stroke-[1.5px]
+  [&_path]:stroke-[1.5px]
 `,
   md: tw`
-  [g]:(stroke-[2px])
-  [path]:(stroke-[2px])
+  [&_g]:stroke-[2px]
+  [&_path]:stroke-[2px]
 `,
   lg: tw`
-[g]:(stroke-[2.5px])
-[path]:(stroke-[2.5px])
+[&_g]:stroke-[2.5px]
+[&_path]:stroke-[2.5px]
 `,
 }

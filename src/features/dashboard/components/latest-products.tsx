@@ -15,8 +15,8 @@ export default function SideLatestProducts() {
       }
     >
       <Box flow="column" padding="none">
-        <div tw="p-4 border-b last:border-none border-gray-200 flex justify-between items-center">
-          <div tw="flex items-center gap-x-4">
+        <div className="p-4 border-b last:border-none border-gray-200 flex justify-between items-center">
+          <div className="flex items-center gap-x-4">
             <Image src="" alt="" width="48px" height="48px" />
             <div>
               <Typo fontWeight="semibold" color="gray-900">

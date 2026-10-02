@@ -78,7 +78,7 @@ export default function UploadQueue() {
   }, [])
 
   return (
-    <div tw="relative">
+    <div className="relative">
       <Scrollbar maxHeight="178px" positionTrack="-0.8rem">
         <UploadQueueWrapper>
           {queue.map((item) => (
@@ -90,7 +90,7 @@ export default function UploadQueue() {
                   <img
                     src={URL.createObjectURL(item.file)}
                     alt={`thumbnail ${item.filename}`}
-                    tw="w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 )}
               </UploadQueueThumbnail>

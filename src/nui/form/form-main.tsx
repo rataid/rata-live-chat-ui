@@ -1,4 +1,5 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 export type FormMainProps = {
   gap?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
@@ -14,7 +15,4 @@ const gapMap = {
   '2xl': tw`gap-10`,
 }
 
-export const FormMain = styled.div<FormMainProps>(({ gap = 'md' }) => [
-  tw`w-full flex flex-col`,
-  gapMap[gap],
-])
+export const FormMain = styled.div.attrs<FormMainProps>(({ gap = 'md' }) => ({ className: [tw`w-full flex flex-col`, gapMap[gap]].filter(Boolean).join(' ') }))<FormMainProps>``

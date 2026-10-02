@@ -17,7 +17,7 @@ export function Error({ content, title, body, action, children }: ErrorProps) {
           <ErrorTitle>{title}</ErrorTitle>
           <ErrorBody>{body}</ErrorBody>
         </ErrorMain>
-        <div tw="flex gap-6">{action}</div>
+        <div className="flex gap-6">{action}</div>
       </ErrorContainer>
     </ErrorWrapper>
   )

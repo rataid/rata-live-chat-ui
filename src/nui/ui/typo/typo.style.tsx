@@ -1,4 +1,4 @@
-import tw from 'twin.macro'
+import { tw } from '@nui/utils/tw'
 
 const primaryMap = {
   'primary-300': tw`text-primary-300`,

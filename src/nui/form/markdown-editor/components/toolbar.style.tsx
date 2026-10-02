@@ -1,3 +1,4 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const MarkdownEditorToolbarMain = tw.div`flex items-center`
+export const MarkdownEditorToolbarMain = styled.div.attrs({ className: tw`flex items-center` })``

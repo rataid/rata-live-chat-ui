@@ -1,4 +1,5 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { BadgeGroupWrapperProps } from './types'
 
@@ -7,8 +8,7 @@ const sizes = {
   lg: tw`text-sm font-medium`,
 }
 
-export const BadgeGroupWrapper = styled.div(
-  ({ size, color, theme, trailing }: BadgeGroupWrapperProps) => {
+export const BadgeGroupWrapper = styled.div.attrs<BadgeGroupWrapperProps>(({ size, color, theme, trailing }: BadgeGroupWrapperProps) =>  {
     const light = {
       primary: tw`text-primary-700 bg-primary-50`,
       gray: tw`text-gray-700 bg-gray-50`,
@@ -39,17 +39,10 @@ export const BadgeGroupWrapper = styled.div(
       dark: color && dark[color],
     }
 
-    return [
-      tw`flex items-center rounded-full gap-x-1 py-1 w-fit`,
-      trailing ? tw`pl-3 pr-1` : tw`pl-1 pr-3`,
-      theme && themes[theme],
-      size && sizes[size],
-    ]
-  }
-)
+    return { className: [tw`flex items-center rounded-full gap-x-1 py-1 w-fit`, trailing ? tw`pl-3 pr-1` : tw`pl-1 pr-3`, theme && themes[theme], size && sizes[size]].filter(Boolean).join(' ') }
+  })<BadgeGroupWrapperProps>``
 
-export const BoxLabel = styled.div(
-  ({ size, color, theme, trailing }: BadgeGroupWrapperProps) => {
+export const BoxLabel = styled.div.attrs<BadgeGroupWrapperProps>(({ size, color, theme, trailing }: BadgeGroupWrapperProps) =>  {
     const light = {
       primary: tw`text-primary-700 bg-white`,
       gray: tw`text-gray-700 bg-white`,
@@ -80,11 +73,5 @@ export const BoxLabel = styled.div(
       dark: color && dark[color],
     }
 
-    return [
-      tw`rounded-full px-2 py-0.5 font-semibold inline-flex items-center gap-1`,
-      !trailing ? tw`mr-1` : tw`ml-2`,
-      size && sizes[size],
-      theme && themes[theme],
-    ]
-  }
-)
+    return { className: [tw`rounded-full px-2 py-0.5 font-semibold inline-flex items-center gap-1`, !trailing ? tw`mr-1` : tw`ml-2`, size && sizes[size], theme && themes[theme]].filter(Boolean).join(' ') }
+  })<BadgeGroupWrapperProps>``

@@ -1,4 +1,5 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 type Justify = 'none' | 'start' | 'end' | 'center' | 'between' | 'around'
 
@@ -6,8 +7,7 @@ type FormActionProps = {
   justify?: Justify
 }
 
-export const FormAction = styled.div<FormActionProps>(
-  ({ justify = 'between' }) => {
+export const FormAction = styled.div.attrs<FormActionProps>(({ justify = 'between' }) =>  {
     const justifyMap = {
       none: tw``,
       start: tw`justify-start`,
@@ -17,6 +17,5 @@ export const FormAction = styled.div<FormActionProps>(
       around: tw`justify-around`,
     }
 
-    return [tw`pt-6 flex w-full items-center`, justifyMap[justify]]
-  }
-)
+    return { className: [tw`pt-6 flex w-full items-center`, justifyMap[justify]].filter(Boolean).join(' ') }
+  })<FormActionProps>``

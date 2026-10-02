@@ -1,7 +1,8 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const TopbarStatusWrapper = tw.div`flex items-center justify-between gap-x-2`
+export const TopbarStatusWrapper = styled.div.attrs({ className: tw`flex items-center justify-between gap-x-2` })``
 
-export const TopbarStatusIcon = tw.div``
+export const TopbarStatusIcon = styled.div.attrs({ className: tw`` })``
 
-export const TopbarStatusMessage = tw.div`text-xs`
+export const TopbarStatusMessage = styled.div.attrs({ className: tw`text-xs` })``

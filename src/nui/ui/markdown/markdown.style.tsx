@@ -1,3 +1,4 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const MarkdownMain = tw.div`prose text-xs max-w-prose text-gray-700`
+export const MarkdownMain = styled.div.attrs({ className: tw`prose text-xs max-w-prose text-gray-700` })``

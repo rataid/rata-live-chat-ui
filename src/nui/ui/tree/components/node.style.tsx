@@ -1,4 +1,4 @@
-import { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
 
 import { DEFAULT_HEIGHT } from '../config'
 import { useTree } from '../hooks'
@@ -28,14 +28,14 @@ export const TreeNodeWrapper = styled.li<TreeNodeProps>(
           top: ${gap / 2}px;
           width: 18px;
           height: 3px;
-          background: #eee;
+          background: var(--nui-color-neutral-300);
         }
 
         &::after {
           border-left: 1px solid var(--clt-line-color);
           height: 100%;
           width: 3px;
-          background: #eee;
+          background: var(--nui-color-neutral-300);
           top: -${height / 2 - 12}px;
         }
       `,
