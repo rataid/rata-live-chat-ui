@@ -2,7 +2,11 @@ import {
   differenceInDays,
   differenceInHours,
   format,
+  isThisWeek,
+  isThisYear,
+  isToday,
   isValid,
+  isYesterday,
   parse,
   parseISO,
 } from 'date-fns'
@@ -309,4 +313,28 @@ export const setTimeInTimeZone = (
   return formatTz(zonedDate, DATETIME_ISO, {
     timeZone,
   })
+}
+
+export function formatChatDate(date?: string | Date | null, separator = false) {
+  if (!date) return null
+
+  const parsedDate = new Date(date)
+
+  if (isToday(parsedDate)) {
+    return separator ? 'Today' : format(parsedDate, 'HH:mm')
+  }
+
+  if (isYesterday(parsedDate)) {
+    return 'Yesterday'
+  }
+
+  if (isThisWeek(parsedDate, { weekStartsOn: 1 })) {
+    return format(parsedDate, 'EEEE')
+  }
+
+  if (isThisYear(parsedDate)) {
+    return format(parsedDate, 'dd/MM')
+  }
+
+  return format(parsedDate, DATE_DISPLAY)
 }

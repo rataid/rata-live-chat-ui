@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import LayoutUiFloatingPortal from '@nui/layouts/ui/floating-portal'
 import LayoutUiLoader from '@nui/layouts/ui/loader'
-import LayoutUiNotif from '@nui/layouts/ui/notif'
 
 import AppProvider from '../provider'
 import { AppLayoutProps } from '../types'
@@ -29,7 +28,6 @@ export function AppLayout({ navTop, navBottom, profile }: AppLayoutProps) {
         <AppLayoutContainer>
           <AppMain />
         </AppLayoutContainer>
-        <LayoutUiNotif />
         <LayoutUiFloatingPortal />
       </AppLayoutWrapper>
     </AppProvider>
