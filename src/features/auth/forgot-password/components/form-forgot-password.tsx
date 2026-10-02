@@ -54,7 +54,7 @@ export default function AuthFormForgotPassword() {
     return (
       <AuthFormLoginMain>
         <BackToLogin />
-        <AuthFormLoginHeading tw="!mb-0">
+        <AuthFormLoginHeading className="!mb-0">
           <AuthFormLoginTitle>Check Your Email</AuthFormLoginTitle>
           <AuthFormLoginSubtitle>
             If your email is registered, we&apos;ve sent password reset
@@ -98,7 +98,7 @@ export default function AuthFormForgotPassword() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-6">
+        <FormAction className="!pt-6">
           <Button
             type="submit"
             wider="full"

@@ -30,13 +30,13 @@ export function PopupDialog({
 
   return (
     <FloatingPortal>
-      <FloatingOverlay tw="z-[100]" lockScroll>
+      <FloatingOverlay className="z-[100]" lockScroll>
         <FloatingFocusManager context={context}>
           <PopupDialogOverlay>
             <PopupDialogContainer
               ref={refs.setFloating}
               style={styles}
-              size={size}
+              $size={size}
               {...getFloatingProps()}
             >
               {children}

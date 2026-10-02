@@ -145,7 +145,7 @@ export default function AuthFormRegister() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-3">
+        <FormAction className="!pt-3">
           <Button
             type="submit"
             wider="full"

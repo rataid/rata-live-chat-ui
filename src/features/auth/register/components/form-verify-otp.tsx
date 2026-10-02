@@ -80,7 +80,7 @@ export default function AuthFormVerifyOtp() {
         <AuthFormLoginTitle>Verification Code (SMS/WA)</AuthFormLoginTitle>
         <AuthFormLoginSubtitle>
           We have sent the OTP code to{' '}
-          <span tw="font-semibold text-gray-900">{maskPhone(phone)}</span>,
+          <span className="font-semibold text-gray-900">{maskPhone(phone)}</span>,
           please check your SMS/WhatsApp.
         </AuthFormLoginSubtitle>
       </AuthFormLoginHeading>
@@ -107,7 +107,7 @@ export default function AuthFormVerifyOtp() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-6">
+        <FormAction className="!pt-6">
           <Button
             type="submit"
             wider="full"
@@ -121,11 +121,11 @@ export default function AuthFormVerifyOtp() {
       <AuthFormLoginFooter>
         Didn&apos;t receive OTP?{' '}
         {cooldown > 0 ? (
-          <span tw="font-medium text-gray-400">Resend OTP in {cooldown}s</span>
+          <span className="font-medium text-gray-400">Resend OTP in {cooldown}s</span>
         ) : (
           <button
             type="button"
-            tw="font-medium text-primary-600 hover:(text-primary-700 underline)"
+            className="font-medium text-primary-600 hover:text-primary-700 hover:underline"
             onClick={handleResend}
           >
             Resend OTP

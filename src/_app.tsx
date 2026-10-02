@@ -20,7 +20,6 @@ import { AppLayout } from '@nui/layouts'
 import LayoutUiNotif from '@nui/layouts/ui/notif'
 
 import authRoutes from '@features/auth/routes'
-import chatRoutes from '@features/chat/routes'
 import dashboardRoutes from '@features/dashboard/routes'
 import liveRoutes from '@features/live/routes'
 import readyRoutes from '@features/ready/routes'
@@ -77,7 +76,6 @@ export async function appLoader({ request }: LoaderFunctionArgs) {
 
 const router = createBrowserRouter([
   ...authRoutes,
-  ...chatRoutes,
 
   {
     path: '/',
@@ -102,7 +100,7 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="app font-sans bg-gray-50 xl:bg-none">
+      <div className="app bg-gray-50 font-sans xl:bg-none">
         <RouterProvider router={router} />
         <LayoutUiNotif />
       </div>

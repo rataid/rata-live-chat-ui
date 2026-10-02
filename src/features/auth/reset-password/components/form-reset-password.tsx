@@ -104,7 +104,7 @@ export default function AuthFormResetPassword() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-6">
+        <FormAction className="!pt-6">
           <Button
             type="submit"
             wider="full"
