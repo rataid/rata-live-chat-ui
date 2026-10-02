@@ -17,7 +17,7 @@ export function Layout() {
       <AuthLayoutContainer>
         <AuthBrand>
           <AuthBrandLogo>
-            <div tw="w-1/2">
+            <div className="w-1/2">
               <LogoSmiledental />
             </div>
           </AuthBrandLogo>

@@ -55,7 +55,7 @@ export const UploadPicture = forwardRef<HTMLInputElement, UploadPictureProps>(
           width="200px"
           height="120px"
           object="cover"
-          tw="text-primary-600"
+          className="text-primary-600"
           src={inputValue?.url}
         >
           <Icon stroke="md" icon="lucide:image" size="2xl" />

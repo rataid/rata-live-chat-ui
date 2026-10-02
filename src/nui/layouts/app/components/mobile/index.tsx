@@ -60,7 +60,7 @@ export default function AppMobileNav() {
       <div
         ref={refs.setReference}
         {...getReferenceProps()}
-        tw="relative z-[100]"
+        className="relative z-[100]"
       >
         <MenuMobileButton
           open={isMobileNav ?? false}
@@ -69,7 +69,7 @@ export default function AppMobileNav() {
       </div>
       {isMounted ? (
         <FloatingPortal>
-          <FloatingOverlay tw="z-[50]" lockScroll>
+          <FloatingOverlay className="z-[50]" lockScroll>
             <AppMobileNavOverlay id="appSidebarNav">
               <AppMobileNavMain
                 ref={refs.setFloating}

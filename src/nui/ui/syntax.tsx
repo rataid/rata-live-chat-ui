@@ -5,7 +5,7 @@ export default function Syntax({ children }: React.PropsWithChildren) {
   const codeString = children?.toString() || ''
 
   return (
-    <SyntaxHighlighter tw="rounded-lg" language="javascript" style={darcula}>
+    <SyntaxHighlighter className="rounded-lg" language="javascript" style={darcula}>
       {codeString}
     </SyntaxHighlighter>
   )

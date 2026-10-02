@@ -189,12 +189,12 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         <FloatingPortal id={portalId}>
           {isOpen && (
             <div
-              tw="relative"
+              className="relative"
               style={{ ...floatingStyles, zIndex: 9999 }}
               ref={floatingRef}
               {...getFloatingProps()}
             >
-              <div tw="w-fit h-fit">
+              <div className="w-fit h-fit">
                 <DayPicker
                   captionLayout="dropdown"
                   mode="single"

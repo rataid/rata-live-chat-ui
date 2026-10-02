@@ -3,7 +3,7 @@ export default function FlagEnglish() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 50 30"
-      tw="fill-current"
+      className="fill-current"
     >
       <clipPath id="t">
         <path d="M25,15h25v15zv15h-25zh-25v-15zv-15h25z" />

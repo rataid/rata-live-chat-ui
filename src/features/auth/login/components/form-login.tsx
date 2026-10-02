@@ -114,7 +114,7 @@ export default function AuthFormLogin() {
         <AuthFormLoginMore>
           <AuthLink to="/forgot-password">Forgot password?</AuthLink>
         </AuthFormLoginMore>
-        <FormAction tw="!pt-3">
+        <FormAction className="!pt-3">
           <Button
             type="submit"
             wider="full"
@@ -133,7 +133,7 @@ export default function AuthFormLogin() {
         <PopupDialogHeader>Email Not Verified</PopupDialogHeader>
         <PopupDialogBody>
           Your email{' '}
-          <span tw="font-semibold text-gray-900">
+          <span className="font-semibold text-gray-900">
             ({maskEmail(actionData?.email)})
           </span>{' '}
           isn&apos;t verified yet. Check your inbox or spam folder to complete

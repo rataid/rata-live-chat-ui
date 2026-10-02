@@ -29,7 +29,7 @@ export function AvatarGroup({
 
   return (
     <AvatarGroupProvider value={context}>
-      <div tw="flex items-center ml-3.5 h-fit">
+      <div className="flex items-center ml-3.5 h-fit">
         {filteredChildren.map((child) => child)}
       </div>
     </AvatarGroupProvider>

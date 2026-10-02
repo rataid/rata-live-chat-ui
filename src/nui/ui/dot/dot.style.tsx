@@ -1,4 +1,5 @@
-import tw, { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { DotWrapperProps } from './types'
 
@@ -66,31 +67,22 @@ const labelColorMap = {
   white: tw`bg-white`,
 }
 
-export const DotWrapper = tw.div`flex items-center w-fit gap-x-2`
+export const DotWrapper = styled.div.attrs({ className: tw`flex items-center w-fit gap-x-2` })``
 
-export const DotSymbol = styled.div<DotWrapperProps>(
-  ({ size, color, hexColor, outline }) => {
-    return [
-      tw`inline-block rounded-full shrink-0`,
-      !outline && tw`outline outline-[1.5px]`,
-      !outline && color && outlineColorMap[color],
-      size && sizeMap[size],
-      !hexColor && color && colorMap[color],
-      hexColor &&
+export const DotSymbol = styled.div.attrs<DotWrapperProps>(({ size, color, hexColor, outline }) =>  {
+    return { className: [tw`inline-block rounded-full shrink-0`, !outline && tw`outline outline-[1.5px]`, !outline && color && outlineColorMap[color], size && sizeMap[size], !hexColor && color && colorMap[color]].filter(Boolean).join(' ') }
+  })<DotWrapperProps>`
+  ${({ size, color, hexColor, outline }) => hexColor &&
         css`
           background-color: ${hexColor};
-        `,
-    ]
-  }
-)
+        `}
+`
 
-export const DotLabel = styled.div<DotWrapperProps>(({ color, hexColor }) => {
-  return [
-    tw`text-xs font-semibold whitespace-nowrap`,
-    !hexColor && color && labelColorMap[color],
-    hexColor &&
+export const DotLabel = styled.div.attrs<DotWrapperProps>(({ color, hexColor }) =>  {
+  return { className: [tw`text-xs font-semibold whitespace-nowrap`, !hexColor && color && labelColorMap[color]].filter(Boolean).join(' ') }
+})<DotWrapperProps>`
+  ${({ color, hexColor }) => hexColor &&
       css`
         color: ${hexColor};
-      `,
-  ]
-})
+      `}
+`

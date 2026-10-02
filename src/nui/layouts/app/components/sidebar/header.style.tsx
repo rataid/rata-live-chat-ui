@@ -1,5 +1,6 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const AppSidebarHeaderWrapper = tw.header`xl:py-4`
+export const AppSidebarHeaderWrapper = styled.header.attrs({ className: tw`xl:py-4` })``
 
-export const AppSidebarHeaderLogo = tw.div`inline-flex justify-center w-full xl:h-12 h-8`
+export const AppSidebarHeaderLogo = styled.div.attrs({ className: tw`inline-flex justify-center w-full xl:h-12 h-8` })``

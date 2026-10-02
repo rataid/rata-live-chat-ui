@@ -191,7 +191,7 @@ export const DaterangePicker = forwardRef<
       <FloatingPortal id={portalId}>
         {isOpen && (
           <div style={{ ...floatingStyles, zIndex: 9999 }} ref={floatingRef}>
-            <div ref={floatingClickRef} tw="w-fit h-fit">
+            <div ref={floatingClickRef} className="w-fit h-fit">
               <DayPicker
                 mode="range"
                 defaultMonth={today()}

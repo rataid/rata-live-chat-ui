@@ -1,3 +1,4 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const PaginatedTableWrapper = tw.div`w-full`
+export const PaginatedTableWrapper = styled.div.attrs({ className: tw`w-full` })``

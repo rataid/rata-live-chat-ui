@@ -1,17 +1,22 @@
 import { createGlobalStyle } from 'styled-components'
-import tw, { GlobalStyles as BaseStyles } from 'twin.macro'
+import { nuiColorCssVariables } from '@nui/theme/colors'
 
-const CustomStyles = createGlobalStyle({
-  body: {
-    WebkitTapHighlightColor: 'transparent',
-    ...tw`antialiased text-gray-900`,
-  },
-})
+// Default text color (#23262d, gray-900 in colors.cjs) is set on body in main.css
+const CustomStyles = createGlobalStyle`
+  :root {
+    ${nuiColorCssVariables}
+  }
+
+  body {
+    -webkit-tap-highlight-color: var(--nui-color-transparent);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+`
 
 function GlobalStyles() {
   return (
     <>
-      <BaseStyles />
       <CustomStyles />
     </>
   )

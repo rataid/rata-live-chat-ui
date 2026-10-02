@@ -1,13 +1,14 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const HeaderWrapper = tw.header``
+export const HeaderWrapper = styled.header.attrs({ className: tw`` })``
 
-export const HeaderInner = tw.header`flex justify-between`
+export const HeaderInner = styled.header.attrs({ className: tw`flex justify-between` })``
 
-export const HeaderMain = tw.div`flex-1`
+export const HeaderMain = styled.div.attrs({ className: tw`flex-1` })``
 
-export const HeaderAction = tw.div`shrink-0`
+export const HeaderAction = styled.div.attrs({ className: tw`shrink-0` })``
 
-export const HeaderTitle = tw.div``
+export const HeaderTitle = styled.div.attrs({ className: tw`` })``
 
-export const HeaderSubtitle = tw.div``
+export const HeaderSubtitle = styled.div.attrs({ className: tw`` })``

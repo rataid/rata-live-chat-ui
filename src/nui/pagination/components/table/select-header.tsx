@@ -8,7 +8,7 @@ export function PaginatedTableSelectHeader() {
   ])
 
   return (
-    <div tw="xl:text-center">
+    <div className="xl:text-center">
       <Checkbox
         scale="md"
         checked={isSelectedAll}

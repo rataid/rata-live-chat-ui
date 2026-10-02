@@ -118,11 +118,8 @@
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
-    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.23",
-    "babel-plugin-macros": "^3.1.0",
-    "babel-plugin-styled-components": "^2.1.1",
-    "babel-plugin-twin": "^1.1.0",
     "eslint": "^8.38.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -135,20 +132,13 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.8.7",
     "prettier-plugin-tailwindcss": "^0.2.7",
-    "prettier-plugin-twin.macro": "^1.0.11",
     "shadcn": "^3.7.0",
     "tailwindcss": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.1",
-    "twin.macro": "^3.3.1",
     "typescript": "^5.9.3",
     "vite": "^4.2.0",
     "vite-plugin-static-copy": "^2.0.0",
     "vite-tsconfig-paths": "^4.2.0"
-  },
-  "babelMacros": {
-    "twin": {
-      "preset": "styled-components"
-    }
   }
 }

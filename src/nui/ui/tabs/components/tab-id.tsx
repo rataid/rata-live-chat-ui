@@ -1,12 +1,8 @@
-import tw, { css, styled } from 'twin.macro'
-
 type TabsIdProps = {
+  id?: string
   marginTop?: string
 }
 
-export const TabsId = styled.div<TabsIdProps>(({ marginTop }) => [
-  css`
-    margin-top: ${marginTop};
-  `,
-  tw`absolute`,
-])
+export function TabsId({ id, marginTop }: TabsIdProps) {
+  return <div id={id} className="absolute" style={{ marginTop }} />
+}

@@ -1,3 +1,7 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
 
-export const TabsPanelWrapper = tw.div`mt-6`
+import { tw } from '@nui/utils/tw'
+
+export const TabsPanelWrapper = styled.div.attrs({
+  className: tw`mt-6`,
+})``

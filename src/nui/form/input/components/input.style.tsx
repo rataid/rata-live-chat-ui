@@ -1,4 +1,5 @@
-import tw, { css, styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { InputInternalProps } from '../types'
 
@@ -17,60 +18,102 @@ const paddingMap = {
   lg: tw`pl-[16px] pr-[18px]`,
 }
 
-export const InputWrapper = styled.div<InputInternalProps>(
-  ({ isFocused, sizeInput = 'md' }) => [
-    tw`w-full flex items-center justify-between rounded-lg border divide-x duration-300 ease-in-out overflow-hidden`,
-    isFocused
-      ? tw`border-primary-400 divide-primary-400 text-gray-900`
-      : tw`border-gray-200 divide-gray-200 text-gray-500 hover:(border-gray-300 divide-gray-300 text-gray-900)`,
-    sizeMap[sizeInput],
-    leadingMap[sizeInput],
-  ]
-)
+export const InputWrapper = styled.div.attrs<InputInternalProps>(
+  ({ isFocused, sizeInput = 'md' }) => ({
+    className: [
+      tw`w-full flex items-center justify-between rounded-lg border divide-x duration-300 ease-in-out overflow-hidden`,
+      isFocused
+        ? tw`border-primary-400 divide-primary-400 text-gray-900`
+        : tw`border-gray-200 divide-gray-200 text-gray-500 hover:border-gray-300 hover:divide-gray-300 hover:text-gray-900`,
+      sizeMap[sizeInput],
+      leadingMap[sizeInput],
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<InputInternalProps>``
 
-export const InputMain = styled.div<InputInternalProps>(
-  ({ leadingIcon, trailingIcon }) => [
-    tw`relative flex-1 flex items-center`,
-    css`
+export const InputMain = styled.div.attrs<InputInternalProps>(() => ({
+  className: tw`relative flex-1 flex items-center`,
+}))<InputInternalProps>`
   input {
-    ${tw`w-full border-none outline-none disabled:(bg-gray-50 border-gray-200 cursor-not-allowed) [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
-    ${leadingIcon ? tw`pl-0` : tw`pl-3`}
-    ${trailingIcon ? tw`pr-0` : tw`pr-3`}
-  `,
-  ]
-)
+    width: 100%;
+    border: none;
+    outline: 2px solid var(--nui-color-transparent);
+    outline-offset: 2px;
+    appearance: textfield;
+    padding-left: ${({ leadingIcon }) => (leadingIcon ? 0 : '0.75rem')};
+    padding-right: ${({ trailingIcon }) => (trailingIcon ? 0 : '0.75rem')};
 
-export const InputAddOn = styled.div<InputInternalProps>(
-  ({ sizeInput = 'md' }) => [
-    tw`w-fit text-gray-900 flex h-full items-center gap-1`,
-    paddingMap[sizeInput],
-  ]
-)
+    &:disabled {
+      background-color: var(--nui-color-gray-50);
+      border-color: var(--nui-color-gray-200);
+      cursor: not-allowed;
+    }
+  }
 
-export const InputTrailOn = styled.div<InputInternalProps>(
-  ({ sizeInput = 'md' }) => [
-    tw`w-fit text-gray-900 flex h-full items-center gap-1`,
-    paddingMap[sizeInput],
-  ]
-)
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+`
 
-export const InputIcon = styled.div<InputInternalProps>(
-  ({ isFocused, danger, disable, sizeInput = 'md' }) => [
-    tw`px-2 h-10 flex items-center justify-center text-gray-400`,
-    danger && tw`text-danger-400`,
-    isFocused && danger && tw`text-danger-500`,
-    disable && tw`bg-gray-50/50`,
-    sizeMap[sizeInput],
-  ]
-)
+export const InputAddOn = styled.div.attrs<InputInternalProps>(
+  ({ sizeInput = 'md' }) => ({
+    className: [
+      tw`w-fit text-gray-900 flex h-full items-center gap-1`,
+      paddingMap[sizeInput],
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<InputInternalProps>``
 
-export const InputStepperWrapper = tw.div`absolute right-2 top-1/2 -translate-y-3`
+export const InputTrailOn = styled.div.attrs<InputInternalProps>(
+  ({ sizeInput = 'md' }) => ({
+    className: [
+      tw`w-fit text-gray-900 flex h-full items-center gap-1`,
+      paddingMap[sizeInput],
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<InputInternalProps>``
 
-export const InputStepperArrow = tw.button`w-4 h-3 flex items-center justify-center text-gray-300 hover:(text-gray-900 rounded-sm) outline-none focus:(text-primary-400)`
+export const InputIcon = styled.div.attrs<InputInternalProps>(
+  ({ isFocused, danger, disable, sizeInput = 'md' }) => ({
+    className: [
+      tw`px-2 h-10 flex items-center justify-center text-gray-400`,
+      danger && tw`text-danger-400`,
+      isFocused && danger && tw`text-danger-500`,
+      disable && tw`bg-gray-50/50`,
+      sizeMap[sizeInput],
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<InputInternalProps>``
 
-export const InputOtpWrapper = tw.div`grid w-full gap-2`
+export const InputStepperWrapper = styled.div.attrs({
+  className: tw`absolute right-2 top-1/2 -translate-y-3`,
+})``
 
-export const InputOtpBox = styled.input<{ danger?: boolean }>(({ danger }) => [
-  tw`h-10 w-full min-w-0 rounded-lg border border-gray-200 bg-white text-center text-sm text-gray-900 outline-none duration-300 ease-in-out hover:border-gray-300 focus:border-primary-400 disabled:(cursor-not-allowed bg-gray-50)`,
-  danger && tw`border-danger-300 focus:border-danger-400`,
-])
+export const InputStepperArrow = styled.button.attrs({
+  className: tw`w-4 h-3 flex items-center justify-center text-gray-300 hover:text-gray-900 hover:rounded-sm outline-none focus:text-primary-400`,
+})``
+
+export const InputOtpWrapper = styled.div.attrs({
+  className: tw`grid w-full gap-2`,
+})``
+
+export const InputOtpBox = styled.input.attrs<{ danger?: boolean }>(
+  ({ danger }) => ({
+    className: [
+      tw`h-10 w-full min-w-0 rounded-lg border border-gray-200 bg-white text-center text-sm text-gray-900 outline-none duration-300 ease-in-out hover:border-gray-300 focus:border-primary-400 disabled:cursor-not-allowed disabled:bg-gray-50`,
+      danger && tw`border-danger-300 focus:border-danger-400`,
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<{ danger?: boolean }>``

@@ -1,8 +1,12 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+
+import { tw } from '@nui/utils/tw'
 
 import { EntryProps } from './types'
 
-export const EntryWrapper = tw.div`table-row text-left`
+export const EntryWrapper = styled.div.attrs({
+  className: tw`table-row text-left`,
+})``
 
 type EntryNameProps = Pick<EntryProps, 'fontWeight'>
 
@@ -13,13 +17,19 @@ const fontWeightMap = {
   bold: tw`font-bold text-gray-900`,
 }
 
-export const EntryName = styled.div<EntryNameProps>(
+export const EntryName = styled.div.attrs<EntryNameProps>(
   ({ fontWeight = 'normal' }) => {
-    return [
-      fontWeightMap[fontWeight],
-      tw`table-cell w-1 whitespace-nowrap text-start`,
-    ]
+    return {
+      className: [
+        fontWeightMap[fontWeight],
+        tw`table-cell w-1 whitespace-nowrap text-start`,
+      ]
+        .filter(Boolean)
+        .join(' '),
+    }
   }
-)
+)<EntryNameProps>``
 
-export const EntryValue = tw.div`table-cell whitespace-pre-line`
+export const EntryValue = styled.div.attrs({
+  className: tw`table-cell whitespace-pre-line`,
+})``

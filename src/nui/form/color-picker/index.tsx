@@ -28,7 +28,7 @@ export const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProps>(
 
     return (
       <ColorPickerProvider variant={variant}>
-        <div role="button" tabIndex={0} ref={focusRef} tw="flex gap-x-2">
+        <div role="button" tabIndex={0} ref={focusRef} className="flex gap-x-2">
           <ColorPickerInput ref={forwardedRef} {...props} />
           <ColorPickerPreview />
         </div>

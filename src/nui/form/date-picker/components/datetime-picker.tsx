@@ -144,7 +144,7 @@ export const DatetimePicker = forwardRef<HTMLInputElement, DatetimePickerProps>(
     }, [])
 
     return (
-      <div tw="shrink-0">
+      <div className="shrink-0">
         <input
           ref={forwardedRef}
           name={name}
@@ -157,8 +157,8 @@ export const DatetimePicker = forwardRef<HTMLInputElement, DatetimePickerProps>(
           onOpenChange={setIsOpen}
           isMobile={!sm}
           content={
-            <div tw="w-fit h-fit mx-auto">
-              <div tw="py-4 px-5">
+            <div className="w-fit h-fit mx-auto">
+              <div className="py-4 px-5">
                 <DayPicker
                   captionLayout="dropdown"
                   classNames={{
@@ -188,9 +188,9 @@ export const DatetimePicker = forwardRef<HTMLInputElement, DatetimePickerProps>(
                   }}
                 />
               </div>
-              <div tw="flex items-center gap-x-2 py-4 px-5 text-start border-t border-gray-200">
-                <div tw="w-full text-base font-medium">Time</div>
-                <div tw="flex items-center gap-x-2">
+              <div className="flex items-center gap-x-2 py-4 px-5 text-start border-t border-gray-200">
+                <div className="w-full text-base font-medium">Time</div>
+                <div className="flex items-center gap-x-2">
                   <DatetimePickerHourSelect
                     value={hourValue}
                     disabled={!selected}
@@ -203,7 +203,7 @@ export const DatetimePicker = forwardRef<HTMLInputElement, DatetimePickerProps>(
                   />
                 </div>
               </div>
-              <div tw="flex items-center justify-between gap-x-3 py-4 px-5">
+              <div className="flex items-center justify-between gap-x-3 py-4 px-5">
                 <Button
                   size="sm"
                   variant="secondaryGray"

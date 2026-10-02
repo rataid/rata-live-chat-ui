@@ -1,8 +1,9 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { CheckIconWrapperProps } from './types'
 
-export const CheckIconMain = styled.svg<CheckIconWrapperProps>(({ size }) => {
+export const CheckIconMain = styled.svg.attrs<CheckIconWrapperProps>(({ size }) =>  {
   const sizes = {
     xs: tw`w-[0.625rem]`,
     sm: tw`w-3`,
@@ -12,10 +13,9 @@ export const CheckIconMain = styled.svg<CheckIconWrapperProps>(({ size }) => {
     '2xl': tw`w-5`,
   }
 
-  return [size && sizes[size]]
-})
-export const CheckIconWrapper = styled.div<CheckIconWrapperProps>(
-  ({ size, variant }) => {
+  return { className: [size && sizes[size]].filter(Boolean).join(' ') }
+})<CheckIconWrapperProps>``
+export const CheckIconWrapper = styled.div.attrs<CheckIconWrapperProps>(({ size, variant }) =>  {
     const sizes = {
       xs: tw`h-5 w-5`,
       sm: tw`h-6 w-6`,
@@ -31,10 +31,5 @@ export const CheckIconWrapper = styled.div<CheckIconWrapperProps>(
       success: tw`bg-success-100 text-success-500`,
     }
 
-    return [
-      tw`inline-flex items-center justify-center rounded-full p-1`,
-      size && sizes[size],
-      variant && variants[variant],
-    ]
-  }
-)
+    return { className: [tw`inline-flex items-center justify-center rounded-full p-1`, size && sizes[size], variant && variants[variant]].filter(Boolean).join(' ') }
+  })<CheckIconWrapperProps>``

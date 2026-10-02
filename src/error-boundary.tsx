@@ -27,7 +27,7 @@ export default function ErrorBoundary() {
     (error?.name === 'Die and dump' || error?.name === 'ZodError')
   ) {
     return (
-      <div tw="grid place-content-center h-screen">
+      <div className="grid place-content-center h-screen">
         <Dump>{JSON.parse(error?.message)}</Dump>
       </div>
     )

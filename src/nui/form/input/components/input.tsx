@@ -123,7 +123,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
             }
             variant="tertiaryGray"
             size="xs"
-            tw="mr-1"
+            className="mr-1"
           />
         )}
         {type === 'number' && (

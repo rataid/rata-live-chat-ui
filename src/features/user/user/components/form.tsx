@@ -31,7 +31,7 @@ export default function UserForm() {
     <>
       <FormMain>
         <FormSection>
-          <div tw="w-3/4 sm:w-2/3">
+          <div className="w-3/4 sm:w-2/3">
             <FormControl required>
               <FormLabel>Name</FormLabel>
               <Controller
@@ -44,8 +44,8 @@ export default function UserForm() {
               />
             </FormControl>
           </div>
-          <Stack tw="flex flex-col sm:flex-row">
-            <Item tw="w-full">
+          <Stack className="flex flex-col sm:flex-row">
+            <Item className="w-full">
               <FormControl required>
                 <FormLabel>Email</FormLabel>
                 <Controller
@@ -63,7 +63,7 @@ export default function UserForm() {
                 />
               </FormControl>
             </Item>
-            <Item tw="w-full">
+            <Item className="w-full">
               <FormControl required>
                 <FormLabel>Mobile Number</FormLabel>
                 <Controller
@@ -101,8 +101,8 @@ export default function UserForm() {
             />
           </FormControl>
 
-          <Stack tw="flex flex-col sm:flex-row">
-            <Item tw="w-full">
+          <Stack className="flex flex-col sm:flex-row">
+            <Item className="w-full">
               <FormControl required>
                 <FormLabel>Password</FormLabel>
                 <Controller
@@ -115,7 +115,7 @@ export default function UserForm() {
                 />
               </FormControl>
             </Item>
-            <Item tw="w-full">
+            <Item className="w-full">
               <FormControl required>
                 <FormLabel>Re-Type Password</FormLabel>
                 <Controller
