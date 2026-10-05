@@ -19,13 +19,13 @@ import { maskPhone } from '@utils'
 
 import {
   AuthBackLink,
-  AuthFormLoginError,
-  AuthFormLoginFooter,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-} from '../../login/components/form-login.style'
+  AuthCard,
+  AuthError,
+  AuthFooter,
+  AuthHeading,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
 import { AuthVerifyOtpActionData } from '../pages/verify-otp.route'
 
 const RESEND_COOLDOWN = 60
@@ -71,23 +71,23 @@ export default function AuthFormVerifyOtp() {
   const isFilled = /^\d{6}$/.test(watch('otp') ?? '')
 
   return (
-    <AuthFormLoginMain>
+    <AuthCard>
       <AuthBackLink to="/login">
         <Icon icon="lucide-arrow-left" size="2xs" />
         Back to Login
       </AuthBackLink>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Verification Code (SMS/WA)</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
+      <AuthHeading>
+        <AuthTitle>Verification Code (SMS/WA)</AuthTitle>
+        <AuthSubtitle>
           We have sent the OTP code to{' '}
           <span className="font-semibold text-gray-900">
             {maskPhone(phone)}
           </span>
           , please check your SMS/WhatsApp.
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
+        </AuthSubtitle>
+      </AuthHeading>
       {actionData?.success === false && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
+        <AuthError>{actionData.message}</AuthError>
       )}
       <Form onSubmit={onSubmit}>
         <Controller
@@ -120,7 +120,7 @@ export default function AuthFormVerifyOtp() {
           </Button>
         </FormAction>
       </Form>
-      <AuthFormLoginFooter>
+      <AuthFooter>
         Didn&apos;t receive OTP?{' '}
         {cooldown > 0 ? (
           <span className="font-medium text-gray-400">
@@ -135,7 +135,7 @@ export default function AuthFormVerifyOtp() {
             Resend OTP
           </button>
         )}
-      </AuthFormLoginFooter>
-    </AuthFormLoginMain>
+      </AuthFooter>
+    </AuthCard>
   )
 }

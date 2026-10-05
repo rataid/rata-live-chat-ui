@@ -11,7 +11,7 @@ const registerRoutes: RouteObject[] = [
   {
     path: 'register',
     async lazy() {
-      const { Layout } = await import('../login/layout')
+      const { Layout } = await import('../layout')
       return {
         Component: Layout,
       }

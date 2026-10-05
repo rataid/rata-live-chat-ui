@@ -16,12 +16,12 @@ import Icon from '@nui/ui/icon'
 
 import {
   AuthBackLink,
-  AuthFormLoginError,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-} from '../../login/components/form-login.style'
+  AuthCard,
+  AuthError,
+  AuthHeading,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
 import { AuthForgotPasswordActionData } from '../pages/forgot-password.route'
 
 function BackToLogin() {
@@ -52,31 +52,31 @@ export default function AuthFormForgotPassword() {
 
   if (actionData?.success) {
     return (
-      <AuthFormLoginMain>
+      <AuthCard>
         <BackToLogin />
-        <AuthFormLoginHeading className="!mb-0">
-          <AuthFormLoginTitle>Check Your Email</AuthFormLoginTitle>
-          <AuthFormLoginSubtitle>
+        <AuthHeading className="!mb-0">
+          <AuthTitle>Check Your Email</AuthTitle>
+          <AuthSubtitle>
             If your email is registered, we&apos;ve sent password reset
             instructions to your inbox. Please check your inbox and spam
             folders.
-          </AuthFormLoginSubtitle>
-        </AuthFormLoginHeading>
-      </AuthFormLoginMain>
+          </AuthSubtitle>
+        </AuthHeading>
+      </AuthCard>
     )
   }
 
   return (
-    <AuthFormLoginMain>
+    <AuthCard>
       <BackToLogin />
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Forgot Password?</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
+      <AuthHeading>
+        <AuthTitle>Forgot Password?</AuthTitle>
+        <AuthSubtitle>
           Enter your primary email to receive a recovery link.
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
+        </AuthSubtitle>
+      </AuthHeading>
       {actionData?.success === false && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
+        <AuthError>{actionData.message}</AuthError>
       )}
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
@@ -109,6 +109,6 @@ export default function AuthFormForgotPassword() {
           </Button>
         </FormAction>
       </Form>
-    </AuthFormLoginMain>
+    </AuthCard>
   )
 }

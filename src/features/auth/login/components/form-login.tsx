@@ -18,19 +18,19 @@ import { usePopupDialog } from '@nui/ui/popup-dialog'
 import { maskEmail } from '@utils'
 
 import {
+  AuthCard,
+  AuthError,
+  AuthFooter,
+  AuthHeading,
+  AuthLink,
+  AuthMore,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
+import {
   AuthLoginActionData,
   LOGIN_ERROR_ACCOUNT_INACTIVE,
 } from '../pages/login.route'
-import {
-  AuthFormLoginError,
-  AuthFormLoginFooter,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginMore,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-  AuthLink,
-} from './form-login.style'
 
 export default function AuthFormLogin() {
   const actionData = useActionData() as AuthLoginActionData | undefined
@@ -80,15 +80,13 @@ export default function AuthFormLogin() {
   const isFilled = !!email && !!password
 
   return (
-    <AuthFormLoginMain>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Welcome</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
-          Log in to your patient account
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
+    <AuthCard>
+      <AuthHeading>
+        <AuthTitle>Welcome</AuthTitle>
+        <AuthSubtitle>Log in to your patient account</AuthSubtitle>
+      </AuthHeading>
       {actionData?.success === false && !isInactive && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
+        <AuthError>{actionData.message}</AuthError>
       )}
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
@@ -126,9 +124,9 @@ export default function AuthFormLogin() {
             />
           </FormControl>
         </FormMain>
-        <AuthFormLoginMore>
+        <AuthMore>
           <AuthLink to="/forgot-password">Forgot password?</AuthLink>
-        </AuthFormLoginMore>
+        </AuthMore>
         <FormAction className="!pt-3">
           <Button
             type="submit"
@@ -140,10 +138,10 @@ export default function AuthFormLogin() {
           </Button>
         </FormAction>
       </Form>
-      <AuthFormLoginFooter>
+      <AuthFooter>
         Don&apos;t have an account yet?{' '}
         <AuthLink to="/register">Account Activation</AuthLink>
-      </AuthFormLoginFooter>
-    </AuthFormLoginMain>
+      </AuthFooter>
+    </AuthCard>
   )
 }

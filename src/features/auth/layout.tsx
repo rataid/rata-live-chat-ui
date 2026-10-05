@@ -9,7 +9,7 @@ import {
   AuthBrandTitle,
   AuthLayoutContainer,
   AuthLayoutWrapper,
-} from './components/form-login.style'
+} from './components/auth.style'
 
 export function Layout() {
   return (

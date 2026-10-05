@@ -20,11 +20,11 @@ import { usePopupDialog } from '@nui/ui/popup-dialog'
 
 import {
   AuthBackLink,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-} from '../../login/components/form-login.style'
+  AuthCard,
+  AuthHeading,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
 import {
   AuthRegisterActionData,
   REGISTER_ERROR_CUSTOMER_NOT_FOUND,
@@ -72,18 +72,18 @@ export default function AuthFormRegister() {
   const isFilled = values.every(Boolean)
 
   return (
-    <AuthFormLoginMain>
+    <AuthCard>
       <AuthBackLink to="/login">
         <Icon icon="lucide-arrow-left" size="2xs" />
         Back to Login
       </AuthBackLink>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Account Activation</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
+      <AuthHeading>
+        <AuthTitle>Account Activation</AuthTitle>
+        <AuthSubtitle>
           Enter your registered clinic details and create a password to get
           started.
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
+        </AuthSubtitle>
+      </AuthHeading>
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
           <FormControl required error={errors.name}>
@@ -173,6 +173,6 @@ export default function AuthFormRegister() {
           </Button>
         </FormAction>
       </Form>
-    </AuthFormLoginMain>
+    </AuthCard>
   )
 }

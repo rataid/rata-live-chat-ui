@@ -31,29 +31,29 @@ export const AuthBrandSubtitle = styled.p.attrs({
   className: tw`text-xs text-gray-500`,
 })``
 
-export const AuthFormLoginMain = styled.main.attrs({
+export const AuthCard = styled.main.attrs({
   className: tw`w-full rounded-2xl border border-[#E9EBEF] bg-white p-5 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-8`,
 })``
 
-export const AuthFormLoginHeading = styled.div.attrs({ className: tw`mb-6` })``
+export const AuthHeading = styled.div.attrs({ className: tw`mb-6` })``
 
-export const AuthFormLoginTitle = styled.h1.attrs({
+export const AuthTitle = styled.h1.attrs({
   className: tw`text-xl font-semibold text-gray-900 sm:text-2xl`,
 })``
 
-export const AuthFormLoginSubtitle = styled.p.attrs({
+export const AuthSubtitle = styled.p.attrs({
   className: tw`mt-1 text-sm text-gray-500`,
 })``
 
-export const AuthFormLoginError = styled.div.attrs({
+export const AuthError = styled.div.attrs({
   className: tw`mb-4 rounded-lg bg-danger-50 px-3 py-2 text-sm text-danger-700`,
 })``
 
-export const AuthFormLoginMore = styled.div.attrs({
+export const AuthMore = styled.div.attrs({
   className: tw`flex justify-end pt-4`,
 })``
 
-export const AuthFormLoginFooter = styled.p.attrs({
+export const AuthFooter = styled.p.attrs({
   className: tw`mt-3 text-center text-sm text-gray-500`,
 })``
 
