@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crm
+  namespace: rata-dynamic
+  labels:
+    app: rata-live-chat
+    service: crm
+spec:
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rata-live-chat
+      service: crm
+  template:
+    metadata:
+      labels:
+        app: rata-live-chat
+        service: crm
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: crm
+          image: rata-ui-live-chat
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 300m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
