@@ -18,7 +18,9 @@ import {
   AuthBackLink,
   AuthCard,
   AuthError,
+  AuthFooter,
   AuthHeading,
+  AuthLink,
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
@@ -68,7 +70,6 @@ export default function AuthFormForgotPassword() {
 
   return (
     <AuthCard>
-      <BackToLogin />
       <AuthHeading>
         <AuthTitle>Forgot Password?</AuthTitle>
         <AuthSubtitle>
@@ -109,6 +110,9 @@ export default function AuthFormForgotPassword() {
           </Button>
         </FormAction>
       </Form>
+      <AuthFooter>
+        Changed your mind? <AuthLink to="/login">Log in</AuthLink>
+      </AuthFooter>
     </AuthCard>
   )
 }
