@@ -3,9 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import axiosInstance from '../axiosInstance'
 
 export const login = async (payload: { email: string; password: string }) => {
-  const result = await axiosInstance.post('/v1/public/auth/login', payload)
+  const result = await axiosInstance.post('/api/livechat/login', payload, {
+    withCredentials: false,
+  })
 
-  if (result.status === 200) {
+  if (result.status === 201) {
     return result.data
   }
 

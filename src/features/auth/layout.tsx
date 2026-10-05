@@ -1,10 +1,9 @@
 import { Outlet } from 'react-router-dom'
 
-import { LogoSmiledental } from '@/assets'
+import { LogoClinics } from '@/assets'
 
 import {
   AuthBrand,
-  AuthBrandLogo,
   AuthBrandSubtitle,
   AuthBrandTitle,
   AuthLayoutContainer,
@@ -16,13 +15,11 @@ export function Layout() {
     <AuthLayoutWrapper>
       <AuthLayoutContainer>
         <AuthBrand>
-          <AuthBrandLogo>
-            <div className="w-1/2">
-              <LogoSmiledental />
-            </div>
-          </AuthBrandLogo>
-          <AuthBrandTitle>Tanam Patient Portal</AuthBrandTitle>
-          <AuthBrandSubtitle>Online Platform</AuthBrandSubtitle>
+          <LogoClinics />
+          <AuthBrandTitle>Dental Patient Portal</AuthBrandTitle>
+          <AuthBrandSubtitle>
+            Welcome to your one-stop portal for your dental needs
+          </AuthBrandSubtitle>
         </AuthBrand>
         <Outlet />
       </AuthLayoutContainer>
