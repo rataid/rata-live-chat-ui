@@ -102,3 +102,18 @@ export const InputStepperWrapper = styled.div.attrs({
 export const InputStepperArrow = styled.button.attrs({
   className: tw`w-4 h-3 flex items-center justify-center text-gray-300 hover:text-gray-900 hover:rounded-sm outline-none focus:text-primary-400`,
 })``
+
+export const InputOtpWrapper = styled.div.attrs({
+  className: tw`grid w-full gap-2`,
+})``
+
+export const InputOtpBox = styled.input.attrs<{ danger?: boolean }>(
+  ({ danger }) => ({
+    className: [
+      tw`h-10 w-full min-w-0 rounded-lg border border-gray-200 bg-white text-center text-sm text-gray-900 outline-none duration-300 ease-in-out hover:border-gray-300 focus:border-primary-400 disabled:cursor-not-allowed disabled:bg-gray-50`,
+      danger && tw`border-danger-300 focus:border-danger-400`,
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<{ danger?: boolean }>``

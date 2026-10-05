@@ -56,11 +56,21 @@ export const LayoutUiNotifWrapper = styled.div`
     height: 2px;
   }
 
-  @media only screen and (max-width: 480px) {
-    .Toastify__toast-container {
-      left: auto;
+  /* Mobile: top center, matches position="top-center" set in notif.tsx below 640px */
+  @media only screen and (max-width: 639px) {
+    &&& .Toastify__toast-container {
       top: 12px;
-      right: 12px;
+      left: 50%;
+      right: auto;
+      width: calc(100% - 24px);
+      max-width: 23.75rem;
+      padding: 0;
+      transform: translateX(-50%);
+    }
+
+    &&& .Toastify__toast {
+      margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
     }
   }
 `

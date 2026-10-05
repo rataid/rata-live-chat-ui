@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 :root {
-  color: #484848;
+  /* Default text color: gray-900 (#23262d) from src/config/tailwind/colors.cjs */
+  color: theme('colors.gray.900');
 
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;

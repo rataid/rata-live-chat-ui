@@ -7,4 +7,4 @@ export const FormLabelMain = styled.label.attrs({ className: tw`font-semibold te
 
 export const FormLabelOptional = styled.span.attrs({ className: tw`pl-1 text-xs text-gray-500` })``
 
-export const FormLabelRequired = styled.label.attrs({ className: tw`-mt-2 text-danger-500` })``
+export const FormLabelRequired = styled.span.attrs({ className: tw`text-sm font-semibold text-danger-500` })``

@@ -44,3 +44,14 @@ export type InputPatternProps = PatternFormatProps & InputProps
 
 // ommit type from PatternFormatProps
 export type InputPhoneProps = Omit<PatternFormatProps, 'format'> & InputProps
+
+export type InputOtpProps = {
+  length?: number
+  name?: string
+  value?: string
+  danger?: boolean
+  disabled?: boolean
+  autoFocus?: boolean
+  onChange?: (value: string) => void
+  onBlur?: () => void
+}
