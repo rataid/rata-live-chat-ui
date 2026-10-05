@@ -3,7 +3,10 @@
 # ---------- Build ----------
 FROM node:22-alpine AS builder
 ENV PNPM_HOME="/pnpm" PATH="/pnpm:$PATH" COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable
+
+# KUNCI PERBAIKAN: Kunci pnpm ke versi 8 agar sesuai dengan lockfileVersion 6.0
+RUN corepack enable && corepack prepare pnpm@8 --activate
+
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
