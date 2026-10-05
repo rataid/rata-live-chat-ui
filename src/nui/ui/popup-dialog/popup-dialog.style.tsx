@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import { tw } from '@nui/utils/tw'
 
 import { PopupDialogSize } from './types'
@@ -26,7 +27,11 @@ export const PopupDialogContainer = styled.div.attrs<PopupDialogContainerProps>(
 )<PopupDialogContainerProps>``
 
 export const PopupDialogHeader = styled.h2.attrs({
-  className: tw`border-b border-gray-200 p-5 text-base font-semibold text-gray-900 sm:text-lg`,
+  className: tw`flex items-center justify-between gap-3 border-b border-gray-200 p-5 text-base font-semibold text-gray-900 sm:text-lg`,
+})``
+
+export const PopupDialogCloseButton = styled.button.attrs({
+  className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
 })``
 
 export const PopupDialogBody = styled.div.attrs({

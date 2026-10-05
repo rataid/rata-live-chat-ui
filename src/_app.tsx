@@ -3,6 +3,7 @@ import { configResponsive } from 'ahooks'
 import { assign } from 'lodash'
 import {
   LoaderFunctionArgs,
+  Outlet,
   RouterProvider,
   createBrowserRouter,
   redirect,
@@ -18,6 +19,7 @@ import {
 import { queryClient } from '@libs/query-client'
 import { AppLayout } from '@nui/layouts'
 import LayoutUiNotif from '@nui/layouts/ui/notif'
+import { PopupDialogProvider } from '@nui/ui/popup-dialog'
 
 import authRoutes from '@features/auth/routes'
 import dashboardRoutes from '@features/dashboard/routes'
@@ -75,26 +77,36 @@ export async function appLoader({ request }: LoaderFunctionArgs) {
 }
 
 const router = createBrowserRouter([
-  ...authRoutes,
-
   {
-    path: '/',
-    loader: (args) => routeGuard(args, appLoader),
+    // Pathless root route: global providers that need the router context
     element: (
-      <ProtectedLayout>
-        <AppLayout
-          navTop={<AppSidebarNavTop />}
-          navBottom={<AppSidebarNavBottom />}
-          profile={<AppSidebarProfile />}
-        />
-      </ProtectedLayout>
+      <PopupDialogProvider>
+        <Outlet />
+      </PopupDialogProvider>
     ),
+    children: [
+      ...authRoutes,
 
-    errorElement: <ErrorBoundary />,
-    children: [...dashboardRoutes, ...userRoutes],
+      {
+        path: '/',
+        loader: (args) => routeGuard(args, appLoader),
+        element: (
+          <ProtectedLayout>
+            <AppLayout
+              navTop={<AppSidebarNavTop />}
+              navBottom={<AppSidebarNavBottom />}
+              profile={<AppSidebarProfile />}
+            />
+          </ProtectedLayout>
+        ),
+
+        errorElement: <ErrorBoundary />,
+        children: [...dashboardRoutes, ...userRoutes],
+      },
+      ...readyRoutes,
+      ...liveRoutes,
+    ],
   },
-  ...readyRoutes,
-  ...liveRoutes,
 ])
 
 export default function App() {

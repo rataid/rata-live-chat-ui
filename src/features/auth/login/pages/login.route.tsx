@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
-import { login } from '@/api/login'
+import { login } from '@/api/auth/login'
 import {
   AuthenticatedUser,
   getToken,

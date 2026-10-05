@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
@@ -15,19 +16,38 @@ import { InputPhone } from '@nui/form/input/components/phone'
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
 import Icon from '@nui/ui/icon'
+import { usePopupDialog } from '@nui/ui/popup-dialog'
 
 import {
   AuthBackLink,
-  AuthFormLoginError,
   AuthFormLoginHeading,
   AuthFormLoginMain,
   AuthFormLoginSubtitle,
   AuthFormLoginTitle,
 } from '../../login/components/form-login.style'
-import { AuthRegisterActionData } from '../pages/register.route'
+import {
+  AuthRegisterActionData,
+  REGISTER_ERROR_CUSTOMER_NOT_FOUND,
+} from '../pages/register.route'
 
 export default function AuthFormRegister() {
   const actionData = useActionData() as AuthRegisterActionData | undefined
+
+  const isNotFound = actionData?.code === REGISTER_ERROR_CUSTOMER_NOT_FOUND
+
+  const { openPopup } = usePopupDialog()
+
+  // Reopen on every submit that returns the not found error
+  useEffect(() => {
+    if (!isNotFound) return
+
+    openPopup({
+      title: 'Data Not Found',
+      message:
+        "We couldn't find your details in our system. Live Chat is for registered patients only. Feel free to contact us if you think this is a mistake.",
+      closable: true,
+    })
+  }, [actionData, isNotFound, openPopup])
 
   const isSubmitting = useNavigation().state !== 'idle'
 
@@ -64,9 +84,6 @@ export default function AuthFormRegister() {
           started.
         </AuthFormLoginSubtitle>
       </AuthFormLoginHeading>
-      {actionData?.success === false && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
-      )}
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
           <FormControl required error={errors.name}>

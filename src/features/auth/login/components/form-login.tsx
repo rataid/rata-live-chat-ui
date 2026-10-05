@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
@@ -14,11 +14,7 @@ import {
 } from '@nui/form'
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
-import PopupDialog, {
-  PopupDialogBody,
-  PopupDialogFooter,
-  PopupDialogHeader,
-} from '@nui/ui/popup-dialog'
+import { usePopupDialog } from '@nui/ui/popup-dialog'
 import { maskEmail } from '@utils'
 
 import {
@@ -41,12 +37,31 @@ export default function AuthFormLogin() {
 
   const isInactive = actionData?.code === LOGIN_ERROR_ACCOUNT_INACTIVE
 
-  const [isInactiveOpen, setIsInactiveOpen] = useState(false)
+  const { openPopup } = usePopupDialog()
 
   // Reopen on every submit that returns the inactive error
   useEffect(() => {
-    if (isInactive) setIsInactiveOpen(true)
-  }, [actionData, isInactive])
+    if (isInactive) {
+      openPopup({
+        title: 'Email Not Verified',
+        message: (
+          <>
+            Your email{' '}
+            <span className="font-semibold text-gray-900">
+              ({maskEmail(actionData?.email)})
+            </span>{' '}
+            isn&apos;t verified yet. Check your inbox or spam folder to complete
+            activation.
+          </>
+        ),
+        actions: [
+          { label: 'Close', variant: 'secondaryGray' },
+          // @todo: call the resend activation email API once available
+          { label: 'Resend Email' },
+        ],
+      })
+    }
+  }, [actionData, isInactive, openPopup])
 
   const isSubmitting = useNavigation().state !== 'idle'
 
@@ -129,30 +144,6 @@ export default function AuthFormLogin() {
         Don&apos;t have an account yet?{' '}
         <AuthLink to="/register">Account Activation</AuthLink>
       </AuthFormLoginFooter>
-      <PopupDialog open={isInactiveOpen} onOpenChange={setIsInactiveOpen}>
-        <PopupDialogHeader>Email Not Verified</PopupDialogHeader>
-        <PopupDialogBody>
-          Your email{' '}
-          <span className="font-semibold text-gray-900">
-            ({maskEmail(actionData?.email)})
-          </span>{' '}
-          isn&apos;t verified yet. Check your inbox or spam folder to complete
-          activation.
-        </PopupDialogBody>
-        <PopupDialogFooter>
-          <Button
-            variant="secondaryGray"
-            fontWeight="medium"
-            onClick={() => setIsInactiveOpen(false)}
-          >
-            Close
-          </Button>
-          {/* @todo: call the resend activation email API once available */}
-          <Button fontWeight="medium" onClick={() => setIsInactiveOpen(false)}>
-            Resend Email
-          </Button>
-        </PopupDialogFooter>
-      </PopupDialog>
     </AuthFormLoginMain>
   )
 }
