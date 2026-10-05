@@ -69,7 +69,7 @@ jobs:
           if [ -n "${{ inputs.image_tag }}" ]; then
             TAG="${{ inputs.image_tag }}"
           else
-            TAG="${TARGET_ENV}-${TS}"
+            TAG="${TS}"
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
@@ -151,7 +151,7 @@ jobs:
 
       - name: Verify Rollout
         run: |
-          kubectl rollout status deployment/crm -n ${{ env.K8S_NAMESPACE }} --timeout=5m
+          kubectl rollout status deployment/rata-live-chat-ui -n ${{ env.K8S_NAMESPACE }} --timeout=5m
 
       - name: Generate Deployment Summary
         if: always()
@@ -162,7 +162,7 @@ jobs:
           echo "| **Application** | \`rata-live-chat-ui\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Target Environment** | \`${{ env.TARGET }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Namespace** | \`${{ env.K8S_NAMESPACE }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Deployment Name** | \`crm\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deployment Name** | \`rata-live-chat-ui\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Image Tag** | \`${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Image Path** | \`${{ env.IMAGE_NAME }}:${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Deployed By** | @${{ github.actor }} \vert{}" >> $GITHUB_STEP_SUMMARY
@@ -220,7 +220,7 @@ jobs:
 
       - name: Verify Rollout
         run: |
-          kubectl rollout status deployment/crm -n ${{ env.K8S_NAMESPACE }} --timeout=5m
+          kubectl rollout status deployment/rata-live-chat-ui -n ${{ env.K8S_NAMESPACE }} --timeout=5m
 
       - name: Generate Deployment Summary
         if: always()
@@ -231,7 +231,7 @@ jobs:
           echo "| **Application** | \`rata-live-chat-ui\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Target Environment** | \`production\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Namespace** | \`${{ env.K8S_NAMESPACE }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Deployment Name** | \`crm\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deployment Name** | \`rata-live-chat-ui\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Image Tag** | \`${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Image Path** | \`${{ env.IMAGE_NAME }}:${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Deployed By** | @${{ github.actor }} \vert{}" >> $GITHUB_STEP_SUMMARY
