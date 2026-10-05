@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
@@ -15,11 +15,9 @@ import {
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
 import { usePopupDialog } from '@nui/ui/popup-dialog'
-import { maskEmail } from '@utils'
 
 import {
   AuthCard,
-  AuthError,
   AuthFooter,
   AuthHeading,
   AuthLink,
@@ -43,17 +41,9 @@ export default function AuthFormLogin() {
   useEffect(() => {
     if (isInactive) {
       openPopup({
-        title: 'Email Not Verified',
-        message: (
-          <>
-            Your email{' '}
-            <span className="font-semibold text-gray-900">
-              ({maskEmail(actionData?.email)})
-            </span>{' '}
-            isn&apos;t verified yet. Check your inbox or spam folder to complete
-            activation.
-          </>
-        ),
+        title: 'Verify your account',
+        message:
+          'Your account has not been activated yet. Check your email for the activation link, or request a new one.',
         actions: [
           { label: 'Close', variant: 'secondaryGray' },
           // @todo: call the resend activation email API once available
@@ -63,7 +53,17 @@ export default function AuthFormLogin() {
     }
   }, [actionData, isInactive, openPopup])
 
-  const isSubmitting = useNavigation().state !== 'idle'
+  const navigation = useNavigation()
+  // Show the spinner on click. Navigation state only flips after the request starts,
+  // which is too late to see on a fast login.
+  const [pending, setPending] = useState(false)
+  const isSubmitting = pending || navigation.state !== 'idle'
+
+  useEffect(() => {
+    if (navigation.state === 'idle') {
+      setPending(false)
+    }
+  }, [navigation.state])
 
   const { methods, onSubmit } = useFormHelper({
     schema: loginSchema,
@@ -82,13 +82,25 @@ export default function AuthFormLogin() {
   return (
     <AuthCard>
       <AuthHeading>
-        <AuthTitle>Welcome</AuthTitle>
-        <AuthSubtitle>Log in to your patient account</AuthSubtitle>
+        <AuthTitle>
+          Exclusively for Rata, Tanam and Vinir customers
+        </AuthTitle>
+        <AuthSubtitle>
+         Log in to continue.
+        </AuthSubtitle>
       </AuthHeading>
-      {actionData?.success === false && !isInactive && (
-        <AuthError>{actionData.message}</AuthError>
-      )}
-      <Form onSubmit={onSubmit}>
+      <Form
+        onSubmit={async (event) => {
+          event.preventDefault()
+          setPending(true)
+          const valid = await methods.trigger()
+          if (!valid) {
+            setPending(false)
+            return
+          }
+          onSubmit(event)
+        }}
+      >
         <FormMain gap="sm">
           <FormControl required error={errors.email}>
             <FormLabel>Email / Phone Number</FormLabel>
