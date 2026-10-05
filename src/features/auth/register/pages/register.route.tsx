@@ -1,12 +1,15 @@
 import { isAxiosError } from 'axios'
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
+import { requestOtp } from '@/api/auth/otp'
 import { register } from '@/api/auth/register'
 import { getApiErrorMessage } from '@/api/shared/error'
 import { registerSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
-// The phone number doesn't match any registered patient (API returns 404)
+import { setRegisterPhone } from '../register-session'
+
+// The phone number doesn't match any registered customer (API returns 404)
 export const REGISTER_ERROR_CUSTOMER_NOT_FOUND = 'CUSTOMER_NOT_FOUND'
 
 export type AuthRegisterActionData = {
@@ -31,14 +34,25 @@ export async function authRegisterAction({
 
   const { name, email, password } = data.data
 
-  // InputPhone gives 6281234567890, the API expects +6281234567890
   const phone = `+${data.data.phone.replace(/^\+/, '')}`
 
   try {
     await register({ name, email, phone, password })
   } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) {
+    const status = isAxiosError(error) ? error.response?.status : undefined
+
+    if (status === 404) {
       return { success: false, code: REGISTER_ERROR_CUSTOMER_NOT_FOUND }
+    }
+
+    if (status === 409) {
+      showToast({
+        type: 'error',
+        title: 'Account Already Registered',
+        message:
+          'Your details are already registered. Please log in using your password.',
+      })
+      return { success: false }
     }
 
     // Any other error (validation, server, network) is shown as a toast
@@ -50,6 +64,17 @@ export async function authRegisterAction({
     return { success: false }
   }
 
-  // The backend sends the OTP to this phone number
-  return redirect(`/register/verify-otp?${new URLSearchParams({ phone })}`)
+  setRegisterPhone(phone)
+
+  try {
+    await requestOtp({ target: phone, channel: 'WA', purpose: 'REGISTER' })
+  } catch (error) {
+    showToast({
+      type: 'error',
+      title: 'Failed to Send OTP',
+      message: getApiErrorMessage(error, 'Please tap Resend OTP to try again.'),
+    })
+  }
+
+  return redirect('/register/verify-otp')
 }

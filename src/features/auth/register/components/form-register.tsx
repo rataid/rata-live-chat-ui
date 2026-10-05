@@ -87,7 +87,7 @@ export default function AuthFormRegister() {
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
           <FormControl required error={errors.name}>
-            <FormLabel>Nama Lengkap</FormLabel>
+            <FormLabel>Fullname</FormLabel>
             <Controller
               name="name"
               defaultValue=""
