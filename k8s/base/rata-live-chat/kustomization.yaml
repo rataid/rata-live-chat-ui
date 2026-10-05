@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
-  - service.yaml
+  - services.yaml
 
 # Blok ini WAJIB ada supaya yq di pipeline punya target untuk di-update
 images:
