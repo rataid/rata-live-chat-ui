@@ -1,48 +1,62 @@
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  redirect,
-} from 'react-router-dom'
+import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
+import { verifyOtp } from '@/api/auth/otp'
+import { getApiErrorMessage } from '@/api/shared/error'
 import { verifyOtpSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
+import {
+  clearRegisterPhone,
+  getRegisterPhone,
+  setRegisterEmailSent,
+} from '../register-session'
+
 export type AuthVerifyOtpActionData = {
   success: boolean
-  message?: string
 }
 
-// @todo: remove once the backend validates the OTP, use it to test the error state
-const DUMMY_INVALID_OTP = '000000'
+export async function authVerifyOtpLoader() {
+  const phone = getRegisterPhone()
 
-export async function authVerifyOtpLoader({ request }: LoaderFunctionArgs) {
-  const phone = new URL(request.url).searchParams.get('phone')
-
-  // Only reachable after submitting the register form
+  // Only reachable after submitting the register form in this tab
   if (!phone) return redirect('/register')
 
   return { phone }
 }
 
-export async function authVerifyOtpAction({ request }: ActionFunctionArgs) {
+export async function authVerifyOtpAction({
+  request,
+}: ActionFunctionArgs): Promise<AuthVerifyOtpActionData | Response> {
   const formData = await request.formData()
   const data = verifyOtpSchema.safeParse(Object.fromEntries(formData))
 
   if (!data.success) {
-    return { success: false, message: 'OTP must be 6 digits' }
+    showToast({
+      type: 'error',
+      title: 'Verification Failed',
+      message: 'OTP must be 6 digits',
+    })
+    return { success: false }
   }
 
-  // @todo: call the verify OTP API once the backend is ready
-  if (data.data.otp === DUMMY_INVALID_OTP) {
-    return { success: false, message: 'Invalid OTP code' }
+  try {
+    await verifyOtp({
+      target: data.data.phone,
+      channel: 'WA',
+      purpose: 'REGISTER',
+      code: data.data.otp,
+    })
+  } catch (error) {
+    showToast({
+      type: 'error',
+      title: 'Verification Failed',
+      message: getApiErrorMessage(error, 'Invalid OTP code, please try again.'),
+    })
+    return { success: false }
   }
 
-  showToast({
-    type: 'success',
-    title: 'Account Activation Successful!',
-    message:
-      'Your account is now active. Please log in using the password you created.',
-  })
+  clearRegisterPhone()
+  setRegisterEmailSent()
 
-  return redirect('/login')
+  return redirect('/register/email-sent')
 }

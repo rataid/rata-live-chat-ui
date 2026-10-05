@@ -15,13 +15,13 @@ import {
 import { InputPhone } from '@nui/form/input/components/phone'
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
-import Icon from '@nui/ui/icon'
 import { usePopupDialog } from '@nui/ui/popup-dialog'
 
 import {
-  AuthBackLink,
   AuthCard,
+  AuthFooter,
   AuthHeading,
+  AuthLink,
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
@@ -73,21 +73,16 @@ export default function AuthFormRegister() {
 
   return (
     <AuthCard>
-      <AuthBackLink to="/login">
-        <Icon icon="lucide-arrow-left" size="2xs" />
-        Back to Login
-      </AuthBackLink>
       <AuthHeading>
         <AuthTitle>Account Activation</AuthTitle>
         <AuthSubtitle>
-          Enter your registered clinic details and create a password to get
-          started.
+          Create a password to start using your patient account.
         </AuthSubtitle>
       </AuthHeading>
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
           <FormControl required error={errors.name}>
-            <FormLabel>Nama Lengkap</FormLabel>
+            <FormLabel>Fullname</FormLabel>
             <Controller
               name="name"
               defaultValue=""
@@ -173,6 +168,9 @@ export default function AuthFormRegister() {
           </Button>
         </FormAction>
       </Form>
+      <AuthFooter>
+        Already active? <AuthLink to="/login">Log in</AuthLink>
+      </AuthFooter>
     </AuthCard>
   )
 }
