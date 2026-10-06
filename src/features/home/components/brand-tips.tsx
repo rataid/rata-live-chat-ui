@@ -14,7 +14,6 @@ import {
   TipsTitle,
 } from './home.style'
 
-// "Do / Don't" care tips of a brand, from src/data/tips/{brand}/{locale}.json
 export function BrandTips({ brand }: { brand: Brand }) {
   const tips = getTips(brand)
 
