@@ -21,7 +21,6 @@ const activeStyles: Record<Brand, { tab: string; caption: string }> = {
   },
 }
 
-// Each tab is its own page: /home/rata, /home/tanam, /home/vinir
 export function HomeBrandTabs() {
   return (
     <BrandTabs aria-label="Products">

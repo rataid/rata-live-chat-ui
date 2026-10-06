@@ -91,7 +91,7 @@ export const UserMenuButton = styled.button.attrs({
 })``
 
 export const UserMenuAvatar = styled.span.attrs({
-  className: tw`flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-500`,
+  className: tw`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200`,
 })``
 
 export const UserMenuPanel = styled.div.attrs({

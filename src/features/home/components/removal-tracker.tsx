@@ -1,8 +1,17 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
+import {
+  WearToday,
+  startWearTimer,
+  stopWearTimer,
+  useWearToday,
+  wearTodayKey,
+} from '@/api/aligner/wear'
+import { getApiErrorMessage } from '@/api/shared/error'
 import Button from '@nui/ui/button'
+import { showToast } from '@nui/ui/toast'
 
-import { DUMMY_REMOVAL } from '../dummy'
 import {
   Card,
   CardLabel,
@@ -25,35 +34,92 @@ function formatDuration(totalSeconds: number) {
   return [h, m, s].map((n) => String(n).padStart(2, '0')).join(':')
 }
 
-export function RemovalTracker() {
-  const { dailyLimitSeconds } = DUMMY_REMOVAL
-
-  // @todo: sync the timer with the backend so it survives a page reload
-  const [removedSeconds, setRemovedSeconds] = useState(
-    DUMMY_REMOVAL.removedSeconds
-  )
-  const [isRunning, setIsRunning] = useState(false)
+function useSecondTick(active: boolean) {
+  const [, setTick] = useState(0)
 
   useEffect(() => {
-    if (!isRunning) return undefined
+    if (!active) return undefined
 
-    const timer = setInterval(() => setRemovedSeconds((s) => s + 1), 1000)
+    const timer = setInterval(() => setTick((t) => t + 1), 1000)
 
     return () => clearInterval(timer)
-  }, [isRunning])
+  }, [active])
+}
 
-  const percent = Math.min(
-    100,
-    Math.round((removedSeconds / dailyLimitSeconds) * 100)
-  )
-  const leftSeconds = dailyLimitSeconds - removedSeconds
-  const isOver = leftSeconds < 0
+export function RemovalTracker() {
+  const queryClient = useQueryClient()
+
+  const {
+    data: wear,
+    dataUpdatedAt,
+    isLoading,
+    isError,
+    refetch,
+  } = useWearToday()
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const isActive = !!wear?.active
+
+  useSecondTick(isActive)
+
+  const shownSec = wear
+    ? wear.removedSec +
+      (isActive ? Math.floor((Date.now() - dataUpdatedAt) / 1000) : 0)
+    : 0
+
+  const allowanceSec = wear?.allowanceSec ?? 0
+  const remainingSec = allowanceSec - shownSec
+  const isOver = remainingSec < 0
+
+  const percent = !wear
+    ? 0
+    : isActive && allowanceSec > 0
+    ? Math.min(100, Math.round((shownSec / allowanceSec) * 100))
+    : wear.removalPercent
+
+  const toggleTimer = async () => {
+    setIsSubmitting(true)
+
+    try {
+      const next: WearToday = isActive
+        ? await stopWearTimer()
+        : await startWearTimer()
+
+      queryClient.setQueryData(wearTodayKey, next)
+    } catch (error) {
+      // 400 "Removal timer is already running", 404 "Removal timer is not running"
+      showToast({
+        type: 'error',
+        title: isActive ? 'Failed to Stop Timer' : 'Failed to Start Timer',
+        message: getApiErrorMessage(error, 'Please try again in a moment.'),
+      })
+      // Bring the card back in line with the server
+      await queryClient.invalidateQueries({ queryKey: wearTodayKey })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (isError) {
+    return (
+      <Card>
+        <CardLabel>Aligner Removal Tracker</CardLabel>
+        <p className="text-sm text-gray-500">
+          Couldn&apos;t load today&apos;s removal time. Please try again.
+        </p>
+        <Button variant="secondaryGray" onClick={() => refetch()}>
+          Try again
+        </Button>
+      </Card>
+    )
+  }
 
   return (
-    <Card>
+    <Card aria-busy={isLoading}>
       <CardLabel>Aligner Removal Tracker</CardLabel>
       <TrackerValueRow>
-        <TrackerValue>{formatDuration(removedSeconds)}</TrackerValue>
+        <TrackerValue>{formatDuration(shownSec)}</TrackerValue>
         <TrackerPercent>{percent}%</TrackerPercent>
       </TrackerValueRow>
       <ProgressTrack>
@@ -62,20 +128,25 @@ export function RemovalTracker() {
       <TrackerMeta>
         <span>
           {isOver
-            ? `${formatDuration(-leftSeconds)} over the limit`
-            : `${formatDuration(leftSeconds)} left today`}
+            ? `${formatDuration(-remainingSec)} over the limit`
+            : `${formatDuration(remainingSec)} left today`}
         </span>
-        <StatusBadge $over={isOver}>
-          {isOver ? 'Over limit' : 'On track'}
-        </StatusBadge>
+        {wear && (
+          <StatusBadge $over={isOver}>
+            {isOver ? 'Over limit' : 'On track'}
+          </StatusBadge>
+        )}
       </TrackerMeta>
+      {/* Same copy as Figma in both states; it stops the timer while active */}
       <Button
         wider="full"
         fontWeight="medium"
-        icon={isRunning ? 'lucide-square' : 'lucide-play'}
-        onClick={() => setIsRunning((value) => !value)}
+        icon="lucide-play"
+        disabled={isLoading || isSubmitting}
+        aria-pressed={isActive}
+        onClick={toggleTimer}
       >
-        {isRunning ? 'Stop removal timer' : 'Start removal timer'}
+        Start removal timer
       </Button>
     </Card>
   )

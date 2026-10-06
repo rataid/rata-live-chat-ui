@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Form } from 'react-router-dom'
 
+import { AvatarPlaceholder } from '@/assets'
 import Icon from '@nui/ui/icon'
 
 import {
@@ -46,7 +47,7 @@ export function UserMenu({ name }: { name?: string }) {
         onClick={() => setOpen((value) => !value)}
       >
         <UserMenuAvatar>
-          <Icon icon="lucide-user" size="xs" />
+          <AvatarPlaceholder className="h-full w-full" />
         </UserMenuAvatar>
         <Icon icon="lucide-chevron-down" size="xs" />
       </UserMenuButton>
