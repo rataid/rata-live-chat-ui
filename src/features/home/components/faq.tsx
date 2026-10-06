@@ -28,7 +28,7 @@ export function FrequentlyAskedQuestions({ product }: FaqSectionProps) {
 
   return (
     <Section>
-      <SectionTitle>
+      <SectionTitle className="w-fit" data-tour="faq-title">
         <IconHistory className="h-4 w-4 shrink-0 text-primary-700" />
         Frequently Asked Questions
       </SectionTitle>

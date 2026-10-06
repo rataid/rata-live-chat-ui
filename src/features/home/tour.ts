@@ -1,10 +1,7 @@
 import { TourStep } from '@/components/tour'
 
-// First-visit tour after login. Saved as `tour.home.done` in localStorage,
-// which logout doesn't clear, so it shows once per browser.
 export const HOME_TOUR_ID = 'home'
 
-// Targets are marked with data-tour="..." in the home components
 export const HOME_TOUR_STEPS: TourStep[] = [
   {
     element: '[data-tour="brand-tabs"]',
@@ -27,7 +24,6 @@ export const HOME_TOUR_STEPS: TourStep[] = [
     },
   },
   {
-    // Only there once the tracker is set up; skipped otherwise
     element: '[data-tour="change-set"]',
     popover: {
       title: 'Change to the next set',
@@ -47,5 +43,14 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       align: 'start',
     },
   },
-  // @todo: steps 5–8
+  {
+    element: '[data-tour="faq-title"]',
+    popover: {
+      title: 'Frequently Asked Questions',
+      description:
+        'The questions patients ask most, answered by our clinical team.',
+      side: 'bottom',
+      align: 'start',
+    },
+  },
 ]
