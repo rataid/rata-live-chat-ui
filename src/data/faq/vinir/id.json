@@ -1,0 +1,347 @@
+{
+  "groups": [
+    {
+      "groupId": 1,
+      "groupName": "Tentang veneer",
+      "groupDescription": "Bahan, kekuatan, daya tahan, beda dengan bleaching, crown, gigi palsu",
+      "faqItems": [
+        {
+          "faqId": 1,
+          "question": "Apa bahan yang digunakan Vinir?",
+          "shortAnswer": "Porcelain atau glass ceramic; composite veneer untuk kebutuhan tertentu.",
+          "answer": "<p>Terbuat dari porcelain atau glass ceramic, bahan yang memberikan tampilan natural, permukaan glossy, dan tahan lama. Vinir juga menyediakan composite veneer untuk kebutuhan tertentu.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 2,
+          "question": "Seberapa kuat veneer? Apakah bisa dipakai mengunyah seperti biasa?",
+          "shortAnswer": "Setara gigi asli untuk mengunyah normal. Hindari benda sangat keras.",
+          "answer": "<p>Veneer memiliki kekuatan setara gigi asli dan bisa dipakai untuk mengunyah normal. Hindari menggigit benda atau makanan yang sangat keras (es batu, tulang, kuku, membuka kemasan) yang bisa merusak gigi asli, karena bisa merusak veneer juga.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 3,
+          "question": "Berapa lama veneer bisa bertahan?",
+          "shortAnswer": "Porcelain umumnya 10–15 tahun dengan perawatan baik.",
+          "answer": "<p>Dengan perawatan yang baik, veneer porcelain umumnya bertahan 10–15 tahun; studi jangka panjang menunjukkan lebih dari 95% veneer porcelain masih baik setelah 10 tahun. Penyebab kegagalan paling umum adalah retak dan lepas, biasanya di 2 tahun pertama, dan risikonya jauh lebih tinggi pada orang dengan kebiasaan menggemeretakkan gigi. Composite veneer lebih cepat aus dan lebih mudah bernoda, sehingga umurnya lebih pendek.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 4,
+          "question": "Apakah veneer porcelain bisa menguning atau pecah?",
+          "shortAnswer": "Tidak menguning karena tidak berpori. Bisa pecah bila benturan keras.",
+          "answer": "<p>Porcelain umumnya tidak menguning karena permukaannya tidak berpori. Kebersihan mulut yang buruk dan konsumsi zat pewarna dapat menimbulkan noda tipis di permukaan, yang bisa dibersihkan dengan polishing saat kontrol. Seperti gigi asli, veneer bisa pecah bila terkena benturan keras atau tekanan berlebih (misalnya kebiasaan menggemeretakkan gigi).</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 5,
+          "question": "Apakah veneer bisa di-bleaching?",
+          "shortAnswer": "Tidak. Warna sudah ditentukan sejak awal.",
+          "answer": "<p>Tidak. Warna veneer sudah ditentukan sejak awal dan tidak berubah dengan bleaching. Jika ingin warna lebih putih, veneer perlu diganti dengan warna yang lebih terang.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 6,
+          "question": "Apa bedanya veneer dengan bleaching?",
+          "shortAnswer": "Bleaching hanya mencerahkan warna; veneer mengubah bentuk dan warna.",
+          "answer": "<p>Bleaching hanya mencerahkan warna gigi asli, tidak bisa mengubah bentuk gigi, dan tidak bekerja pada tambalan atau gigi palsu. Veneer bisa mengubah bentuk sekaligus memilih tingkat warna putih yang diinginkan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 7,
+          "question": "Apa bedanya veneer dengan crown?",
+          "shortAnswer": "Veneer menutupi permukaan depan; crown menutupi seluruh gigi.",
+          "answer": "<p>Veneer hanya menutupi permukaan depan gigi dan digunakan untuk tujuan estetika. Crown menutupi seluruh permukaan gigi (360 derajat) dan digunakan untuk gigi dengan kerusakan yang lebih besar.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 8,
+          "question": "Apa bedanya veneer dengan gigi palsu?",
+          "shortAnswer": "Gigi palsu menggantikan gigi hilang; veneer dipasang pada gigi asli.",
+          "answer": "<p>Gigi palsu (lepasan atau implan) menggantikan gigi yang hilang. Veneer dipasang pada gigi asli untuk memperbaiki bentuk dan warnanya.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 9,
+          "question": "Apakah gigi yang sudah di-crown bisa di-veneer?",
+          "shortAnswer": "Tidak. Veneer hanya untuk gigi asli.",
+          "answer": "<p>Tidak. Veneer hanya bisa dipasang pada gigi asli, bukan pada crown atau gigi palsu.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 10,
+          "question": "Apakah anak-anak bisa memakai veneer?",
+          "shortAnswer": "Hanya untuk gigi permanen yang sudah tumbuh sempurna.",
+          "answer": "<p>Veneer hanya dipasang pada gigi permanen yang sudah tumbuh sempurna. Dokter akan mengevaluasi kesiapan gigi saat konsultasi.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 11,
+          "question": "Apakah ada risiko memakai veneer?",
+          "shortAnswer": "Ngilu sementara di awal. Gigi di balik veneer tetap bisa berlubang.",
+          "answer": "<p>Risiko yang paling umum adalah gigi lebih sensitif (ngilu) di awal pemakaian, yang biasanya bersifat sementara. Gigi di balik veneer tetap gigi asli, sehingga tetap bisa berlubang jika kebersihan mulut tidak dijaga.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 2,
+      "groupName": "Alur perawatan veneer di Vinir",
+      "groupDescription": "Konsultasi, preparasi, sementasi, kontrol, temporary veneer",
+      "faqItems": [
+        {
+          "faqId": 12,
+          "question": "Bagaimana alur perawatan veneer di Vinir?",
+          "shortAnswer": "Konsultasi awal, preparasi dan mock-up, sementasi, kontrol 6 bulan.",
+          "answer": "<ol><li><strong>Konsultasi awal</strong> — dokter memeriksa kondisi gigi dan gusi, mengambil foto klinis dan x-ray, lalu menyusun rencana perawatan bersamamu.</li><li><strong>Kunjungan preparasi</strong> — gigi dipersiapkan dan dicetak, kamu menyetujui bentuk dan warna melalui mock-up, lalu temporary veneer dipasang sementara veneer permanen dibuat di lab.</li><li><strong>Kunjungan sementasi</strong> — veneer permanen dipasang dan gigitan disesuaikan.</li><li><strong>Kontrol rutin setiap 6 bulan</strong> — pengecekan kondisi veneer, kebersihan mulut, dan keseimbangan gigitan.</li></ol><p><em>*Setiap orang memiliki kasus gigi yang berbeda sehingga alur perawatan juga berbeda.</em></p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 13,
+          "question": "Apakah gigi harus di-rontgen sebelum veneer?",
+          "shortAnswer": "Ya, rontgen panoramic setelah rencana perawatan disetujui.",
+          "answer": "<p>Ya. Setelah kamu menyetujui rencana perawatan dari dokter, akan dilakukan rontgen panoramic untuk memastikan kondisi gigi dan tulang penyangga sehat sebelum veneer dikerjakan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 14,
+          "question": "Apakah gigi akan dikikis?",
+          "shortAnswer": "Minimal-invasive, sesedikit mungkin, kadang no-prep. Pengikisan permanen.",
+          "answer": "<p>Vinir menggunakan pendekatan minimal-invasive sehingga pengikisan dibuat sesedikit mungkin, dan pada kasus tertentu bisa tanpa pengikisan (no-prep). Pengikisan bersifat permanen, jadi dokter akan menjelaskan kebutuhan pada gigimu sebelum tindakan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 15,
+          "question": "Apakah prosedurnya dianestesi?",
+          "shortAnswer": "Ya, anestesi lokal saat preparasi.",
+          "answer": "<p>Ya, akan ada proses anestesi lokal saat preparasi agar kamu tetap nyaman selama tindakan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 16,
+          "question": "Apakah warna veneer masih bisa diganti setelah preparasi?",
+          "shortAnswer": "Tidak. Warna mengikuti kesepakatan saat visit preparasi.",
+          "answer": "<p>Tidak. Warna veneer mengikuti hasil yang disepakati saat visit preparasi. Hasil akhir veneer porcelain lebih translusen dengan gradasi alami, sehingga tidak terlihat tebal atau opak seperti tambalan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 17,
+          "question": "Apakah bentuk veneer masih bisa diganti?",
+          "shortAnswer": "Tidak setelah mock-up disetujui (teknik biocopy). Sampaikan revisi saat itu.",
+          "answer": "<p>Bentuk veneer permanen dibuat mengikuti mock-up yang kamu setujui saat visit preparasi dengan teknik biocopy, sehingga tidak bisa diubah setelah mock-up disetujui. Pastikan kamu sudah nyaman dan setuju dengan bentuk mock-up sebelum veneer permanen dibuat; sampaikan revisi apa pun saat itu.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 18,
+          "question": "Kenapa temporary veneer terasa kasar?",
+          "shortAnswer": "Bahan tambal sementara. Veneer permanen halus dan glossy.",
+          "answer": "<p>Temporary veneer terbuat dari bahan tambal sementara sehingga teksturnya lebih kasar. Veneer permanen akan halus, glossy, dan menyatu dengan gigi.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 19,
+          "question": "Kenapa temporary veneer terasa tebal?",
+          "shortAnswer": "Minimal 0,8 mm agar tidak pecah. Permanen 0,5–0,6 mm.",
+          "answer": "<p>Temporary veneer dibuat minimal 0,8 mm agar tidak mudah pecah selama masa transisi. Veneer permanen jauh lebih tipis, sekitar 0,5–0,6 mm, sehingga terlihat lebih natural.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 20,
+          "question": "Apa yang harus dihindari saat memakai temporary veneer?",
+          "shortAnswer": "Makanan keras, lengket, berkunyit. Kopi dan teh dengan sedotan.",
+          "answer": "<p>Hindari menggigit makanan yang keras atau lengket, dan hindari makanan berkunyit karena dapat mengubah warna. Kopi dan teh masih boleh, sebaiknya dengan sedotan. Jika temporary veneer lepas, simpan dan hubungi Customer Support Vinir untuk dijadwalkan pemasangan ulang.</p>",
+          "isFeatured": true
+        }
+      ]
+    },
+    {
+      "groupId": 3,
+      "groupName": "Perawatan setelah veneer terpasang",
+      "groupDescription": "Cara merawat, berlubang, bau mulut, polishing, scaling",
+      "faqItems": [
+        {
+          "faqId": 21,
+          "question": "Bagaimana cara merawat veneer?",
+          "shortAnswer": "Sikat lembut dan pasta non-abrasif, floss, kontrol 6 bulan, night guard bila bruxism.",
+          "answer": "<ul><li><em>Gunakan sikat gigi berbulu lembut dan pasta gigi berfluoride yang tidak abrasif; hindari pasta gigi pemutih atau charcoal karena dapat menggores permukaan veneer.</em> Sikat gigi dan flossing setiap hari.</li><li>Kontrol ke dokter gigi setiap 6 bulan untuk pengecekan veneer, kebersihan mulut, dan keseimbangan gigitan.</li><li>Hindari menggigit makanan yang sangat keras atau lengket agar veneer tidak retak atau lepas.</li><li>Gunakan night guard saat tidur jika kamu memiliki kebiasaan menggemeretakkan gigi (bruxism).</li><li>Hindari obat kumur beralkohol karena dapat melemahkan perekat di tepi veneer dan memicu noda di batas veneer dan gigi.</li></ul>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 22,
+          "question": "Apakah gigi masih bisa berlubang setelah di-veneer?",
+          "shortAnswer": "Bisa. Bagian lain tetap gigi asli.",
+          "answer": "<p>Bisa. Veneer hanya menutupi permukaan depan gigi; bagian lainnya tetap gigi asli. Menjaga kebersihan mulut tetap penting untuk mencegah gigi berlubang.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 23,
+          "question": "Apakah veneer menyebabkan bau mulut?",
+          "shortAnswer": "Tidak. Dicegah dengan kebersihan mulut dan kontrol rutin.",
+          "answer": "<p>Tidak. Sebelum veneer dikerjakan, dokter Vinir memastikan gigi bebas karang dan lubang. Setelah terpasang, bau mulut dicegah dengan kebersihan mulut yang baik dan kontrol rutin.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 24,
+          "question": "Apa itu polishing, dan kapan dilakukan?",
+          "shortAnswer": "Pemolesan untuk menghilangkan noda, saat kontrol 6 bulan. Gratis selama garansi.",
+          "answer": "<p>Polishing adalah pemolesan permukaan veneer untuk menghilangkan noda (stain) sehingga veneer kembali cerah dan berkilau alami. Polishing dilakukan saat kontrol 6 bulanan. Selama masa garansi, polishing tidak dikenakan biaya.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 25,
+          "question": "Bolehkah scaling setelah veneer terpasang?",
+          "shortAnswer": "Boleh dan aman. Beri tahu dokter bahwa kamu memakai veneer.",
+          "answer": "<p>Boleh dan aman, termasuk beberapa bulan setelah sementasi. Beri tahu dokter yang menangani bahwa kamu memakai veneer agar alat yang dipakai sesuai.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 26,
+          "question": "Apakah lem (semen) veneer punya efek samping atau membuat gigi keropos?",
+          "shortAnswer": "Tidak. Semen biocompatible dan aman.",
+          "answer": "<p>Tidak. Semen yang digunakan untuk sementasi bersifat biocompatible, aman di dalam mulut, dan tidak membuat gigi keropos.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 4,
+      "groupName": "Keluhan setelah pemasangan",
+      "groupDescription": "Ngilu, gusi bengkak, veneer lepas atau patah, penanganan cepat",
+      "faqItems": [
+        {
+          "faqId": 27,
+          "question": "Gigi saya ngilu setelah pemasangan veneer. Apakah normal?",
+          "shortAnswer": "Ya, terhadap panas dan dingin, biasanya mereda 1–2 minggu.",
+          "answer": "<p>Ya, <em>ngilu terhadap panas dan dingin adalah hal yang normal setelah pemasangan dan biasanya mereda dalam 1–2 minggu.</em></p><ul><li>Gunakan pasta gigi khusus gigi sensitif.</li><li>Hindari makanan atau minuman yang terlalu panas, dingin, atau asam di hari-hari pertama.</li><li>Kunyah di sisi gigi yang tidak di-veneer jika memungkinkan.</li><li>Gunakan sedotan untuk minuman dingin atau panas.</li></ul><p>Hubungi Customer Support Vinir jika ngilu justru bertambah setelah minggu pertama, muncul nyeri tajam tanpa pemicu, atau masih terasa lebih dari 2 minggu, agar dijadwalkan pemeriksaan. Sambil menunggu, obat pereda nyeri yang dijual bebas seperti paracetamol boleh dikonsumsi sesuai aturan pakai.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 28,
+          "question": "Gusi saya bengkak atau berdarah setelah veneer. Bagaimana?",
+          "shortAnswer": "Kompres dingin, kirim foto ke Customer Support untuk evaluasi dokter.",
+          "answer": "<p>Kompres bagian luar pipi dengan air dingin, lalu hubungi Customer Support Vinir dengan menyertakan foto area yang bengkak atau berdarah dan sejak kapan terjadi. Tim akan meneruskan ke dokter untuk evaluasi dan penjadwalan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 29,
+          "question": "Veneer saya lepas, patah, atau goyang. Apa yang harus saya lakukan?",
+          "shortAnswer": "Simpan veneernya, hubungi Customer Support, kunjungan prioritas. Termasuk garansi bila bukan faktor eksternal.",
+          "answer": "<p>Simpan veneer yang lepas atau patah dan bawa saat konsultasi. Hubungi Customer Support Vinir dan sampaikan sejak kapan terjadi; kamu akan dijadwalkan sebagai kunjungan prioritas. Jika lepas atau pecah bukan karena faktor eksternal (menggigit makanan keras, jatuh, benturan), penanganannya termasuk garansi.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 30,
+          "question": "Saya butuh penanganan cepat karena ada acara penting. Bisa?",
+          "shortAnswer": "Bisa, dijadwalkan sebagai prioritas sesuai ketersediaan dokter.",
+          "answer": "<p>Bisa. Sampaikan kebutuhanmu ke Customer Support Vinir; kunjungan akan dijadwalkan sebagai prioritas sesuai ketersediaan dokter.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 5,
+      "groupName": "Garansi Vinir",
+      "groupDescription": "Masa garansi, cakupan, ketentuan",
+      "faqItems": [
+        {
+          "faqId": 31,
+          "question": "Apakah veneer Vinir bergaransi?",
+          "shortAnswer": "Porcelain 1 tahun sejak pemasangan, composite 3 bulan.",
+          "answer": "<p>Ya. Porcelain veneer bergaransi 1 tahun sejak pemasangan, composite veneer bergaransi 3 bulan sejak perawatan.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 32,
+          "question": "Apa saja yang termasuk garansi?",
+          "shortAnswer": "Pasang ulang, pengerjaan ulang, polishing, cek gigitan.",
+          "answer": "<ul><li>Pemasangan ulang veneer yang lepas (bukan karena faktor eksternal).</li><li>Pengerjaan ulang veneer yang pecah (bukan karena faktor eksternal).</li><li>Polishing veneer.</li><li>Pengecekan keseimbangan gigitan.</li></ul>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 33,
+          "question": "Apa ketentuan garansinya?",
+          "shortAnswer": "Hanya gigi yang di-veneer, dokter yang sama, tidak untuk faktor eksternal.",
+          "answer": "<ul><li>Berlaku hanya untuk gigi yang dipasang veneer, tidak mencakup gigi lain.</li><li>Perawatan garansi dilakukan oleh dokter yang sama dengan pemasangan awal; pergantian dokter dikenakan biaya tambahan.</li><li>Kerusakan akibat faktor eksternal seperti menggigit makanan keras atau lengket, jatuh, atau benturan tidak termasuk garansi.</li><li>Night guard tidak termasuk garansi, kecuali perbaikan bila terasa kurang fit di awal pemakaian.</li></ul>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 6,
+      "groupName": "Pembayaran & asuransi",
+      "groupDescription": "Cicilan 0%, DP, asuransi, biaya di luar promo",
+      "faqItems": [
+        {
+          "faqId": 34,
+          "question": "Apakah bisa bayar dengan cicilan?",
+          "shortAnswer": "Cicilan 0% kartu kredit bank partner. EDC di klinik, tunai diterima.",
+          "answer": "<p>Bisa, dengan cicilan 0% menggunakan kartu kredit BCA, Mandiri, BNI, BRI, UOB, CIMB Niaga, dan Danamon. Pembayaran di klinik dilakukan melalui mesin EDC; pembayaran tunai juga diterima.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 35,
+          "question": "Bagaimana kebijakan pembayaran di Vinir?",
+          "shortAnswer": "DP dan pelunasan dijelaskan saat konsultasi awal. Invoice sebelum pulang.",
+          "answer": "<p>Vinir memiliki kebijakan down payment (uang muka) dan pelunasan yang akan dijelaskan dan ditandatangani saat konsultasi awal. Pelunasan sisa biaya sesuai rencana perawatan disarankan dilakukan sebelum tindakan, tetapi tetap bisa dilakukan setelah tindakan jika lebih nyaman. Invoice atau receipt diberikan sebelum kamu pulang.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 36,
+          "question": "Apakah veneer bisa memakai asuransi?",
+          "shortAnswer": "Umumnya tidak untuk estetik. Perawatan lain bisa reimbursement.",
+          "answer": "<p>Sebagian besar asuransi tidak menanggung tindakan estetik seperti veneer; kepastiannya tergantung polis kamu. Perawatan gigi lain seperti cabut gigi, tambal gigi, dan scaling umumnya bisa diklaim secara reimbursement: kamu membayar terlebih dahulu, lalu Vinir menyiapkan dokumen pendukung untuk pengajuan ke asuransi. Keputusan penggantian ada di pihak asuransi.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 37,
+          "question": "Apakah scaling dan perawatan lain sudah termasuk harga promo veneer?",
+          "shortAnswer": "Tidak, biaya terpisah.",
+          "answer": "<p>Tidak. Scaling, tambal, dan perawatan lain di luar veneer dikenakan biaya terpisah dari harga promo veneer.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 7,
+      "groupName": "Tentang Vinir",
+      "groupDescription": "Hubungan dengan Rata dan Tanam, Pure, Vani, pengingat jadwal",
+      "faqItems": [
+        {
+          "faqId": 38,
+          "question": "Apa hubungan Vinir dengan Rata dan Tanam?",
+          "shortAnswer": "Satu grup, masing-masing fokus: veneer, aligner, implan.",
+          "answer": "<p>Vinir, Rata, dan Tanam berada di bawah satu grup yang sama. Setiap brand memiliki fokus dan tim dokter masing-masing: Vinir untuk veneer, Rata untuk aligner, Tanam untuk implan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 39,
+          "question": "Apa bedanya Vinir dengan Pure?",
+          "shortAnswer": "Sister brand. Pure lebih premium; Vinir standar sama, harga lebih terjangkau.",
+          "answer": "<p>Vinir adalah sister brand dari Pure. Pure ditangani dokter spesialis senior dengan pilihan bahan yang lebih premium, sehingga harganya lebih eksklusif. Vinir menghadirkan veneer natural dengan standar dokter dan lab yang sama pada harga yang lebih terjangkau.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 40,
+          "question": "Siapa Vani, dan kenapa ada nama lain yang menghubungi saya?",
+          "shortAnswer": "Vani = sapaan Customer Support. Nama lain = CRO di klinik.",
+          "answer": "<p>Vani adalah nama sapaan Customer Support Vinir agar komunikasi lebih mudah dan konsisten. Jika ada nama lain yang menghubungi lewat WhatsApp, itu adalah Customer Relation Officer (CRO) yang bertugas di klinik dan membantu penjadwalan kunjunganmu.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 41,
+          "question": "Bagaimana pengingat jadwal kunjungan bekerja?",
+          "shortAnswer": "Pengingat H-1 untuk konfirmasi atau reschedule, dan hari H.",
+          "answer": "<p>Sehari sebelum jadwal (H-1) kamu akan menerima pesan untuk konfirmasi kedatangan atau reschedule, dan pada hari H kamu akan menerima pengingat kembali. Jika belum menjadwalkan kunjungan berikutnya, CRO akan menghubungi kamu H+1 setelah kunjungan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 42,
+          "question": "Saya melihat beberapa review kurang baik tentang Vinir. Bagaimana tanggapan Vinir?",
+          "shortAnswer": "Terbuka terhadap kritik; hubungi Customer Support bila ada kendala.",
+          "answer": "<p>Kami terbuka terhadap kritik dan saran dari siapa pun dan menggunakannya untuk terus memperbaiki layanan. Jika kamu mengalami kendala, hubungi Customer Support Vinir agar bisa segera kami tindak lanjuti.</p>",
+          "isFeatured": false
+        }
+      ]
+    }
+  ]
+}
