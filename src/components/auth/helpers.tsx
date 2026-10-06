@@ -5,9 +5,6 @@ import { throwError } from '@utils'
 
 import { AuthenticatedUser } from './types'
 
-// Live chat session in localStorage, separate from crboard's 'crm-store'.
-// Only the token and the patient's name are kept; the token's expiry is
-// checked from the JWT itself (isTokenValid).
 export const AUTH_STORAGE_KEY = 'livechat-auth'
 
 type AuthStorage = {
@@ -43,14 +40,12 @@ export function getToken() {
   return readAuthStorage().token
 }
 
-// Clears the whole session (token and name), used on logout
 export function removeToken() {
   try {
     localStorage.removeItem(AUTH_STORAGE_KEY)
   } catch {}
 }
 
-// The token has no name, so it is kept from the login response
 export function setUserName(name: string) {
   writeAuthStorage({ ...readAuthStorage(), name })
 }
