@@ -31,7 +31,12 @@ export function HomeLayout() {
           <HomeWelcome>Welcome{firstName ? `, ${firstName}` : ''}</HomeWelcome>
           <HomeIntroTop>
             <HomeTitle>Patient Portal</HomeTitle>
-            <Button to="/chat" size="sm" icon="lucide-messages-square">
+            <Button
+              to="/chat"
+              size="sm"
+              icon="lucide-messages-square"
+              data-tour="chat-with-us"
+            >
               Chat with us
             </Button>
           </HomeIntroTop>

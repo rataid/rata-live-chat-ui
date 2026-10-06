@@ -62,4 +62,15 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       align: 'start',
     },
   },
+  {
+    // The button next to the page title, not the Live Chat link in the header
+    element: '[data-tour="chat-with-us"]',
+    popover: {
+      title: 'Chat with us',
+      description:
+        'Still unsure? Start a live chat with the clinic from any page.',
+      side: 'bottom',
+      align: 'end',
+    },
+  },
 ]
