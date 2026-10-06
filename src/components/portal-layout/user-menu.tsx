@@ -44,6 +44,7 @@ export function UserMenu({ name }: { name?: string }) {
         type="button"
         aria-label="Account menu"
         aria-expanded={open}
+        data-tour="account-menu"
         onClick={() => setOpen((value) => !value)}
       >
         <UserMenuAvatar>
