@@ -14,7 +14,7 @@ import {
 } from '@nui/form'
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
-import { usePopupDialog } from '@nui/ui/popup-dialog'
+import { useDialog } from '@nui/ui/dialog'
 
 import {
   AuthCard,
@@ -35,12 +35,12 @@ export default function AuthFormLogin() {
 
   const isInactive = actionData?.code === LOGIN_ERROR_ACCOUNT_INACTIVE
 
-  const { openPopup } = usePopupDialog()
+  const { openDialog } = useDialog()
 
   // Reopen on every submit that returns the inactive error
   useEffect(() => {
     if (isInactive) {
-      openPopup({
+      openDialog({
         title: 'Verify your account',
         message:
           'Your account has not been activated yet. Check your email for the activation link, or request a new one.',
@@ -51,7 +51,7 @@ export default function AuthFormLogin() {
         ],
       })
     }
-  }, [actionData, isInactive, openPopup])
+  }, [actionData, isInactive, openDialog])
 
   const navigation = useNavigation()
   // Show the spinner on click. Navigation state only flips after the request starts,
@@ -82,12 +82,8 @@ export default function AuthFormLogin() {
   return (
     <AuthCard>
       <AuthHeading>
-        <AuthTitle>
-          Exclusively for Rata, Tanam and Vinir customers
-        </AuthTitle>
-        <AuthSubtitle>
-         Log in to continue.
-        </AuthSubtitle>
+        <AuthTitle>Exclusively for Rata, Tanam and Vinir customers</AuthTitle>
+        <AuthSubtitle>Log in to continue.</AuthSubtitle>
       </AuthHeading>
       <Form
         onSubmit={async (event) => {
