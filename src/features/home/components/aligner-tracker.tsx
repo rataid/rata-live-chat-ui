@@ -183,14 +183,16 @@ export function AlignerTracker() {
             Set up tracker
           </Button>
         )}
-        {hasPlan && !isLastSet && (
+        {hasPlan && (
           <Button
             wider="full"
             fontWeight="medium"
-            disabled={isChangingSet}
+            disabled={isLastSet || isChangingSet}
             onClick={changeToNextSet}
           >
-            {isChangingSet
+            {isLastSet
+              ? 'All sets completed'
+              : isChangingSet
               ? 'Changing set...'
               : `Change to Set ${plan.currentSet + 1}`}
           </Button>
