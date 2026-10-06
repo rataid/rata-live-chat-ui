@@ -23,7 +23,7 @@ const activeStyles: Record<Brand, { tab: string; caption: string }> = {
 
 export function HomeBrandTabs() {
   return (
-    <BrandTabs aria-label="Products">
+    <BrandTabs aria-label="Products" data-tour="brand-tabs">
       {BRANDS.map((brand) => {
         const { caption, Logo } = BRAND_INFO[brand]
 
