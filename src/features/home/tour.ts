@@ -37,5 +37,15 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       align: 'start',
     },
   },
-  // @todo: steps 4–8
+  {
+    element: '[data-tour="removal-tracker"]',
+    popover: {
+      title: 'Aligner Removal Tracker',
+      description:
+        'Start the timer whenever you take your aligner out. Keep it under 2 hours a day.',
+      side: 'bottom',
+      align: 'start',
+    },
+  },
+  // @todo: steps 5–8
 ]

@@ -103,7 +103,7 @@ export function RemovalTracker() {
 
   if (isError) {
     return (
-      <Card>
+      <Card data-tour="removal-tracker">
         <CardLabel>Aligner Removal Tracker</CardLabel>
         <p className="text-sm text-gray-500">
           Couldn&apos;t load today&apos;s removal time. Please try again.
@@ -116,7 +116,7 @@ export function RemovalTracker() {
   }
 
   return (
-    <Card aria-busy={isLoading}>
+    <Card aria-busy={isLoading} data-tour="removal-tracker">
       <CardLabel>Aligner Removal Tracker</CardLabel>
       <TrackerValueRow>
         <TrackerValue>{formatDuration(shownSec)}</TrackerValue>
