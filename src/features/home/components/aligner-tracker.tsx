@@ -136,7 +136,7 @@ export function AlignerTracker() {
 
   if (isError) {
     return (
-      <Card>
+      <Card data-tour="aligner-tracker">
         <CardLabel>Aligner Tracker</CardLabel>
         <p className="text-sm text-gray-500">
           Couldn&apos;t load your tracker. Please try again.
@@ -153,7 +153,7 @@ export function AlignerTracker() {
   const percent = plan?.completionPercent ?? 0
 
   return (
-    <Card aria-busy={isLoading}>
+    <Card aria-busy={isLoading} data-tour="aligner-tracker">
       <CardLabel>Aligner Tracker</CardLabel>
       <TrackerValueRow>
         <TrackerValue>

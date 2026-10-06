@@ -16,5 +16,15 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       align: 'center',
     },
   },
-  // @todo: steps 2–8
+  {
+    element: '[data-tour="aligner-tracker"]',
+    popover: {
+      title: 'Aligner Tracker',
+      description:
+        'See which set you are on, how many days are left, and your overall progress.',
+      side: 'bottom',
+      align: 'start',
+    },
+  },
+  // @todo: steps 3–8
 ]
