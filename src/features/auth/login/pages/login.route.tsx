@@ -56,13 +56,6 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
       setToken(tokenResult)
       setUserName(result?.account?.name ?? '')
 
-      showToast({
-        type: 'success',
-        title: 'Account Activation Successful!',
-        message:
-          'Your account is now active. Please log in using the password you created.',
-      })
-
       const params = new URL(request.url).searchParams
       const from = params.get('from') || '/home'
 
