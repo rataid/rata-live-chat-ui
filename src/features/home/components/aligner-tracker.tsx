@@ -188,6 +188,7 @@ export function AlignerTracker() {
             wider="full"
             fontWeight="medium"
             disabled={isLastSet || isChangingSet}
+            data-tour="change-set"
             onClick={changeToNextSet}
           >
             {isLastSet

@@ -26,5 +26,16 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       align: 'start',
     },
   },
-  // @todo: steps 3–8
+  {
+    // Only there once the tracker is set up; skipped otherwise
+    element: '[data-tour="change-set"]',
+    popover: {
+      title: 'Change to the next set',
+      description:
+        'Tap here on the day you switch. The countdown restarts and the change is saved to History.',
+      side: 'bottom',
+      align: 'start',
+    },
+  },
+  // @todo: steps 4–8
 ]
