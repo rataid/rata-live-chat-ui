@@ -1,4 +1,5 @@
-import { format } from 'date-fns'
+import { AlignerHistoryItem } from '@/api/aligner/history'
+import { formatDayMonth } from '@utils'
 
 import {
   HistoryList,
@@ -9,32 +10,37 @@ import {
   HistoryWrapper,
 } from './home.style'
 
-export type AlignerSetHistoryItem = {
-  set: number
-  // ISO date of the change
-  changedAt: string
-}
-
 type AlignerSetHistoryProps = {
   id?: string
-  items: AlignerSetHistoryItem[]
+  items?: AlignerHistoryItem[]
+  isLoading?: boolean
+  isError?: boolean
 }
 
-// @todo: load the items from the backend (only when the panel is opened)
-export function AlignerSetHistory({ id, items }: AlignerSetHistoryProps) {
+export function AlignerSetHistory({
+  id,
+  items,
+  isLoading,
+  isError,
+}: AlignerSetHistoryProps) {
   return (
     <HistoryWrapper id={id}>
       <HistoryTitle>History</HistoryTitle>
-      {items.length === 0 ? (
+      {isLoading && <HistoryMessage>Loading history...</HistoryMessage>}
+      {isError && (
+        <HistoryMessage>
+          Couldn&apos;t load the history. Please try again.
+        </HistoryMessage>
+      )}
+      {items && items.length === 0 && (
         <HistoryMessage>No set changes yet.</HistoryMessage>
-      ) : (
+      )}
+      {items && items.length > 0 && (
         <HistoryList>
           {items.map((item) => (
-            <HistoryRow key={`${item.set}-${item.changedAt}`}>
-              <span>Changed to Set {item.set}</span>
-              <HistoryRowDate>
-                {format(new Date(item.changedAt), 'd MMM')}
-              </HistoryRowDate>
+            <HistoryRow key={`${item.setNumber}-${item.changedOn}`}>
+              <span>Changed to Set {item.setNumber}</span>
+              <HistoryRowDate>{formatDayMonth(item.changedOn)}</HistoryRowDate>
             </HistoryRow>
           ))}
         </HistoryList>

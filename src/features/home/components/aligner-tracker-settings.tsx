@@ -16,13 +16,9 @@ import {
 
 const settingsSchema = z
   .object({
-    currentSet: z.coerce.number().int().min(1, 'Must be at least 1'),
+    currentSet: z.coerce.number().int().min(0, 'Must be at least 0'),
     totalSets: z.coerce.number().int().min(1, 'Must be at least 1'),
-    daysPerSet: z.coerce
-      .number()
-      .int()
-      .min(1, 'Must be at least 1 day')
-      .max(60, 'Must be 60 days or less'),
+    daysPerSet: z.coerce.number().int().min(1, 'Must be at least 1 day'),
     // yyyy-MM-dd from the date picker (shown as dd/mm/yyyy)
     startDate: z
       .string()
@@ -42,11 +38,10 @@ const settingsSchema = z
 export type AlignerTrackerSettingsValues = z.infer<typeof settingsSchema>
 
 type AlignerTrackerSettingsProps = {
-  defaultValues: AlignerTrackerSettingsValues
-  onSave: (values: AlignerTrackerSettingsValues) => void
+  defaultValues: Partial<AlignerTrackerSettingsValues>
+  onSave: (values: AlignerTrackerSettingsValues) => Promise<void>
 }
 
-// Content of the "Setup Tracker Aligner" popup, opened with openDialog()
 export function AlignerTrackerSettings({
   defaultValues,
   onSave,
@@ -56,7 +51,7 @@ export function AlignerTrackerSettings({
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AlignerTrackerSettingsValues>({
     resolver: zodResolver(settingsSchema),
     defaultValues,
@@ -65,9 +60,11 @@ export function AlignerTrackerSettings({
   return (
     <form
       noValidate
-      onSubmit={handleSubmit((values) => {
-        onSave(values)
-        closeDialog()
+      onSubmit={handleSubmit(async (values) => {
+        try {
+          await onSave(values)
+          closeDialog()
+        } catch {}
       })}
     >
       <DialogHeader>
@@ -82,7 +79,7 @@ export function AlignerTrackerSettings({
               name="currentSet"
               control={control}
               render={({ field }) => (
-                <Input type="number" min={1} inputMode="numeric" {...field} />
+                <Input type="number" min={0} inputMode="numeric" {...field} />
               )}
             />
           </FormControl>
@@ -127,12 +124,13 @@ export function AlignerTrackerSettings({
         <Button
           variant="secondaryGray"
           fontWeight="medium"
+          disabled={isSubmitting}
           onClick={closeDialog}
         >
           Close
         </Button>
-        <Button type="submit" fontWeight="medium">
-          Save
+        <Button type="submit" fontWeight="medium" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : 'Save'}
         </Button>
       </DialogFooter>
     </form>
