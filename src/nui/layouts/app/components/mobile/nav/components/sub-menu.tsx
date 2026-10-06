@@ -1,18 +1,5 @@
-import { useLocation } from 'react-router-dom'
-
-import UserNav from '@features/user/nav'
-
+// Feature-specific mobile sub menus used to be wired here by pathname.
+// None are registered in the patient portal; nui must not import app features.
 export default function AppMobileSubMenu() {
-  const location = useLocation()
-
-  const pathnameParts = location.pathname.split('/')
-
-  const extractedPart = pathnameParts[1]
-
-  switch (extractedPart) {
-    case 'user':
-      return <UserNav />
-    default:
-      return null
-  }
+  return null
 }

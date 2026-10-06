@@ -15,7 +15,7 @@ import {
 } from '@/components/auth/helpers'
 import { queryClient } from '@libs/query-client'
 import LayoutUiNotif from '@nui/layouts/ui/notif'
-import { PopupDialogProvider } from '@nui/ui/popup-dialog'
+import { DialogProvider } from '@nui/ui/dialog'
 
 import authRoutes from '@features/auth/routes'
 import faqRoutes from '@features/faq/routes'
@@ -48,9 +48,9 @@ const router = createBrowserRouter([
   {
     // Pathless root route: global providers that need the router context
     element: (
-      <PopupDialogProvider>
+      <DialogProvider>
         <Outlet />
-      </PopupDialogProvider>
+      </DialogProvider>
     ),
     children: [
       ...authRoutes,
