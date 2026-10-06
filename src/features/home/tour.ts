@@ -53,4 +53,13 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       align: 'start',
     },
   },
+  {
+    element: '[data-tour="faq-groups"]',
+    popover: {
+      title: 'FAQ Groups',
+      description: 'Browse every answer by topic, from daily care to shipping.',
+      side: 'top',
+      align: 'start',
+    },
+  },
 ]
