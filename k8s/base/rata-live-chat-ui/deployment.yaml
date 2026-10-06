@@ -16,7 +16,7 @@ spec:
         - name: regcred
       containers:
         - name: rata-live-chat
-          image: registry.rata.id/rata-crboard-crm:placeholder
+          image: registry.rata.id/rata-live-chat-ui:placeholder
           ports:
             - containerPort: 80
           readinessProbe:
