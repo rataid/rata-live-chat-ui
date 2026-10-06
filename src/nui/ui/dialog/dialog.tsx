@@ -6,25 +6,27 @@ import {
 } from '@floating-ui/react'
 import { createContext, useContext } from 'react'
 
-import { useDialog } from '@nui/ui/dialog/hooks'
 import Icon from '@nui/ui/icon'
 
 import {
-  PopupDialogCloseButton,
-  PopupDialogContainer,
-  PopupDialogOverlay,
-} from './popup-dialog.style'
-import { PopupDialogProps } from './types'
+  DialogCloseButton,
+  DialogContainer,
+  DialogOverlay,
+} from './dialog.style'
+import { useDialogFloating } from './hooks'
+import { DialogProps } from './types'
 
-const PopupDialogContext = createContext<{ close: () => void } | null>(null)
+export const DIALOG_PORTAL_ID = 'dialog-portal'
 
-export function PopupDialog({
+const DialogCloseContext = createContext<{ close: () => void } | null>(null)
+
+export function Dialog({
   open,
   onOpenChange,
   size = 'md',
   children,
-}: PopupDialogProps) {
-  const { context, refs, getFloatingProps } = useDialog({
+}: DialogProps) {
+  const { context, refs, getFloatingProps } = useDialogFloating({
     open,
     onOpenChange,
   })
@@ -37,38 +39,41 @@ export function PopupDialog({
   if (!isMounted) return null
 
   return (
-    <PopupDialogContext.Provider value={{ close: () => onOpenChange(false) }}>
+    <DialogCloseContext.Provider value={{ close: () => onOpenChange(false) }}>
       <FloatingPortal>
         <FloatingOverlay className="z-[100]" lockScroll>
           <FloatingFocusManager context={context}>
-            <PopupDialogOverlay>
-              <PopupDialogContainer
+            <DialogOverlay>
+              <DialogContainer
                 ref={refs.setFloating}
                 style={styles}
                 $size={size}
                 {...getFloatingProps()}
               >
                 {children}
-              </PopupDialogContainer>
-            </PopupDialogOverlay>
+                {/* Floating content (date picker, select) rendered here stays
+                    inside the dialog, so clicking it doesn't close the dialog */}
+                <div id={DIALOG_PORTAL_ID} />
+              </DialogContainer>
+            </DialogOverlay>
           </FloatingFocusManager>
         </FloatingOverlay>
       </FloatingPortal>
-    </PopupDialogContext.Provider>
+    </DialogCloseContext.Provider>
   )
 }
 
 // X button for the header, closes the dialog it is rendered in
-export function PopupDialogClose() {
-  const context = useContext(PopupDialogContext)
+export function DialogClose() {
+  const context = useContext(DialogCloseContext)
 
   return (
-    <PopupDialogCloseButton
+    <DialogCloseButton
       type="button"
       aria-label="Close"
       onClick={() => context?.close()}
     >
       <Icon icon="lucide-x" size="xs" />
-    </PopupDialogCloseButton>
+    </DialogCloseButton>
   )
 }
