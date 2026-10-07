@@ -145,7 +145,7 @@ jobs:
           echo "Updating Kustomize in $OVERLAY_PATH with tag$TAG"
           
           if [ -d "$OVERLAY_PATH" ]; then
-            cd $OVERLAY_PATH
+            cd "$OVERLAY_PATH"
             
             yq e -i ".images[0].name = \"${{ env.IMAGE_NAME }}\" \vert{} .images[0].newTag = \"$TAG\"" kustomization.yaml
             
@@ -214,7 +214,7 @@ jobs:
           echo "Updating Kustomize in $OVERLAY_PATH with tag$TAG"
           
           if [ -d "$OVERLAY_PATH" ]; then
-            cd $OVERLAY_PATH
+            cd "$OVERLAY_PATH"
             
             yq e -i ".images[0].name = \"${{ env.IMAGE_NAME }}\" \vert{} .images[0].newTag = \"$TAG\"" kustomization.yaml
             
