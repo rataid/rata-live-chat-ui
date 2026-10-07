@@ -1,34 +1,57 @@
 import { decodeToken, isExpired } from 'react-jwt'
 import { LoaderFunction, LoaderFunctionArgs, redirect } from 'react-router-dom'
-import Cookies from 'universal-cookie'
 
 import { throwError } from '@utils'
 
 import { AuthenticatedUser } from './types'
 
-export const COOKIE_EXPIRATION_TIME = 60 * 60 * 24
-export const LOGIN_TOKEN_COOKIE = 'rata.login.token'
-export const TOKEN_COOKIE = 'rata.token'
+export const AUTH_STORAGE_KEY = 'livechat-auth'
 
-const cookies = new Cookies(null)
+type AuthStorage = {
+  token: string | null
+  name: string | null
+}
 
-export function setToken(token: string, expirationTime?: number) {
-  cookies.set(TOKEN_COOKIE, token, {
-    maxAge: expirationTime || COOKIE_EXPIRATION_TIME,
-    domain: window.location.hostname,
-    path: '/',
-  })
+function readAuthStorage(): AuthStorage {
+  try {
+    const value = localStorage.getItem(AUTH_STORAGE_KEY)
+    const parsed = value ? JSON.parse(value) : null
+
+    return {
+      token: typeof parsed?.token === 'string' ? parsed.token : null,
+      name: typeof parsed?.name === 'string' ? parsed.name : null,
+    }
+  } catch {
+    return { token: null, name: null }
+  }
+}
+
+function writeAuthStorage(value: AuthStorage) {
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(value))
+  } catch {}
+}
+
+export function setToken(token: string) {
+  writeAuthStorage({ ...readAuthStorage(), token })
 }
 
 export function getToken() {
-  return cookies.get(TOKEN_COOKIE) || null
+  return readAuthStorage().token
 }
 
 export function removeToken() {
-  cookies.remove(TOKEN_COOKIE, {
-    domain: window.location.hostname,
-    path: '/',
-  })
+  try {
+    localStorage.removeItem(AUTH_STORAGE_KEY)
+  } catch {}
+}
+
+export function setUserName(name: string) {
+  writeAuthStorage({ ...readAuthStorage(), name })
+}
+
+export function getUserName() {
+  return readAuthStorage().name
 }
 
 export function setPermissions(data: string) {
@@ -68,19 +91,18 @@ export function parseToken(token: string | null) {
 
   const permissions = getPermissions()
 
-  if(decodedToken.permissions){
+  if (decodedToken.permissions) {
     decodedToken.permissions =
       decodedToken?.permissions.map((dp) => {
         const record = permissions.find((p) => p.code === dp)
-  
+
         if (record) {
           return `${record.group}.${record.action}`
         }
-  
+
         return dp
       }) ?? []
   }
-
 
   return decodedToken
 }

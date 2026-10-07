@@ -310,3 +310,28 @@ export const setTimeInTimeZone = (
     timeZone,
   })
 }
+
+const SHORT_MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+// "2026-09-30" -> "30 Sept". Parsed by hand so the day never shifts with the
+// browser's time zone. Returns the input unchanged when it isn't YYYY-MM-DD.
+export function formatDayMonth(value: string) {
+  const [year, month, day] = value.split('-').map(Number)
+
+  if (!year || !month || !day || month > 12) return value
+
+  return `${day} ${SHORT_MONTHS[month - 1]}`
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Tips merawat implan",
+  "description": "Kebanyakan pasien pulih tanpa masalah. Kebiasaan sederhana ini yang paling membantu.",
+  "dos": {
+    "label": "Boleh",
+    "items": [
+      "Makan yang lunak dan hangat (bukan panas) di 3 hari pertama",
+      "Kunyah di sisi lain sampai dokter bilang implan sudah menyatu",
+      "Sikat gigi lain seperti biasa, pelan-pelan di dekat area implan",
+      "Kompres dingin di 48 jam pertama, tidur dengan kepala lebih tinggi",
+      "Bersihkan sela dengan benang gigi atau water floss, kontrol tiap 6 bulan"
+    ]
+  },
+  "donts": {
+    "label": "Jangan",
+    "items": [
+      "Merokok atau vape, minimal 2 minggu setelah tindakan",
+      "Minum pakai sedotan atau berkumur keras di minggu pertama",
+      "Makanan panas, pedas, atau renyah di minggu pertama",
+      "Mengetes implan dengan makanan keras, es, atau tulang",
+      "Melewatkan jadwal kontrol, walau sudah merasa baik"
+    ]
+  },
+  "note": "Ringkasan dari panduan dokter Tanam. Detail per tahap ada di FAQ di bawah."
+}

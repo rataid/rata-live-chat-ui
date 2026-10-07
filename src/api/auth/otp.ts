@@ -2,7 +2,6 @@ import { ApiResponse } from '@/model/shared/query'
 
 import axiosInstance from '../axiosInstance'
 
-// Relative to VITE_API_ENDPOINT (e.g. http://localhost:5000/api)
 export const OTP_REQUEST_ENDPOINT = '/livechat/otp/request'
 export const OTP_VERIFY_ENDPOINT = '/livechat/otp/verify'
 

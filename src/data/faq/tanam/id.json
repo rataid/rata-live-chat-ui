@@ -1,0 +1,284 @@
+{
+  "groups": [
+    {
+      "groupId": 1,
+      "groupName": "Perawatan setelah tindakan",
+      "groupDescription": "Darah, bengkak, makan, kebersihan, jangka panjang",
+      "faqItems": [
+        {
+          "faqId": 1,
+          "question": "Berdarah itu normal?",
+          "shortAnswer": "Sedikit rembesan darah di 24 jam pertama itu normal. Darah deras yang membasahi kasa tidak normal.",
+          "answer": "<p>Sedikit rembesan darah di 24 jam pertama itu normal. Darah deras yang membasahi kasa tidak normal.</p><p>Air liur agak kemerahan atau rembesan ringan wajar di hari tindakan. Gigit kasa perlahan 30–45 menit, lalu ganti bila perlu. Jaga kepala tetap tinggi dan hindari berkumur atau meludah hari ini.</p><p><strong>Boleh:</strong></p><ul><li>Gigit kasa dengan tekanan stabil</li><li>Tidur dengan kepala lebih tinggi</li><li>Istirahat hari ini</li></ul><p><strong>Jangan:</strong></p><ul><li>Berkumur atau meludah keras</li><li>Minum pakai sedotan</li><li>Menyentuh area dengan lidah</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Darah yang membasahi kasa setiap 20–30 menit, atau pendarahan yang berlanjut lewat hari pertama.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 2,
+          "question": "Cara pakai kasanya?",
+          "shortAnswer": "Gigit kasa yang dilipat perlahan 30–45 menit, lalu cek. Ganti hanya jika masih merembes.",
+          "answer": "<p>Gigit kasa yang dilipat perlahan 30–45 menit, lalu cek. Ganti hanya jika masih merembes.</p><p>Lipat kasa jadi kotak kecil, letakkan di area tindakan dan gigit dengan tekanan lembut dan stabil. Jangan dikunyah. Setelah 45 menit, lepas dan lihat, sedikit kemerahan wajar. Jika masih merembes, pasang kasa baru selama 30 menit lagi.</p><p><strong>Boleh:</strong></p><ul><li>Pakai kasa bersih dan kering</li><li>Gigit pelan dan stabil</li><li>Lepas sebelum tidur</li></ul><p><strong>Jangan:</strong></p><ul><li>Ganti tiap beberapa menit</li><li>Banyak mengunyah atau bicara</li><li>Tidur dengan kasa di mulut</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Kasa sudah habis dan area masih berdarah aktif.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 3,
+          "question": "Bengkak itu normal?",
+          "shortAnswer": "Ya. Bengkak biasanya puncaknya di hari ke-2–3, lalu perlahan membaik. Kompres dingin membantu di 48 jam pertama.",
+          "answer": "<p>Ya. Bengkak biasanya puncaknya di hari ke-2–3, lalu perlahan membaik. Kompres dingin membantu di 48 jam pertama.</p><p>Pipi bengkak adalah bagian normal dari penyembuhan dan bisa terasa lebih parah sebelum membaik. Kompres dingin 15 menit pasang, 15 menit lepas selama dua hari pertama. Mulai hari ke-3, kompres hangat membantu meredakannya. Memar di kulit juga wajar.</p><p><strong>Boleh:</strong></p><ul><li>Kompres dingin 48 jam pertama</li><li>Kepala lebih tinggi saat istirahat</li><li>Minum obat sesuai resep</li></ul><p><strong>Jangan:</strong></p><ul><li>Tempelkan es langsung ke kulit</li><li>Menekan atau memijat area</li><li>Olahraga berat</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Bengkak yang cepat membesar, menyebar ke leher atau mata, atau membuat sulit menelan atau bernapas.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 4,
+          "question": "Nyeri itu normal?",
+          "shortAnswer": "Rasa tidak nyaman ringan sampai sedang selama beberapa hari itu normal dan harus membaik tiap hari. Minum obat sesuai petunjuk.",
+          "answer": "<p>Rasa tidak nyaman ringan sampai sedang selama beberapa hari itu normal dan harus membaik tiap hari. Minum obat sesuai petunjuk.</p><p>Nyeri biasanya paling terasa di malam pertama dan membaik mulai hari ke-2. Minum pereda nyeri sesuai jadwal di dua hari pertama, jangan tunggu sampai nyeri menumpuk. Jika diberi antibiotik, habiskan sesuai resep.</p><p><strong>Boleh:</strong></p><ul><li>Minum obat sesuai resep</li><li>Makan dulu sebelum pereda nyeri</li><li>Istirahat</li></ul><p><strong>Jangan:</strong></p><ul><li>Menambah dosis sendiri</li><li>Minum aspirin kecuali diminta</li><li>Melewatkan antibiotik</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Nyeri yang makin parah setelah hari ke-3, nyeri berdenyut yang tak reda dengan obat, atau nyeri disertai demam.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 5,
+          "question": "Bagaimana cara minum obatnya?",
+          "shortAnswer": "Persis seperti tertulis di resep. Habiskan antibiotik walau sudah merasa baik.",
+          "answer": "<p>Persis seperti tertulis di resep. Habiskan antibiotik walau sudah merasa baik.</p><p>Lembar resepmu mencantumkan tiap obat, dosis, dan waktunya. Pereda nyeri paling baik diminum setelah makan. Jika mual, muncul ruam, atau lupa satu dosis, kirim pesan ke tim kami, jangan ubah sendiri.</p><p><strong>Boleh:</strong></p><ul><li>Ikuti lembar resep</li><li>Minum setelah makan</li><li>Habiskan antibiotik</li></ul><p><strong>Jangan:</strong></p><ul><li>Dobel dosis setelah lupa</li><li>Campur dengan alkohol</li><li>Berhenti lebih awal</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Ruam, gatal, bibir atau lidah bengkak, atau sulit bernapas setelah minum obat. Segera hubungi kami.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 6,
+          "question": "Aku boleh makan apa?",
+          "shortAnswer": "Makanan lunak, dingin atau suam-suam kuku selama 3 hari pertama. Jangan yang panas, pedas, renyah, atau tajam.",
+          "answer": "<p>Makanan lunak, dingin atau suam-suam kuku selama 3 hari pertama. Jangan yang panas, pedas, renyah, atau tajam.</p><p>Misalnya yoghurt, smoothie, kentang tumbuk, bubur, telur lembut, sup yang sudah tidak panas. Kunyah di sisi lain. Mulai hari ke-4 boleh pelan-pelan tambah makanan agak padat. Dari hari ke-7 kebanyakan makanan biasa sudah boleh, tetap hindari sisi implan.</p><p><strong>Boleh:</strong></p><ul><li>Makan yang lunak dan dingin</li><li>Kunyah di sisi lain</li><li>Cukup minum</li></ul><p><strong>Jangan:</strong></p><ul><li>Makanan panas atau pedas selama 3 hari</li><li>Yang renyah seperti keripik atau kacang</li><li>Pakai sedotan</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Tidak bisa makan atau minum sama sekali lebih dari sehari, atau merasa lemas.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 7,
+          "question": "Boleh makan pedas?",
+          "shortAnswer": "Belum, tunggu sampai hari ke-7. Pedas mengiritasi gusi yang sedang sembuh dan bisa memicu perdarahan.",
+          "answer": "<p>Belum, tunggu sampai hari ke-7. Pedas mengiritasi gusi yang sedang sembuh dan bisa memicu perdarahan.</p><p>Sambal, cabai, dan makanan sangat asam bikin luka perih dan bisa memicu perdarahan lagi di minggu pertama. Setelah hari ke-7, coba pedas ringan dulu. Kembali ke makanan hambar kalau terasa perih.</p><p><strong>Boleh:</strong></p><ul><li>Tunggu sampai hari ke-7</li><li>Mulai dari yang ringan</li><li>Kunyah di sisi lain</li></ul><p><strong>Jangan:</strong></p><ul><li>Makan sambal di minggu pertama</li><li>Makanan sangat asam</li><li>Dipaksakan kalau perih</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Perdarahan atau nyeri tajam setelah makan yang tidak reda dalam satu jam.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 8,
+          "question": "Boleh minum kopi?",
+          "shortAnswer": "Kopi hangat, bukan panas, boleh mulai hari ke-2. Hari tindakan sebaiknya jangan dulu.",
+          "answer": "<p>Kopi hangat, bukan panas, boleh mulai hari ke-2. Hari tindakan sebaiknya jangan dulu.</p><p>Panas meningkatkan perdarahan dan bengkak, jadi biarkan minuman jadi suam-suam kuku di 3 hari pertama. Kafeinnya sendiri tidak masalah. Hindari sedotan selama seminggu. Isapannya bisa mengganggu bekuan darah.</p><p><strong>Boleh:</strong></p><ul><li>Biarkan hangat, bukan panas</li><li>Minum dari gelas</li><li>Banyak minum air putih juga</li></ul><p><strong>Jangan:</strong></p><ul><li>Minum panas di 3 hari pertama</li><li>Pakai sedotan</li><li>Minum di hari tindakan</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Perdarahan yang muncul lagi setelah minum dan tidak berhenti dengan tekanan kasa.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 9,
+          "question": "Boleh sikat gigi?",
+          "shortAnswer": "Boleh, tapi pelan-pelan di sekitar area tindakan selama minggu pertama.",
+          "answer": "<p>Boleh, tapi pelan-pelan di sekitar area tindakan selama minggu pertama.</p><p>Sikat gigi lainnya seperti biasa mulai malam setelah tindakan. Pakai sikat lembut dan hindari area implannya sendiri sampai jadwal kontrol. Berkumur pelan dengan obat kumur dari kami menjaga area tetap bersih tanpa mengganggu gusi yang sedang sembuh.</p><p><strong>Boleh:</strong></p><ul><li>Sikat gigi lain seperti biasa</li><li>Pakai sikat lembut</li><li>Berkumur pelan, jangan dikocok</li></ul><p><strong>Jangan:</strong></p><ul><li>Menyikat area implan</li><li>Meludah keras</li><li>Pakai sikat elektrik dulu</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Perdarahan yang tidak berhenti setelah 30 menit ditekan, atau nyeri yang makin parah setelah hari ke-3.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 10,
+          "question": "Boleh pakai obat kumur?",
+          "shortAnswer": "Mulai hari ke-2, boleh, pelan-pelan. Pakai yang dari kami, atau air garam hangat.",
+          "answer": "<p>Mulai hari ke-2, boleh, pelan-pelan. Pakai yang dari kami, atau air garam hangat.</p><p>Jangan berkumur sama sekali di hari tindakan. Mulai hari berikutnya, miringkan kepala supaya cairan mengalir di area, bukan dikocok. Dua kali sehari selama seminggu sudah cukup.</p><p><strong>Boleh:</strong></p><ul><li>Mulai hari ke-2</li><li>Miringkan, jangan dikocok</li><li>Air garam hangat kalau habis</li></ul><p><strong>Jangan:</strong></p><ul><li>Berkumur di hari tindakan</li><li>Obat kumur beralkohol</li><li>Lebih dari 3 kali sehari</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Rasa atau bau tidak enak yang terus menerus disertai nyeri atau bengkak.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 11,
+          "question": "Tidurnya bagaimana malam ini?",
+          "shortAnswer": "Telentang dengan kepala ditinggikan dua bantal, selama 2–3 malam pertama.",
+          "answer": "<p>Telentang dengan kepala ditinggikan dua bantal, selama 2–3 malam pertama.</p><p>Kepala lebih tinggi dari jantung mengurangi bengkak dan rembesan semalaman. Usahakan tidak tidur miring ke sisi implan. Alasi bantal dengan handuk untuk jaga-jaga rembesan ringan. Itu normal.</p><p><strong>Boleh:</strong></p><ul><li>Kepala ditinggikan</li><li>Telentang atau miring ke sisi lain</li><li>Lepas kasa sebelum tidur</li></ul><p><strong>Jangan:</strong></p><ul><li>Tidur datar</li><li>Miring ke sisi tindakan</li><li>Tidur dengan kasa</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Bangun dengan bantal basah oleh darah.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 12,
+          "question": "Kapan boleh olahraga?",
+          "shortAnswer": "Jalan santai mulai hari ke-2. Gym, lari, atau apa pun yang memacu jantung tunggu sampai hari ke-7.",
+          "answer": "<p>Jalan santai mulai hari ke-2. Gym, lari, atau apa pun yang memacu jantung tunggu sampai hari ke-7.</p><p>Aktivitas berat menaikkan tekanan darah, yang bisa memicu perdarahan lagi dan memperparah bengkak. Kerja di meja boleh mulai besoknya kalau sudah merasa kuat. Berenang dan olahraga kontak tunggu 2 minggu.</p><p><strong>Boleh:</strong></p><ul><li>Jalan pelan mulai hari ke-2</li><li>Kembali kerja kantor saat nyaman</li><li>Mulai olahraga bertahap</li></ul><p><strong>Jangan:</strong></p><ul><li>Angkat berat di minggu pertama</li><li>Kardio sebelum hari ke-7</li><li>Berenang selama 2 minggu</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Perdarahan atau denyut yang muncul setelah aktivitas dan tidak reda dengan istirahat.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 13,
+          "question": "Boleh merokok?",
+          "shortAnswer": "Tolong jangan, minimal 2 minggu. Merokok adalah penyebab terbesar kegagalan implan.",
+          "answer": "<p>Tolong jangan, minimal 2 minggu. Merokok adalah penyebab terbesar kegagalan implan.</p><p>Merokok mengurangi aliran darah ke tulang dan gusi, memperlambat penyembuhan, dan sangat meningkatkan risiko implan tidak menyatu. Vape juga termasuk. Kalau butuh bantuan berhenti, bilang ke kami. Lebih baik kami bantu daripada implannya gagal.</p><p><strong>Boleh:</strong></p><ul><li>Tunggu minimal 2 minggu</li><li>Tanya kami soal bantuan berhenti</li><li>Jujur kalau kelepasan</li></ul><p><strong>Jangan:</strong></p><ul><li>Merokok atau vape di 2 minggu pertama</li><li>Permen nikotin dekat area</li><li>Menganggap satu batang tidak apa-apa</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Bukan darurat, tapi beri tahu dokter saat kontrol kalau kamu merokok.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 14,
+          "question": "Boleh minum alkohol?",
+          "shortAnswer": "Jangan selama masih minum antibiotik atau pereda nyeri, dan sebaiknya tidak di minggu pertama.",
+          "answer": "<p>Jangan selama masih minum antibiotik atau pereda nyeri, dan sebaiknya tidak di minggu pertama.</p><p>Alkohol mengencerkan darah, mengeringkan mulut, dan berinteraksi dengan obat. Setelah obat selesai, sedikit tidak apa-apa.</p><p><strong>Boleh:</strong></p><ul><li>Tunggu sampai obat selesai</li><li>Minum air putih saja minggu ini</li></ul><p><strong>Jangan:</strong></p><ul><li>Campur dengan antibiotik atau pereda nyeri</li><li>Minum di hari 0–3</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Merasa tidak enak badan setelah mencampur alkohol dengan obat.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 15,
+          "question": "Kapan boleh mengunyah di sisi itu?",
+          "shortAnswer": "Tetap kunyah di sisi lain sampai dokter menyatakan implan sudah menyatu, biasanya 3–6 bulan.",
+          "answer": "<p>Tetap kunyah di sisi lain sampai dokter menyatakan implan sudah menyatu, biasanya 3–6 bulan.</p><p>Selama itu implan sedang menyatu dengan tulang, dan tekanan bisa mengganggunya. Makanan biasa boleh setelah minggu pertama, cukup di sisi lain. Dokter akan memeriksa penyatuan saat kontrol.</p><p><strong>Boleh:</strong></p><ul><li>Kunyah di sisi lain</li><li>Potong makanan lebih kecil</li><li>Datang kontrol</li></ul><p><strong>Jangan:</strong></p><ul><li>Menguji implan dengan makanan keras</li><li>Mengunyah es atau tulang</li><li>Melewatkan kontrol</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Area implan terasa goyang, atau terasa bergerak saat disentuh.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 16,
+          "question": "Apa yang terjadi saat kontrol?",
+          "shortAnswer": "Pemeriksaan singkat penyembuhan, biasanya 7–10 hari setelah tindakan. Jahitan dilepas bila perlu.",
+          "answer": "<p>Pemeriksaan singkat penyembuhan, biasanya 7–10 hari setelah tindakan. Jahitan dilepas bila perlu.</p><p>Kunjungan sekitar 15 menit. Dokter melihat gusi, memastikan implan stabil, melepas jahitan jika bukan yang larut sendiri, dan memberi tahu kapan area boleh dibersihkan normal. Bawa lembar resepmu.</p><p><strong>Boleh:</strong></p><ul><li>Bawa lembar resep</li><li>Ceritakan hal yang tidak biasa</li><li>Tanyakan pertanyaanmu</li></ul><p><strong>Jangan:</strong></p><ul><li>Melewatkan karena merasa baik</li><li>Makan tepat sebelum lepas jahitan</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Tidak bisa datang di tanggal kontrol: kirim pesan untuk menggesernya, jangan dilewatkan.</p>",
+          "isFeatured": true
+        },
+        {
+          "faqId": 17,
+          "question": "Cara merawat implan jangka panjang?",
+          "shortAnswer": "Sikat dua kali sehari, bersihkan sela dengan benang gigi atau sikat interdental, dan datang untuk pembersihan profesional tiap 6 bulan.",
+          "answer": "<p>Sikat dua kali sehari, bersihkan sela dengan benang gigi atau sikat interdental, dan datang untuk pembersihan profesional tiap 6 bulan.</p><p>Implan tidak bisa berlubang, tapi gusi di sekitarnya bisa infeksi seperti gigi asli. Pembersihan harian di sekitar leher implan dan pembersihan profesional rutin adalah kunci implan tahan seumur hidup.</p><p><strong>Boleh:</strong></p><ul><li>Sikat dua kali sehari dengan sikat lembut</li><li>Pakai benang gigi atau sikat interdental</li><li>Pembersihan profesional tiap 6 bulan</li></ul><p><strong>Jangan:</strong></p><ul><li>Pasta gigi abrasif</li><li>Tidak dibersihkan karena bukan gigi asli</li><li>Mengunyah yang sangat keras</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Gusi berdarah di sekitar implan, rasa tidak enak, atau mahkota terasa goyang.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 18,
+          "question": "Tanda-tanda yang perlu diwaspadai",
+          "shortAnswer": "Implan goyang, demam, nanah, gusi berdarah di sekitarnya, atau nyeri yang kembali: hubungi kami.",
+          "answer": "<p>Implan goyang, demam, nanah, gusi berdarah di sekitarnya, atau nyeri yang kembali: hubungi kami.</p><p>Kebanyakan implan sembuh tanpa masalah. Tanda yang perlu diperiksa: implan atau mahkota terasa goyang, bengkak atau nyeri kembali setelah sempat reda, demam, rasa tidak enak atau cairan keluar, atau gusi berdarah saat dibersihkan.</p><p><strong>Boleh:</strong></p><ul><li>Hubungi kami jika ada tanda di daftar ini</li><li>Rutin kontrol</li></ul><p><strong>Jangan:</strong></p><ul><li>Menunggu kalau implan goyang</li><li>Minum sisa antibiotik</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Salah satu tanda di atas. Seluruh artikel ini adalah daftar “hubungi klinik”.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 2,
+      "groupName": "Bone graft",
+      "groupDescription": "Penambahan tulang: apa, bahan, rasa pasir, pantangan",
+      "faqItems": [
+        {
+          "faqId": 19,
+          "question": "Apa itu bone graft, dan kenapa saya membutuhkannya?",
+          "shortAnswer": "Penambahan bahan tulang di area rahang yang tipis agar implan tertanam kuat.",
+          "answer": "<p>Bone graft adalah penambahan bahan tulang pada area rahang yang tipis, supaya implan punya pegangan yang kuat. Ini langkah tambahan yang umum dan aman.</p><p>Dokter menyarankannya bila tulang di area implan belum cukup tebal atau tinggi. Keputusan ini diambil dari hasil pemeriksaan dan rontgen kamu.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 20,
+          "question": "Bahan bone graft berasal dari apa?",
+          "shortAnswer": "Bahan steril yang sudah teruji. Jenisnya disesuaikan dengan kondisimu.",
+          "answer": "<p>Bahan yang digunakan steril dan sudah teruji untuk tindakan gigi. Jenisnya dipilih dokter sesuai kondisi tulangmu.</p><p>Kalau kamu punya pertimbangan khusus soal asal bahan, sampaikan saat konsultasi. Dokter akan menjelaskan jenis yang dipakai pada kasusmu sebelum tindakan.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 21,
+          "question": "Ada rasa seperti pasir di mulut. Apakah normal?",
+          "shortAnswer": "Normal setelah bone graft. Biarkan saja dan kontrol di minggu ke-2.",
+          "answer": "<p>Normal. Setelah bone graft, butiran kecil bisa terasa seperti pasir di dalam mulut.</p><ul><li>Biarkan saja, jangan dikorek dengan lidah atau jari.</li><li>Jangan berkumur keras.</li><li>Lakukan kontrol pada minggu ke-2 agar dokter memeriksa penyembuhannya.</li></ul>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 22,
+          "question": "Apa pantangan setelah bone graft?",
+          "shortAnswer": "Tidak berenang 2 minggu, jangan menekan area, hindari makanan keras dan panas.",
+          "answer": "<ul><li>Belum diperkenankan berenang selama 2 minggu.</li><li>Jangan menekan, menyentuh, atau menyikat langsung area tindakan.</li><li>Hindari makanan keras dan panas di area itu.</li><li>Jangan merokok. Rokok memperlambat penyembuhan tulang.</li><li>Jangan berkumur keras atau minum pakai sedotan di minggu pertama.</li></ul>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 23,
+          "question": "Apakah penyembuhan jadi lebih lama dengan bone graft?",
+          "shortAnswer": "Bisa sedikit lebih lama, dan area mungkin terasa lebih bengkak. Ini normal.",
+          "answer": "<p>Bisa sedikit lebih lama. Area juga mungkin terasa lebih bengkak atau penuh dibanding implan tanpa bone graft. Ini normal.</p><p>Dokter memantau lewat jadwal kontrol. Tahap pembuatan mahkota dimulai setelah tulang dan implan menyatu. Durasi dan jumlah kunjungan bisa berbeda di tiap pasien.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 3,
+      "groupName": "Sinus lift",
+      "groupDescription": "Rahang atas belakang: pesawat, bersin, hidung",
+      "faqItems": [
+        {
+          "faqId": 24,
+          "question": "Apa itu sinus lift?",
+          "shortAnswer": "Menambah tinggi tulang di rahang atas belakang, dekat rongga sinus.",
+          "answer": "<p>Sinus lift adalah tindakan menambah tinggi tulang di rahang atas bagian belakang, dekat rongga sinus, supaya implan bisa tertanam kuat. Ini langkah tambahan yang umum dan aman.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 25,
+          "question": "Kapan boleh naik pesawat setelah sinus lift?",
+          "shortAnswer": "Belum diperkenankan selama 1 minggu.",
+          "answer": "<p>Belum diperkenankan naik pesawat selama 1 minggu setelah sinus lift. Perubahan tekanan udara bisa mengganggu area yang baru ditangani.</p><p>Kalau kamu punya jadwal terbang, sampaikan ke dokter sebelum tindakan supaya tanggalnya bisa diatur.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 26,
+          "question": "Bagaimana kalau saya ingin bersin atau batuk?",
+          "shortAnswer": "Bersin dengan mulut terbuka, jangan ditahan.",
+          "answer": "<p>Bersin atau batuk dengan mulut terbuka, dan jangan ditahan. Cara ini mengurangi tekanan pada rongga sinus.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 27,
+          "question": "Hidung terasa mampet. Bolehkah membuang ingus?",
+          "shortAnswer": "Jangan membuang ingus dengan keras. Seka saja.",
+          "answer": "<p>Jangan membuang ingus dengan keras selama masa penyembuhan. Seka saja dengan tisu.</p><p>Sedikit darah dari hidung di hari-hari pertama bisa terjadi. Hubungi kami bila terus berlanjut, atau bila disertai nyeri hebat dan demam.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 28,
+          "question": "Apa pantangan lain setelah sinus lift?",
+          "shortAnswer": "Tidak berenang 2 minggu, hindari sedotan, meniup, dan angkat berat.",
+          "answer": "<ul><li>Belum diperkenankan berenang selama 2 minggu.</li><li>Hindari minum pakai sedotan dan kegiatan meniup (balon, alat musik tiup).</li><li>Hindari mengangkat beban berat dan olahraga berat di minggu pertama.</li><li>Tidur dengan kepala lebih tinggi beberapa malam pertama.</li><li>Jangan merokok.</li></ul>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 4,
+      "groupName": "All-on-X",
+      "groupDescription": "Satu rahang penuh: gigi sementara, bersih, adaptasi",
+      "faqItems": [
+        {
+          "faqId": 29,
+          "question": "Apa itu All-on-X?",
+          "shortAnswer": "Satu rahang penuh gigi tiruan cekat yang ditopang beberapa implan.",
+          "answer": "<p>All-on-X adalah satu rahang penuh gigi tiruan cekat yang ditopang oleh beberapa implan. Jumlah implannya ditentukan dokter sesuai kondisi tulangmu.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 30,
+          "question": "Apakah saya langsung mendapat gigi?",
+          "shortAnswer": "Umumnya gigi sementara dulu, gigi permanen setelah implan menyatu.",
+          "answer": "<p>Umumnya kamu memakai gigi sementara terlebih dahulu. Gigi permanen dibuat setelah implan menyatu dengan tulang.</p><p>Waktunya berbeda di tiap pasien. Dokter akan menjelaskan jadwalmu, dan durasi serta jumlah kunjungan bisa berubah untuk mencapai hasil terbaik.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 31,
+          "question": "Boleh makan apa dengan gigi sementara?",
+          "shortAnswer": "Makanan lembut, dipotong kecil. Hindari yang keras dan lengket.",
+          "answer": "<ul><li>Pilih makanan lembut: bubur, sup, telur, ikan, pasta.</li><li>Potong makanan kecil-kecil dan kunyah perlahan di kedua sisi.</li><li>Hindari makanan keras, lengket, dan menggigit langsung dengan gigi depan.</li><li>Ikuti arahan dokter kapan boleh kembali ke makanan biasa.</li></ul>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 32,
+          "question": "Bagaimana cara membersihkan gigi All-on-X?",
+          "shortAnswer": "Sikat lembut dua kali sehari dan bersihkan bagian bawahnya dengan water floss.",
+          "answer": "<ul><li>Sikat dua kali sehari dengan sikat berbulu lembut.</li><li>Bersihkan celah di bawah gigi tiruan dengan water floss atau sikat interdental setiap hari.</li><li>Gunakan obat kumur sesuai anjuran dokter.</li><li>Datang untuk pembersihan profesional dan kontrol sesuai jadwal.</li></ul>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 33,
+          "question": "Bicara dan gigitan terasa aneh. Apakah normal?",
+          "shortAnswer": "Normal di awal. Biasanya menyesuaikan dalam beberapa hari sampai minggu.",
+          "answer": "<p>Normal. Lidah dan otot mulut butuh waktu untuk menyesuaikan diri dengan gigi baru. Membaca dengan suara keras membantu mempercepat adaptasi bicara.</p><p>Hubungi kami bila ada titik yang terasa sakit, gigitan terasa mengganjal, atau gigi sementara terasa goyang.</p>",
+          "isFeatured": false
+        }
+      ]
+    },
+    {
+      "groupId": 5,
+      "groupName": "Jadwal & pembayaran",
+      "groupDescription": "Kontrol, ubah jadwal, cicilan",
+      "faqItems": [
+        {
+          "faqId": 34,
+          "question": "Jadwal kontrol & ubah jadwal",
+          "shortAnswer": "Kontrol jahitan 7–10 hari, lalu bulan ke-3 dengan rontgen. Ubah jadwal lewat chat.",
+          "answer": "<p>Kontrol jahitan 7–10 hari, lalu bulan ke-3 dengan rontgen. Ubah jadwal lewat chat.</p><p>Kirim di chat tanggal dan jam yang kamu mau, contoh “Sabtu 3 Okt jam 14:00”. Admin konfirmasi dalam 15 menit di jam buka. Sehari sebelum jadwal kamu dapat pengingat di app, balas OK untuk konfirmasi.</p><p><strong>Boleh:</strong></p><ul><li>Tulis 2 pilihan jadwal supaya cepat cocok</li><li>Konfirmasi pengingat sehari sebelumnya</li></ul><p><strong>Jangan:</strong></p><ul><li>Melewatkan kontrol karena merasa baik</li><li>Datang terlambat lebih dari 20 menit</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Tidak bisa datang di tanggal kontrol. Kirim pesan untuk menggesernya.</p>",
+          "isFeatured": false
+        },
+        {
+          "faqId": 35,
+          "question": "Pembayaran & cicilan",
+          "shortAnswer": "Pembayaran per tahap: pemasangan implan, lalu crown. Cicilan 0% via Wellpay.",
+          "answer": "<p>Pembayaran per tahap: pemasangan implan, lalu crown. Cicilan 0% via Wellpay.</p><p>Transfer hanya ke rekening resmi a.n. PT Tanam Dental. Cicilan 0% 3–12 bulan lewat Wellpay dan kartu kredit bank partner, ajukan di front desk. Bukti transfer kirim di chat, admin konfirmasi dalam 1 hari kerja.</p><p><strong>Boleh:</strong></p><ul><li>Simpan bukti transfer</li><li>Minta kwitansi PDF lewat chat</li></ul><p><strong>Jangan:</strong></p><ul><li>Transfer ke rekening pribadi siapa pun</li></ul><p><strong>Kapan harus menghubungi klinik:</strong> Ada pihak yang meminta transfer ke rekening pribadi atas nama klinik. Laporkan ke kami.</p>",
+          "isFeatured": false
+        }
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import {
   removeToken,
   setPermissions,
   setToken,
+  setUserName,
 } from '@/components/auth'
 import { loginSchema } from '@/model/user'
 import { queryClient } from '@libs/query-client'
@@ -30,7 +31,7 @@ export async function authLoginLoader({ request }: ActionFunctionArgs) {
   if (token) {
     if (isTokenValid(token)) {
       const params = new URL(request.url).searchParams
-      const from = params.get('from') || '/chat'
+      const from = params.get('from') || '/home'
 
       return redirect(from)
     }
@@ -53,16 +54,10 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
       queryClient.invalidateQueries()
 
       setToken(tokenResult)
-
-      showToast({
-        type: 'success',
-        title: 'Account Activation Successful!',
-        message:
-          'Your account is now active. Please log in using the password you created.',
-      })
+      setUserName(result?.account?.name ?? '')
 
       const params = new URL(request.url).searchParams
-      const from = params.get('from') || '/chat'
+      const from = params.get('from') || '/home'
 
       return redirect(from)
     }
