@@ -8,7 +8,6 @@ export function HomeRataPage() {
   return (
     <>
       <BrandIntro brand="rata" />
-      {/* @todo: show the trackers only to patients with an active RATA treatment */}
       <TrackerGrid>
         <AlignerTracker />
         <RemovalTracker />

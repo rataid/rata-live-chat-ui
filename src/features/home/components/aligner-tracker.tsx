@@ -36,6 +36,8 @@ import {
   TrackerValueSuffix,
 } from './home.style'
 
+const ALIGNER_HISTORY_LIMIT = 3
+
 export function AlignerTracker() {
   const queryClient = useQueryClient()
 
@@ -43,7 +45,7 @@ export function AlignerTracker() {
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
 
-  const historyQuery = useAlignerHistory(isHistoryOpen)
+  const historyQuery = useAlignerHistory(isHistoryOpen, ALIGNER_HISTORY_LIMIT)
 
   // The server adds a history row when the set changes
   const refreshHistory = () =>

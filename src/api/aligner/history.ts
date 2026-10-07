@@ -12,18 +12,23 @@ export type AlignerHistoryItem = {
   changedOn: string
 }
 
-export const getAlignerHistory = async (): Promise<AlignerHistoryItem[]> => {
+export const getAlignerHistory = async (
+  limit?: number
+): Promise<AlignerHistoryItem[]> => {
   const res = await axiosInstance.get<{ items?: AlignerHistoryItem[] }>(
-    ALIGNER_HISTORY_ENDPOINT
+    ALIGNER_HISTORY_ENDPOINT,
+    { params: { limit } }
   )
 
   return res.data?.items ?? []
 }
 
-export const useAlignerHistory = (enabled: boolean) =>
+// The limit is part of the key; invalidating alignerHistoryKey still
+// refreshes every limit
+export const useAlignerHistory = (enabled: boolean, limit?: number) =>
   useQuery({
-    queryKey: alignerHistoryKey,
-    queryFn: getAlignerHistory,
+    queryKey: [...alignerHistoryKey, { limit }],
+    queryFn: () => getAlignerHistory(limit),
     enabled,
     refetchOnWindowFocus: false,
   })
