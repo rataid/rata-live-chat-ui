@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7
+
 # ---------- Build ----------
 FROM node:22-alpine AS builder
 ENV PNPM_HOME="/pnpm" PATH="/pnpm:$PATH" COREPACK_ENABLE_DOWNLOAD_PROMPT=0
@@ -8,7 +10,8 @@ ARG PNPM_VERSION=
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+# Copy package management files (termasuk workspace jika ada)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
 
 # Pilih versi pnpm yang cocok dengan lockfile, lalu install dependency
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
@@ -31,6 +34,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 
 COPY . .
 
+# Dikirim dari CI: --build-arg ENV_FILE=".env.build"
 ARG ENV_FILE=.env.build
 
 # 1) File env harus ada dan berisi VITE_API_ENDPOINT yang tidak kosong
@@ -38,10 +42,11 @@ RUN test -s "$ENV_FILE" || { echo "ERROR: $ENV_FILE kosong/tidak ada"; exit 1; }
  && grep -q '^VITE_API_ENDPOINT=.\+' "$ENV_FILE" \
  || { echo "ERROR: VITE_API_ENDPOINT tidak ada/kosong di $ENV_FILE"; exit 1; }
 
-# 2) Jalankan script build via pnpm run build
+# 2) Buang file env lain yang bisa menimpa, lalu build dengan '--dir .' agar tidak error di workspace
+# 3) Verifikasi nilai endpoint benar-benar masuk ke bundle
 RUN rm -f .env .env.local .env.production .env.production.local \
  && cp "$ENV_FILE" .env \
- && pnpm run build \
+ && pnpm --dir . run build \
  && VAL="$(sed -n 's/^VITE_API_ENDPOINT=//p' .env | tr -d '\r"' | head -n1)" \
  && test -n "$VAL" \
  && grep -rqF "$VAL" dist \
