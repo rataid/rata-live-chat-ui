@@ -1,4 +1,4 @@
-import { RouteObject } from 'react-router-dom'
+import { RouteObject, redirect } from 'react-router-dom'
 
 import { authLoginLoader } from '../login/pages/login.route'
 import {
@@ -7,6 +7,13 @@ import {
 } from './pages/reset-password.route'
 
 const resetPasswordRoutes: RouteObject[] = [
+  {
+    path: 'rp/:token',
+    loader: ({ params }) =>
+      redirect(
+        `/reset-password?token=${encodeURIComponent(params.token ?? '')}`
+      ),
+  },
   {
     path: 'reset-password',
     async lazy() {
@@ -18,7 +25,6 @@ const resetPasswordRoutes: RouteObject[] = [
     children: [
       {
         index: true,
-        // Redirect to dashboard when already logged in
         loader: async (args) =>
           (await authLoginLoader(args)) ?? authResetPasswordLoader(args),
         action: authResetPasswordAction,
