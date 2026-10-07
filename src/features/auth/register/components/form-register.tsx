@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
@@ -14,20 +15,39 @@ import {
 import { InputPhone } from '@nui/form/input/components/phone'
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
-import Icon from '@nui/ui/icon'
+import { useDialog } from '@nui/ui/dialog'
 
 import {
-  AuthBackLink,
-  AuthFormLoginError,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-} from '../../login/components/form-login.style'
-import { AuthRegisterActionData } from '../pages/register.route'
+  AuthCard,
+  AuthFooter,
+  AuthHeading,
+  AuthLink,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
+import {
+  AuthRegisterActionData,
+  REGISTER_ERROR_CUSTOMER_NOT_FOUND,
+} from '../pages/register.route'
 
 export default function AuthFormRegister() {
   const actionData = useActionData() as AuthRegisterActionData | undefined
+
+  const isNotFound = actionData?.code === REGISTER_ERROR_CUSTOMER_NOT_FOUND
+
+  const { openDialog } = useDialog()
+
+  // Reopen on every submit that returns the not found error
+  useEffect(() => {
+    if (!isNotFound) return
+
+    openDialog({
+      title: 'Data Not Found',
+      message:
+        "We couldn't find your details in our system. Live Chat is for registered patients only. Feel free to contact us if you think this is a mistake.",
+      closable: true,
+    })
+  }, [actionData, isNotFound, openDialog])
 
   const isSubmitting = useNavigation().state !== 'idle'
 
@@ -52,25 +72,17 @@ export default function AuthFormRegister() {
   const isFilled = values.every(Boolean)
 
   return (
-    <AuthFormLoginMain>
-      <AuthBackLink to="/login">
-        <Icon icon="lucide-arrow-left" size="2xs" />
-        Back to Login
-      </AuthBackLink>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Account Activation</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
-          Enter your registered clinic details and create a password to get
-          started.
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
-      {actionData?.success === false && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
-      )}
+    <AuthCard>
+      <AuthHeading>
+        <AuthTitle>Account Activation</AuthTitle>
+        <AuthSubtitle>
+          Create a password to start using your patient account.
+        </AuthSubtitle>
+      </AuthHeading>
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
           <FormControl required error={errors.name}>
-            <FormLabel>Nama Lengkap</FormLabel>
+            <FormLabel>Fullname</FormLabel>
             <Controller
               name="name"
               defaultValue=""
@@ -145,7 +157,7 @@ export default function AuthFormRegister() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-3">
+        <FormAction className="!pt-3">
           <Button
             type="submit"
             wider="full"
@@ -156,6 +168,9 @@ export default function AuthFormRegister() {
           </Button>
         </FormAction>
       </Form>
-    </AuthFormLoginMain>
+      <AuthFooter>
+        Already active? <AuthLink to="/login">Log in</AuthLink>
+      </AuthFooter>
+    </AuthCard>
   )
 }

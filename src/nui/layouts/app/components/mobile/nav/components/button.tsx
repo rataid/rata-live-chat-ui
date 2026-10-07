@@ -14,7 +14,7 @@ export default function MenuMobileButton({
   return (
     <button
       type="button"
-      tw="hover:bg-gray-100 p-2 rounded-lg text-gray-500"
+      className="hover:bg-gray-100 p-2 rounded-lg text-gray-500"
       onClick={() => setOpen((e) => !e)}
     >
       <svg width="16" height="16" viewBox="0 0 20 20">
@@ -23,7 +23,7 @@ export default function MenuMobileButton({
           strokeWidth="2"
           stroke="currentColor"
           strokeLinecap="round"
-          tw="ease-in-out duration-200"
+          className="ease-in-out duration-200"
           d={open ? pathVariants.top.open : pathVariants.top.closed}
         />
         <path
@@ -32,7 +32,7 @@ export default function MenuMobileButton({
           stroke="currentColor"
           strokeLinecap="round"
           d="M 2 9.423 L 16 9.423"
-          tw="ease-in-out duration-200"
+          className="ease-in-out duration-200"
           opacity={open ? pathVariants.middle.open : pathVariants.middle.closed}
         />
         <path
@@ -40,7 +40,7 @@ export default function MenuMobileButton({
           strokeWidth="2"
           stroke="currentColor"
           strokeLinecap="round"
-          tw="ease-in-out duration-200"
+          className="ease-in-out duration-200"
           d={open ? pathVariants.bottom.open : pathVariants.bottom.closed}
         />
       </svg>

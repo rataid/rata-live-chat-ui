@@ -34,7 +34,7 @@ export default function GeneralError({
           <Button
             size="xs"
             variant="secondaryGray"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/home')}
           >
             Back Home
           </Button>

@@ -9,7 +9,7 @@ import {
 } from '@floating-ui/react'
 import { useCombobox, useMultipleSelection } from 'downshift'
 import { useMemo, useRef, useState } from 'react'
-import tw from 'twin.macro'
+import { tw } from '@nui/utils/tw'
 
 import { Input } from '@nui/form'
 import Icon from '@nui/ui/icon'
@@ -190,8 +190,8 @@ export function MultipleCombobox<T>({
             <Icon icon="lucide-chevron-down" size="xs" />
           </MultipleComboboxControlIndicator>
         </MultipleComboboxSelectedWrapper>
-        <div tw="w-full relative bg-white p-0">
-          <div css={[isOpen ? tw`block mt-1 sticky py-1` : tw`hidden`]}>
+        <div className="w-full relative bg-white p-0">
+          <div className={isOpen ? tw`block mt-1 sticky py-1` : tw`hidden`}>
             <Input
               {...getInputProps(
                 getDropdownProps({
@@ -207,7 +207,7 @@ export function MultipleCombobox<T>({
         {isOpen && (
           <FloatingPortal id={portalId}>
             <div
-              tw="relative z-[9999]"
+              className="relative z-[9999]"
               style={floatingStyles}
               ref={refs.setFloating}
             >

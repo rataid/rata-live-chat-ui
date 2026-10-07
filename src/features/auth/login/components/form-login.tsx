@@ -14,41 +14,56 @@ import {
 } from '@nui/form'
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
-import PopupDialog, {
-  PopupDialogBody,
-  PopupDialogFooter,
-  PopupDialogHeader,
-} from '@nui/ui/popup-dialog'
-import { maskEmail } from '@utils'
+import { useDialog } from '@nui/ui/dialog'
 
+import {
+  AuthCard,
+  AuthFooter,
+  AuthHeading,
+  AuthLink,
+  AuthMore,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
 import {
   AuthLoginActionData,
   LOGIN_ERROR_ACCOUNT_INACTIVE,
 } from '../pages/login.route'
-import {
-  AuthFormLoginError,
-  AuthFormLoginFooter,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginMore,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-  AuthLink,
-} from './form-login.style'
 
 export default function AuthFormLogin() {
   const actionData = useActionData() as AuthLoginActionData | undefined
 
   const isInactive = actionData?.code === LOGIN_ERROR_ACCOUNT_INACTIVE
 
-  const [isInactiveOpen, setIsInactiveOpen] = useState(false)
+  const { openDialog } = useDialog()
 
   // Reopen on every submit that returns the inactive error
   useEffect(() => {
-    if (isInactive) setIsInactiveOpen(true)
-  }, [actionData, isInactive])
+    if (isInactive) {
+      openDialog({
+        title: 'Verify your account',
+        message:
+          'Your account has not been activated yet. Check your email for the activation link, or request a new one.',
+        actions: [
+          { label: 'Close', variant: 'secondaryGray' },
+          // @todo: call the resend activation email API once available
+          { label: 'Resend Email' },
+        ],
+      })
+    }
+  }, [actionData, isInactive, openDialog])
 
-  const isSubmitting = useNavigation().state !== 'idle'
+  const navigation = useNavigation()
+  // Show the spinner on click. Navigation state only flips after the request starts,
+  // which is too late to see on a fast login.
+  const [pending, setPending] = useState(false)
+  const isSubmitting = pending || navigation.state !== 'idle'
+
+  useEffect(() => {
+    if (navigation.state === 'idle') {
+      setPending(false)
+    }
+  }, [navigation.state])
 
   const { methods, onSubmit } = useFormHelper({
     schema: loginSchema,
@@ -65,17 +80,23 @@ export default function AuthFormLogin() {
   const isFilled = !!email && !!password
 
   return (
-    <AuthFormLoginMain>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Welcome</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
-          Log in to your patient account
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
-      {actionData?.success === false && !isInactive && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
-      )}
-      <Form onSubmit={onSubmit}>
+    <AuthCard>
+      <AuthHeading>
+        <AuthTitle>Exclusively for Rata, Tanam and Vinir customers</AuthTitle>
+        <AuthSubtitle>Log in to continue.</AuthSubtitle>
+      </AuthHeading>
+      <Form
+        onSubmit={async (event) => {
+          event.preventDefault()
+          setPending(true)
+          const valid = await methods.trigger()
+          if (!valid) {
+            setPending(false)
+            return
+          }
+          onSubmit(event)
+        }}
+      >
         <FormMain gap="sm">
           <FormControl required error={errors.email}>
             <FormLabel>Email / Phone Number</FormLabel>
@@ -111,10 +132,10 @@ export default function AuthFormLogin() {
             />
           </FormControl>
         </FormMain>
-        <AuthFormLoginMore>
+        <AuthMore>
           <AuthLink to="/forgot-password">Forgot password?</AuthLink>
-        </AuthFormLoginMore>
-        <FormAction tw="!pt-3">
+        </AuthMore>
+        <FormAction className="!pt-3">
           <Button
             type="submit"
             wider="full"
@@ -125,34 +146,10 @@ export default function AuthFormLogin() {
           </Button>
         </FormAction>
       </Form>
-      <AuthFormLoginFooter>
+      <AuthFooter>
         Don&apos;t have an account yet?{' '}
         <AuthLink to="/register">Account Activation</AuthLink>
-      </AuthFormLoginFooter>
-      <PopupDialog open={isInactiveOpen} onOpenChange={setIsInactiveOpen}>
-        <PopupDialogHeader>Email Not Verified</PopupDialogHeader>
-        <PopupDialogBody>
-          Your email{' '}
-          <span tw="font-semibold text-gray-900">
-            ({maskEmail(actionData?.email)})
-          </span>{' '}
-          isn&apos;t verified yet. Check your inbox or spam folder to complete
-          activation.
-        </PopupDialogBody>
-        <PopupDialogFooter>
-          <Button
-            variant="secondaryGray"
-            fontWeight="medium"
-            onClick={() => setIsInactiveOpen(false)}
-          >
-            Close
-          </Button>
-          {/* @todo: call the resend activation email API once available */}
-          <Button fontWeight="medium" onClick={() => setIsInactiveOpen(false)}>
-            Resend Email
-          </Button>
-        </PopupDialogFooter>
-      </PopupDialog>
-    </AuthFormLoginMain>
+      </AuthFooter>
+    </AuthCard>
   )
 }

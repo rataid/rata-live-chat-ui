@@ -1,0 +1,263 @@
+name: Build and Deploy Live Chat UI
+
+on:
+  push:
+    branches:
+      - sandbox
+      - beta
+
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: "Pilih Environment Target"
+        required: true
+        default: "sandbox"
+        type: choice
+        options:
+          - sandbox
+          - beta
+          - production
+      image_tag:
+        description: "Tag docker image custom (opsional, kosongkan untuk auto datetime)"
+        required: false
+        default: ""
+
+env:
+  IMAGE_NAME: registry.rata.id/rata-live-chat-ui
+  K8S_NAMESPACE: rata-dynamic
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.build-tag.outputs.tag }}
+      selected_env: ${{ steps.set-env.outputs.env }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Environment Context
+        id: set-env
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_ENV: ${{ inputs.target_env }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            ENV_TARGET="$INPUT_ENV"
+          else
+            BRANCH="${GITHUB_REF##*/}"
+            case "$BRANCH" in
+              beta) ENV_TARGET="beta" ;;
+              sandbox) ENV_TARGET="sandbox" ;;
+              *) ENV_TARGET="sandbox" ;;
+            esac
+          fi
+          echo "env=$ENV_TARGET" >> "$GITHUB_OUTPUT"
+          echo "TARGET_ENV=$ENV_TARGET" >> "$GITHUB_ENV"
+
+      # CATATAN: nama secret HARUS persis sama dengan yang ada di
+      # Settings > Secrets and variables > Actions > Repository secrets.
+      # Sandbox sudah dikonfirmasi: ENV_SANDBOX.
+      # ENV_BETA dan ENV_PROD adalah asumsi, sesuaikan jika nama aslinya beda.
+      - name: Create .env from Secrets
+        env:
+          ENV_PROD: ${{ secrets.ENV_PROD }}
+          ENV_BETA: ${{ secrets.ENV_BETA }}
+          ENV_SANDBOX: ${{ secrets.ENV_SANDBOX }}
+        run: |
+          case "$TARGET_ENV" in
+            production) printf '%s\n' "$ENV_PROD" > .env.build ;;
+            beta)       printf '%s\n' "$ENV_BETA" > .env.build ;;
+            *)          printf '%s\n' "$ENV_SANDBOX" > .env.build ;;
+          esac
+
+          # buang CRLF dari copy-paste Windows
+          sed -i 's/\r$//' .env.build
+
+          if ! grep -q '^VITE_API_ENDPOINT=.\+' .env.build; then
+            echo "::error::VITE_API_ENDPOINT kosong/tidak ada untuk env '$TARGET_ENV'. Cek nama secret (ENV_SANDBOX / ENV_BETA / ENV_PROD) dan isinya."
+            exit 1
+          fi
+
+          # tampilkan nama variabel saja (aman, tanpa nilai)
+          echo "Variabel di .env.build:"
+          cut -d= -f1 .env.build
+
+      - name: Set Image Tag (Datetime Format)
+        id: build-tag
+        env:
+          INPUT_TAG: ${{ inputs.image_tag }}
+        run: |
+          TS=$(date +%Y%m%d%H%M)
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          else
+            TAG="$TS"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Private Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.rata.id
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and Push image
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --build-arg ENV_FILE=".env.build" \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
+            -f Dockerfile \
+            -t ${{ env.IMAGE_NAME }}:${{ steps.build-tag.outputs.tag }} \
+            --push .
+
+  # ==========================================
+  # STAGE 2: DEPLOY NON-PROD (Sandbox & Beta)
+  # ==========================================
+  deploy-nonprod:
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push' && (github.ref == 'refs/heads/sandbox' || github.ref == 'refs/heads/beta')) ||
+      (github.event_name == 'workflow_dispatch' && needs.build.outputs.selected_env != 'production')
+    env:
+      TARGET: ${{ needs.build.outputs.selected_env }}
+      TAG: ${{ needs.build.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.32.0"
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          kustomize-version: "5.4.3"
+
+      - name: Configure Kubeconfig
+        shell: bash
+        env:
+          KUBE_BETA: ${{ secrets.KUBECONFIG_DATA_BETA }}
+          KUBE_SANDBOX: ${{ secrets.KUBECONFIG_DATA_SANDBOX }}
+        run: |
+          if [ "$TARGET" = "beta" ]; then RAW_CONF="$KUBE_BETA"
+          else RAW_CONF="$KUBE_SANDBOX"; fi
+
+          mkdir -p ~/.kube
+          if [[ "$RAW_CONF" =~ ^[A-Za-z0-9+/=[:space:]]+$ ]] && [[ ! "$RAW_CONF" =~ "apiVersion" ]]; then
+            printf "%s" "$RAW_CONF" | base64 --decode > ~/.kube/config
+          else
+            printf "%s" "$RAW_CONF" > ~/.kube/config
+          fi
+          chmod 600 ~/.kube/config
+
+      - name: Kustomize Update & Deploy
+        run: |
+          OVERLAY_PATH="k8s/overlays/${TARGET}/rata-live-chat-ui"
+          [ -d "$OVERLAY_PATH" ] || { echo "ERROR: Path $OVERLAY_PATH tidak ditemukan!"; exit 1; }
+
+          cd "$OVERLAY_PATH"
+          kustomize edit set image ${{ env.IMAGE_NAME }}=${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          kustomize build . > /tmp/manifest.yaml
+
+          # pastikan tag baru benar-benar masuk manifest (bukan image lama)
+          grep -q "image: ${{ env.IMAGE_NAME }}:${{ env.TAG }}" /tmp/manifest.yaml \
+            || { echo "ERROR: tag image tidak ter-update di manifest (cek nama image di kustomization.yaml)"; exit 1; }
+
+          kubectl apply -f /tmp/manifest.yaml
+
+      - name: Verify Rollout
+        run: |
+          kubectl rollout status deployment/rata-live-chat -n ${{ env.K8S_NAMESPACE }} --timeout=5m
+
+      - name: Generate Deployment Summary
+        if: always()
+        run: |
+          echo "### 🚀 Deployment Summary (Non-Prod)" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Application** | \`rata-live-chat-ui\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Environment** | \`${{ env.TARGET }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Namespace** | \`${{ env.K8S_NAMESPACE }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deployment Name** | \`rata-live-chat\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image Tag** | \`${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image Path** | \`${{ env.IMAGE_NAME }}:${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deployed By** | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+
+  # ==========================================
+  # STAGE 3: DEPLOY PROD (Manual Production)
+  # ==========================================
+  deploy-prod:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && needs.build.outputs.selected_env == 'production'
+    environment:
+      name: production
+    env:
+      TARGET: ${{ needs.build.outputs.selected_env }}
+      TAG: ${{ needs.build.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.32.0"
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          kustomize-version: "5.4.3"
+
+      - name: Configure Kubeconfig
+        shell: bash
+        env:
+          KUBE_PROD: ${{ secrets.KUBECONFIG_DATA_PROD }}
+        run: |
+          mkdir -p ~/.kube
+          if [[ "$KUBE_PROD" =~ ^[A-Za-z0-9+/=[:space:]]+$ ]] && [[ ! "$KUBE_PROD" =~ "apiVersion" ]]; then
+            printf "%s" "$KUBE_PROD" | base64 --decode > ~/.kube/config
+          else
+            printf "%s" "$KUBE_PROD" > ~/.kube/config
+          fi
+          chmod 600 ~/.kube/config
+
+      - name: Kustomize Update & Deploy
+        run: |
+          OVERLAY_PATH="k8s/overlays/production/rata-live-chat-ui"
+          [ -d "$OVERLAY_PATH" ] || { echo "ERROR: Path $OVERLAY_PATH tidak ditemukan!"; exit 1; }
+
+          cd "$OVERLAY_PATH"
+          kustomize edit set image ${{ env.IMAGE_NAME }}=${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          kustomize build . > /tmp/manifest.yaml
+
+          grep -q "image: ${{ env.IMAGE_NAME }}:${{ env.TAG }}" /tmp/manifest.yaml \
+            || { echo "ERROR: tag image tidak ter-update di manifest (cek nama image di kustomization.yaml)"; exit 1; }
+
+          kubectl apply -f /tmp/manifest.yaml
+
+      - name: Verify Rollout
+        run: |
+          kubectl rollout status deployment/rata-live-chat -n ${{ env.K8S_NAMESPACE }} --timeout=5m
+
+      - name: Generate Deployment Summary
+        if: always()
+        run: |
+          echo "### 🚀 Deployment Summary (Production)" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Application** | \`rata-live-chat-ui\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Environment** | \`production\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Namespace** | \`${{ env.K8S_NAMESPACE }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deployment Name** | \`rata-live-chat\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image Tag** | \`${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image Path** | \`${{ env.IMAGE_NAME }}:${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deployed By** | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY

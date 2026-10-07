@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { useActionData, useLoaderData, useNavigation } from 'react-router-dom'
+import { useLoaderData, useNavigation } from 'react-router-dom'
 
+import { requestOtp } from '@/api/auth/otp'
+import { getApiErrorMessage } from '@/api/shared/error'
 import { verifyOtpSchema } from '@/model/user'
 import {
   Form,
@@ -19,21 +21,17 @@ import { maskPhone } from '@utils'
 
 import {
   AuthBackLink,
-  AuthFormLoginError,
-  AuthFormLoginFooter,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-} from '../../login/components/form-login.style'
-import { AuthVerifyOtpActionData } from '../pages/verify-otp.route'
+  AuthCard,
+  AuthFooter,
+  AuthHeading,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
 
 const RESEND_COOLDOWN = 60
 
 export default function AuthFormVerifyOtp() {
   const { phone } = useLoaderData() as { phone: string }
-
-  const actionData = useActionData() as AuthVerifyOtpActionData | undefined
 
   const isSubmitting = useNavigation().state !== 'idle'
 
@@ -48,14 +46,28 @@ export default function AuthFormVerifyOtp() {
     return () => clearTimeout(timer)
   }, [cooldown])
 
-  const handleResend = () => {
-    // @todo: call the resend OTP API once the backend is ready
-    showToast({
-      type: 'success',
-      title: 'OTP Sent',
-      message: `A new OTP code has been sent to ${maskPhone(phone)}.`,
-    })
-    setCooldown(RESEND_COOLDOWN)
+  const [isResending, setIsResending] = useState(false)
+
+  const handleResend = async () => {
+    setIsResending(true)
+
+    try {
+      await requestOtp({ target: phone, channel: 'WA', purpose: 'REGISTER' })
+      showToast({
+        type: 'success',
+        title: 'OTP Sent',
+        message: `A new OTP code has been sent to ${maskPhone(phone)}.`,
+      })
+      setCooldown(RESEND_COOLDOWN)
+    } catch (error) {
+      showToast({
+        type: 'error',
+        title: 'Failed to Send OTP',
+        message: getApiErrorMessage(error, 'Please try again in a moment.'),
+      })
+    } finally {
+      setIsResending(false)
+    }
   }
 
   const { methods, onSubmit } = useFormHelper({
@@ -71,22 +83,21 @@ export default function AuthFormVerifyOtp() {
   const isFilled = /^\d{6}$/.test(watch('otp') ?? '')
 
   return (
-    <AuthFormLoginMain>
+    <AuthCard>
       <AuthBackLink to="/login">
         <Icon icon="lucide-arrow-left" size="2xs" />
         Back to Login
       </AuthBackLink>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Verification Code (SMS/WA)</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
+      <AuthHeading>
+        <AuthTitle>Verification Code (SMS/WA)</AuthTitle>
+        <AuthSubtitle>
           We have sent the OTP code to{' '}
-          <span tw="font-semibold text-gray-900">{maskPhone(phone)}</span>,
-          please check your SMS/WhatsApp.
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
-      {actionData?.success === false && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
-      )}
+          <span className="font-semibold text-gray-900">
+            {maskPhone(phone)}
+          </span>
+          , please check your SMS/WhatsApp.
+        </AuthSubtitle>
+      </AuthHeading>
       <Form onSubmit={onSubmit}>
         <Controller
           name="phone"
@@ -107,7 +118,7 @@ export default function AuthFormVerifyOtp() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-6">
+        <FormAction className="!pt-6">
           <Button
             type="submit"
             wider="full"
@@ -118,20 +129,23 @@ export default function AuthFormVerifyOtp() {
           </Button>
         </FormAction>
       </Form>
-      <AuthFormLoginFooter>
+      <AuthFooter>
         Didn&apos;t receive OTP?{' '}
         {cooldown > 0 ? (
-          <span tw="font-medium text-gray-400">Resend OTP in {cooldown}s</span>
+          <span className="font-medium text-gray-400">
+            Resend OTP in {cooldown}s
+          </span>
         ) : (
           <button
             type="button"
-            tw="font-medium text-primary-600 hover:(text-primary-700 underline)"
+            className="font-medium text-primary-600 hover:text-primary-700 hover:underline disabled:cursor-wait disabled:text-gray-400 disabled:no-underline"
+            disabled={isResending}
             onClick={handleResend}
           >
-            Resend OTP
+            {isResending ? 'Sending...' : 'Resend OTP'}
           </button>
         )}
-      </AuthFormLoginFooter>
-    </AuthFormLoginMain>
+      </AuthFooter>
+    </AuthCard>
   )
 }

@@ -1,12 +1,16 @@
-import tw, { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+
+import { tw } from '@nui/utils/tw'
 
 import { ContactInfoProps } from './types'
 
-export const ContactInfoWrapper = tw.div`flex flex-col items-start gap-y-1 w-fit text-sm`
+export const ContactInfoWrapper = styled.div.attrs({
+  className: tw`flex flex-col items-start gap-y-1 w-fit text-sm`,
+})``
 
 type ContactInfoMainProps = Pick<ContactInfoProps, 'size'>
 
-export const ContactInfoMain = styled.div<ContactInfoMainProps>(
+export const ContactInfoMain = styled.div.attrs<ContactInfoMainProps>(
   ({ size = 'md' }) => {
     const gapSizeMap = {
       '2xs': tw`gap-x-1`,
@@ -17,9 +21,13 @@ export const ContactInfoMain = styled.div<ContactInfoMainProps>(
       xl: tw`gap-x-3`,
       '2xl': tw`gap-x-3`,
     }
-    return [gapSizeMap[size], tw`flex items-center justify-between`]
+    return {
+      className: [gapSizeMap[size], tw`flex items-center justify-between`]
+        .filter(Boolean)
+        .join(' '),
+    }
   }
-)
+)<ContactInfoMainProps>``
 
 const contactSizeMap = {
   '2xs': {
@@ -74,44 +82,59 @@ const contactSizeMap = {
 }
 
 type ContactInfoContactProps = Pick<ContactInfoProps, 'size'>
-export const ContactInfoContact = styled.div<ContactInfoContactProps>(
-  ({ size = 'md' }) => [
-    tw`flex-1 text-left`,
-    css`
-      .contact-info {
-        &-name {
-          ${contactSizeMap[size].name}
-        }
-        &-address {
-          ${contactSizeMap[size].address}
-        }
-        &-phone {
-          ${contactSizeMap[size].phone}
-        }
-        &-email {
-          ${contactSizeMap[size].email}
-        }
-        &-more {
-          ${contactSizeMap[size].more}
-        }
+
+export const ContactInfoContact = styled.div.attrs<ContactInfoContactProps>(
+  () => ({ className: tw`flex-1 text-left` })
+)<ContactInfoContactProps>`
+  ${({ size = 'md' }) => css`
+    .contact-info {
+      &-name {
+        ${contactSizeMap[size].name}
       }
-    `,
-  ]
-)
+      &-address {
+        ${contactSizeMap[size].address}
+      }
+      &-phone {
+        ${contactSizeMap[size].phone}
+      }
+      &-email {
+        ${contactSizeMap[size].email}
+      }
+      &-more {
+        ${contactSizeMap[size].more}
+      }
+    }
+  `}
+`
 
 type ContactInfoNameProps = Pick<ContactInfoProps, 'nameSemibold'>
-export const ContactInfoName = styled.div<ContactInfoNameProps>(
-  ({ nameSemibold }) => [
-    nameSemibold ? tw`font-semibold text-gray-900` : tw`text-gray-500`,
-  ]
-)
 
-export const ContactInfoContactMain = tw.div`flex items-center gap-x-1`
+export const ContactInfoName = styled.div.attrs<ContactInfoNameProps>(
+  ({ nameSemibold }) => ({
+    className: [
+      nameSemibold ? tw`font-semibold text-gray-900` : tw`text-gray-500`,
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<ContactInfoNameProps>``
 
-export const ContactInfoAddress = tw.div`text-xs text-gray-500 xl:whitespace-nowrap`
+export const ContactInfoContactMain = styled.div.attrs({
+  className: tw`flex items-center gap-x-1`,
+})``
 
-export const ContactInfoEmail = tw.div`text-xs text-gray-500 xl:whitespace-nowrap`
+export const ContactInfoAddress = styled.div.attrs({
+  className: tw`text-xs text-gray-500 xl:whitespace-nowrap`,
+})``
 
-export const ContactInfoPhone = tw.div`text-xs text-gray-500 xl:whitespace-nowrap`
+export const ContactInfoEmail = styled.div.attrs({
+  className: tw`text-xs text-gray-500 xl:whitespace-nowrap`,
+})``
 
-export const ContactInfoMore = tw.div`pl-[2.75rem] text-xs text-gray-500`
+export const ContactInfoPhone = styled.div.attrs({
+  className: tw`text-xs text-gray-500 xl:whitespace-nowrap`,
+})``
+
+export const ContactInfoMore = styled.div.attrs({
+  className: tw`pl-[2.75rem] text-xs text-gray-500`,
+})``

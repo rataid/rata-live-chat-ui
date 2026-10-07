@@ -16,12 +16,12 @@ import Icon from '@nui/ui/icon'
 
 import {
   AuthBackLink,
-  AuthFormLoginError,
-  AuthFormLoginHeading,
-  AuthFormLoginMain,
-  AuthFormLoginSubtitle,
-  AuthFormLoginTitle,
-} from '../../login/components/form-login.style'
+  AuthCard,
+  AuthError,
+  AuthHeading,
+  AuthSubtitle,
+  AuthTitle,
+} from '../../components/auth.style'
 import { AuthResetPasswordActionData } from '../pages/reset-password.route'
 
 export default function AuthFormResetPassword() {
@@ -49,19 +49,19 @@ export default function AuthFormResetPassword() {
   const isFilled = !!password && !!passwordConfirmation
 
   return (
-    <AuthFormLoginMain>
+    <AuthCard>
       <AuthBackLink to="/login">
         <Icon icon="lucide-arrow-left" size="2xs" />
         Back to Login
       </AuthBackLink>
-      <AuthFormLoginHeading>
-        <AuthFormLoginTitle>Reset Password</AuthFormLoginTitle>
-        <AuthFormLoginSubtitle>
+      <AuthHeading>
+        <AuthTitle>Reset Password</AuthTitle>
+        <AuthSubtitle>
           Create a new strong password for your account.
-        </AuthFormLoginSubtitle>
-      </AuthFormLoginHeading>
+        </AuthSubtitle>
+      </AuthHeading>
       {actionData?.success === false && (
-        <AuthFormLoginError>{actionData.message}</AuthFormLoginError>
+        <AuthError>{actionData.message}</AuthError>
       )}
       <Form onSubmit={onSubmit}>
         <Controller
@@ -104,7 +104,7 @@ export default function AuthFormResetPassword() {
             />
           </FormControl>
         </FormMain>
-        <FormAction tw="!pt-6">
+        <FormAction className="!pt-6">
           <Button
             type="submit"
             wider="full"
@@ -115,6 +115,6 @@ export default function AuthFormResetPassword() {
           </Button>
         </FormAction>
       </Form>
-    </AuthFormLoginMain>
+    </AuthCard>
   )
 }

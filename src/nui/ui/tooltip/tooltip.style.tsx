@@ -1,9 +1,10 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { useTipContext } from '../tip/hooks'
 import { TooltipProps } from './types'
 
-export const TooltipWrappers = tw.div`relative h-fit`
+export const TooltipWrappers = styled.div.attrs({ className: tw`relative h-fit` })``
 
 const sizes = {
   none: tw``,
@@ -34,30 +35,22 @@ type TooltipStyleProps = Pick<
   'variant' | 'size' | 'rounded' | 'padding' | 'isMobile'
 >
 
-export const TooltipWrapper = styled.div<TooltipStyleProps>(
-  ({
+export const TooltipWrapper = styled.div.attrs<TooltipStyleProps>(({
     variant = 'light',
     size = 'sm',
     rounded = 'lg',
     padding = 'sm',
     isMobile,
-  }) => {
+  }) =>  {
     const variants = {
       light: tw`bg-white text-gray-600 border-gray-200`,
       dark: tw`bg-gray-900 text-white border-gray-800`,
     }
 
-    return [
-      tw`relative inline-block h-fit border text-center`,
-      variant && variants[variant],
-      size && sizes[size],
-      isMobile ? tw`w-screen max-w-3xl rounded-t-2xl` : roundeds[rounded],
-      padding && paddings[padding],
-    ]
-  }
-)
+    return { className: [tw`relative inline-block h-fit border text-center`, variant && variants[variant], size && sizes[size], isMobile ? tw`w-screen max-w-3xl rounded-t-2xl` : roundeds[rounded], padding && paddings[padding]].filter(Boolean).join(' ') }
+  })<TooltipStyleProps>``
 
-export const TooltipContent = styled.div(() => {
+export const TooltipContent = styled.div.attrs(() =>  {
   const { placement } = useTipContext()
 
   const positions = {
@@ -75,11 +68,10 @@ export const TooltipContent = styled.div(() => {
     'left-end': tw`bottom-0 -translate-y-2 right-0 translate-x-[0.5625rem] h-4 w-3`,
   }
 
-  return [positions[placement], tw`absolute overflow-hidden rounded-sm`]
-})
+  return { className: [positions[placement], tw`absolute overflow-hidden rounded-sm`].filter(Boolean).join(' ') }
+})``
 
-export const TooltipMain = styled.div<TooltipStyleProps>(
-  ({ variant = 'light' }) => {
+export const TooltipMain = styled.div.attrs<TooltipStyleProps>(({ variant = 'light' }) =>  {
     const { placement } = useTipContext()
     const variants = {
       light: tw`bg-white border-gray-200`,
@@ -100,12 +92,7 @@ export const TooltipMain = styled.div<TooltipStyleProps>(
       'left-end': tw`-translate-x-[0.4375rem]`,
     }
 
-    return [
-      placement && arrows[placement],
-      variant && variants[variant],
-      tw`h-4 w-4 rotate-45 rounded-sm border`,
-    ]
-  }
-)
+    return { className: [placement && arrows[placement], variant && variants[variant], tw`h-4 w-4 rotate-45 rounded-sm border`].filter(Boolean).join(' ') }
+  })<TooltipStyleProps>``
 
-export const TooltipCaption = tw.div`text-sm font-semibold`
+export const TooltipCaption = styled.div.attrs({ className: tw`text-sm font-semibold` })``

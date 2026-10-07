@@ -1,16 +1,18 @@
-import tw, { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { useTree } from '../hooks'
 
-export const TreeAltWrapper = styled.div(() => {
-  const { nodeHeight, gap } = useTree()
+export const TreeAltWrapper = styled.div.attrs(() => ({
+  className: tw`relative`,
+}))`
+  ${() => {
+    const { nodeHeight, gap } = useTree()
 
-  return [
-    tw`relative`,
-    css`
+    return css`
       > ul > li:first-child::after {
         margin-top: ${nodeHeight - gap}px;
       }
-    `,
-  ]
-})
+    `
+  }}
+`

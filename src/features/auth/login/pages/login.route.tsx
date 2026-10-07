@@ -1,6 +1,7 @@
+import { isAxiosError } from 'axios'
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
-import { login } from '@/api/login'
+import { login } from '@/api/auth/login'
 import {
   AuthenticatedUser,
   getToken,
@@ -9,13 +10,13 @@ import {
   removeToken,
   setPermissions,
   setToken,
+  setUserName,
 } from '@/components/auth'
 import { loginSchema } from '@/model/user'
 import { queryClient } from '@libs/query-client'
+import { showToast } from '@nui/ui/toast'
 
 export const LOGIN_ERROR_ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE'
-
-const DUMMY_INACTIVE_EMAIL = 'inactive@rata.id'
 
 export type AuthLoginActionData = {
   success: boolean
@@ -30,7 +31,7 @@ export async function authLoginLoader({ request }: ActionFunctionArgs) {
   if (token) {
     if (isTokenValid(token)) {
       const params = new URL(request.url).searchParams
-      const from = params.get('from') || '/chat'
+      const from = params.get('from') || '/home'
 
       return redirect(from)
     }
@@ -45,40 +46,50 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const data = loginSchema.parse(Object.fromEntries(formData))
 
-  // @todo: remove this dummy once the backend returns the inactive account error
-  if (data.email === DUMMY_INACTIVE_EMAIL) {
-    return {
-      success: false,
-      code: LOGIN_ERROR_ACCOUNT_INACTIVE,
-      email: data.email,
-    }
-  }
-
   try {
     const result = await login(data)
-    const tokenResult = result?.data?.data?.access_token || null
+    const tokenResult = result?.accessToken || null
 
     if (tokenResult && isTokenValid(tokenResult)) {
       queryClient.invalidateQueries()
 
       setToken(tokenResult)
+      setUserName(result?.account?.name ?? '')
 
       const params = new URL(request.url).searchParams
-      const from = params.get('from') || '/chat'
+      const from = params.get('from') || '/home'
 
       return redirect(from)
     }
 
-    return {
-      success: false,
-      message: 'Invalid credentials',
-    }
-  } catch (error: any) {
-    const message = error?.response?.data?.message
+    showToast({
+      type: 'error',
+      title: 'Login Failed',
+      message:
+        'The email or password you entered is incorrect. Please check again.',
+    })
 
-    return {
-      success: false,
-      message,
+    return { success: false }
+  } catch (error) {
+    const body = isAxiosError(error) ? error.response?.data : undefined
+
+    // Inactive accounts open the Email Not Verified modal, not a toast.
+    if (body?.code === LOGIN_ERROR_ACCOUNT_INACTIVE) {
+      return {
+        success: false,
+        code: body.code,
+        email: body.email,
+        message: typeof body.message === 'string' ? body.message : undefined,
+      }
     }
+
+    showToast({
+      type: 'error',
+      title: 'Login Failed',
+      message:
+        'The email or password you entered is incorrect. Please check again.',
+    })
+
+    return { success: false }
   }
 }

@@ -35,7 +35,7 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
 
     return isMounted ? (
       <FloatingPortal>
-        <FloatingOverlay lockScroll tw="z-[100]">
+        <FloatingOverlay lockScroll className="z-[100]">
           <FloatingFocusManager
             context={floatingContext}
             initialFocus={initialFocus}

@@ -1,4 +1,5 @@
-import tw, { TwStyle, css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw, TwStyle } from '@nui/utils/tw'
 
 import { MenuItemPadding } from '../types'
 import { MenuItemStyle } from './menu-item.style'
@@ -6,36 +7,40 @@ import { MenuItemStyle } from './menu-item.style'
 type MenuContainerProps = {
   padding?: MenuItemPadding
 }
-export const MenuContainer = styled.div<MenuContainerProps>(
-  ({ padding = 'sm' }) => {
-    const paddingMap: Record<MenuItemPadding, TwStyle> = {
-      none: tw`p-0`,
-      xs: tw`p-2`,
-      sm: tw`p-3`,
-      md: tw`p-4`,
-      lg: tw`p-6`,
-    }
 
-    return [
+const paddingMap: Record<MenuItemPadding, TwStyle> = {
+  none: tw`p-0`,
+  xs: tw`p-2`,
+  sm: tw`p-3`,
+  md: tw`p-4`,
+  lg: tw`p-6`,
+}
+
+export const MenuContainer = styled.div.attrs<MenuContainerProps>(
+  ({ padding = 'sm' }) => ({
+    className: [
       paddingMap[padding],
       tw`bg-white border border-gray-200 rounded-lg max-h-[25rem] lg:max-h-max overflow-auto focus:outline-none`,
     ]
-  }
-)
+      .filter(Boolean)
+      .join(' '),
+  })
+)<MenuContainerProps>``
 
 type MenuButtonProps = {
   isNested: boolean
 }
 
 const RootMenuStyle = css`
-  ${tw`text-xs`}
+  font-size: 0.75rem;
+  line-height: 1rem;
 
   &[data-open],
   .RootMenu:hover {
-    ${tw`text-primary-500`}
+    color: var(--nui-color-primary-500);
   }
 `
 
-export const MenuButton = styled.div<MenuButtonProps>(({ isNested }) => [
-  isNested ? MenuItemStyle : RootMenuStyle,
-])
+export const MenuButton = styled.div<MenuButtonProps>`
+  ${({ isNested }) => (isNested ? MenuItemStyle : RootMenuStyle)}
+`

@@ -27,11 +27,11 @@ export const TipContent = forwardRef<
   if (isMobile) {
     return isMounted ? (
       <FloatingPortal id={id}>
-        <FloatingOverlay lockScroll tw="z-[6666]">
+        <FloatingOverlay lockScroll className="z-[6666]">
           <FloatingFocusManager initialFocus={-1} context={floatingContext}>
-            <div tw="h-full w-screen flex items-end justify-center bg-gray-500/10 backdrop-blur-[2px]">
+            <div className="h-full w-screen flex items-end justify-center bg-gray-500/10 backdrop-blur-[2px]">
               <div
-                tw="max-h-[calc(100%-48px)] max-w-3xl mx-auto"
+                className="max-h-[calc(100%-48px)] max-w-3xl mx-auto"
                 style={styles}
               >
                 <div
@@ -49,7 +49,7 @@ export const TipContent = forwardRef<
 
   return isMounted ? (
     <FloatingPortal id={id}>
-      <div tw="relative z-[6666]" style={styles}>
+      <div className="relative z-[6666]" style={styles}>
         <div
           ref={ref}
           style={{

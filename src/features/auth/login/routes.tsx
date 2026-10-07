@@ -6,7 +6,7 @@ const loginRoutes: RouteObject[] = [
   {
     path: 'login',
     async lazy() {
-      const { Layout } = await import('./layout')
+      const { Layout } = await import('../layout')
       return {
         Component: Layout,
       }

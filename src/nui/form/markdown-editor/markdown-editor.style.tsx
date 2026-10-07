@@ -1,3 +1,4 @@
-import tw from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const MarkdownEditorWrapper = tw.div`prose flex max-w-prose text-sm flex-col gap-y-2`
+export const MarkdownEditorWrapper = styled.div.attrs({ className: tw`prose flex max-w-prose text-sm flex-col gap-y-2` })``

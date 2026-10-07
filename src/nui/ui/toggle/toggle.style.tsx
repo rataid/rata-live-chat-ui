@@ -1,15 +1,15 @@
-import tw, { styled } from 'twin.macro'
+import styled from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
 import { ToggleStyleProps } from './types'
 
-export const ToggleWrapper = tw.div`inline-flex items-center min-w-fit gap-2`
+export const ToggleWrapper = styled.div.attrs({ className: tw`inline-flex items-center min-w-fit gap-2` })``
 
-export const ToggleContent = tw.div`w-fit h-fit flex justify-center items-center`
+export const ToggleContent = styled.div.attrs({ className: tw`w-fit h-fit flex justify-center items-center` })``
 
-export const ToggleLabel = tw.button`text-sm mr-6 font-medium cursor-default text-gray-700 disabled:(text-gray-400 cursor-not-allowed)`
+export const ToggleLabel = styled.button.attrs({ className: tw`text-sm mr-6 font-medium cursor-default text-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed` })``
 
-export const ToggleAction = styled.button<ToggleStyleProps>(
-  ({ variant, pressed, scale: size }) => {
+export const ToggleAction = styled.button.attrs<ToggleStyleProps>(({ variant, pressed, scale: size }) =>  {
     const sizes = {
       sm: tw`h-5 w-9`,
       md: tw`h-6 w-11`,
@@ -25,15 +25,10 @@ export const ToggleAction = styled.button<ToggleStyleProps>(
           dark: tw`!bg-gray-100 hover:bg-gray-200`,
         }
 
-    return [
-      tw`inline-flex items-center rounded-full p-1 duration-300 ease-in-out focus:(outline-none border border-primary-400) disabled:(bg-gray-100 cursor-not-allowed)`,
-      size && sizes[size],
-      variant && variants[variant],
-    ]
-  }
-)
+    return { className: [tw`inline-flex items-center rounded-full p-1 duration-300 ease-in-out focus:outline-none focus:border focus:border-primary-400 disabled:bg-gray-100 disabled:cursor-not-allowed`, size && sizes[size], variant && variants[variant]].filter(Boolean).join(' ') }
+  })<ToggleStyleProps>``
 
-export const ToggleMain = styled.div<ToggleStyleProps>(({ pressed, scale }) => {
+export const ToggleMain = styled.div.attrs<ToggleStyleProps>(({ pressed, scale }) =>  {
   const sizes = pressed
     ? {
         sm: tw`h-4 w-4 translate-x-[0.84rem]`,
@@ -44,8 +39,5 @@ export const ToggleMain = styled.div<ToggleStyleProps>(({ pressed, scale }) => {
         md: tw`h-5 w-5 -translate-x-[1px]`,
       }
 
-  return [
-    tw`rounded-full bg-white shadow duration-300 ease-in-out disabled:bg-gray-50`,
-    scale && sizes[scale],
-  ]
-})
+  return { className: [tw`rounded-full bg-white shadow duration-300 ease-in-out disabled:bg-gray-50`, scale && sizes[scale]].filter(Boolean).join(' ') }
+})<ToggleStyleProps>``

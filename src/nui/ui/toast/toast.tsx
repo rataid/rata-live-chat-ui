@@ -21,12 +21,12 @@ const icons = {
 export function Toast({ type = 'success', title, message }: ToastProps) {
   return (
     <ToastWrapper>
-      <ToastIcon type={type}>
+      <ToastIcon $type={type}>
         <Icon icon={icons[type]} size="sm" />
       </ToastIcon>
       <ToastMain>
-        <ToastTitle type={type}>{title}</ToastTitle>
-        {message && <ToastMessage type={type}>{message}</ToastMessage>}
+        <ToastTitle $type={type}>{title}</ToastTitle>
+        {message && <ToastMessage $type={type}>{message}</ToastMessage>}
       </ToastMain>
     </ToastWrapper>
   )

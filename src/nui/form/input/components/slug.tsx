@@ -99,7 +99,7 @@ export const InputSlug = forwardRef<HTMLInputElement, InputSlugProps>(
             {!!leadingIcon && (
               <Button
                 ref={focusRef}
-                tw="ml-1"
+                className="ml-1"
                 icon={
                   <Icon
                     icon={!isCopyed ? leadingIcon : 'lucide-check'}
@@ -123,7 +123,7 @@ export const InputSlug = forwardRef<HTMLInputElement, InputSlugProps>(
             {!!trailingIcon && (
               <Button
                 ref={focusRef}
-                tw="mr-1"
+                className="mr-1"
                 icon={
                   <Icon
                     icon={!isCopyed ? trailingIcon : 'lucide-check'}

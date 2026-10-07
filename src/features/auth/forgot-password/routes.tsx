@@ -7,7 +7,7 @@ const forgotPasswordRoutes: RouteObject[] = [
   {
     path: 'forgot-password',
     async lazy() {
-      const { Layout } = await import('../login/layout')
+      const { Layout } = await import('../layout')
       return {
         Component: Layout,
       }

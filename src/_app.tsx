@@ -1,36 +1,27 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { configResponsive } from 'ahooks'
-import { assign } from 'lodash'
 import {
-  LoaderFunctionArgs,
+  Outlet,
   RouterProvider,
   createBrowserRouter,
   redirect,
 } from 'react-router-dom'
 
 import {
-  buildFromUrl,
   getToken,
+  getUserName,
   parseToken,
-  removeToken,
   routeGuard,
 } from '@/components/auth/helpers'
 import { queryClient } from '@libs/query-client'
-import { AppLayout } from '@nui/layouts'
 import LayoutUiNotif from '@nui/layouts/ui/notif'
+import { DialogProvider } from '@nui/ui/dialog'
 
 import authRoutes from '@features/auth/routes'
-import chatRoutes from '@features/chat/routes'
-import dashboardRoutes from '@features/dashboard/routes'
-import liveRoutes from '@features/live/routes'
-import readyRoutes from '@features/ready/routes'
-import userRoutes from '@features/user/routes'
+import faqRoutes from '@features/faq/routes'
+import homeRoutes from '@features/home/routes'
 
-// import { meQuery } from '@models/user/user'
-import AppSidebarNavBottom from './components/app/sidebar/nav-bottom'
-import AppSidebarNavTop from './components/app/sidebar/nav-top'
-import AppSidebarProfile from './components/app/sidebar/profile'
-import { ProtectedLayout } from './components/auth'
+import { PortalLayout } from './components/portal-layout'
 import ErrorBoundary from './error-boundary'
 
 configResponsive({
@@ -41,68 +32,49 @@ configResponsive({
   xl: 1278,
 })
 
-export async function appLoader({ request }: LoaderFunctionArgs) {
-  const token = getToken()
-  const decodedToken = parseToken(token)
+// User from the login token, put in the auth store by PortalLayout
+export async function portalLoader() {
+  const decodedToken = parseToken(getToken())
 
-  if (!decodedToken) {
-    return redirect(buildFromUrl('/login', request.url))
-  }
+  if (!decodedToken) return { userData: null }
 
-  try {
-    // const q = meQuery({})
-    // const userData = await queryClient.fetchQuery(q)
-
-    // assign(decodedToken, {
-    //   username: userData?.email,
-    //   fullname: userData?.name,
-    //   avatar: null,
-    // })
-    assign(decodedToken, {
-      username: 'test@rata.id',
-      fullname: 'testing',
-      avatar: null,
-    })
-  } catch (error: any) {
-    if ([401, 403].includes(error?.status)) {
-      removeToken()
-      return redirect(buildFromUrl('/login', request.url))
-    }
-  }
-
+  // The token has no name; it is kept in localStorage at login
   return {
-    userData: decodedToken,
+    userData: { ...decodedToken, fullname: getUserName() ?? '' },
   }
 }
 
 const router = createBrowserRouter([
-  ...authRoutes,
-  ...chatRoutes,
-
   {
-    path: '/',
-    loader: (args) => routeGuard(args, appLoader),
+    // Pathless root route: global providers that need the router context
     element: (
-      <ProtectedLayout>
-        <AppLayout
-          navTop={<AppSidebarNavTop />}
-          navBottom={<AppSidebarNavBottom />}
-          profile={<AppSidebarProfile />}
-        />
-      </ProtectedLayout>
+      <DialogProvider>
+        <Outlet />
+      </DialogProvider>
     ),
+    children: [
+      ...authRoutes,
 
-    errorElement: <ErrorBoundary />,
-    children: [...dashboardRoutes, ...userRoutes],
+      {
+        // Patient pages after login: fixed header layout
+        loader: (args) => routeGuard(args, portalLoader),
+        element: <PortalLayout />,
+        errorElement: <ErrorBoundary />,
+        children: [...homeRoutes, ...faqRoutes],
+      },
+
+      {
+        path: '/',
+        loader: () => redirect('/home'),
+      },
+    ],
   },
-  ...readyRoutes,
-  ...liveRoutes,
 ])
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="app" tw="font-sans bg-gray-50 xl:bg-none">
+      <div className="app bg-gray-50 font-sans xl:bg-none">
         <RouterProvider router={router} />
         <LayoutUiNotif />
       </div>

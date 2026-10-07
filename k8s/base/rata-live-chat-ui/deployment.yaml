@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rata-live-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rata-live-chat
+  template:
+    metadata:
+      labels:
+        app: rata-live-chat
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: rata-live-chat
+          image: registry.rata.id/rata-live-chat-ui:placeholder
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10

@@ -1,36 +1,48 @@
-import tw, { css, styled } from 'twin.macro'
+import styled, { css } from 'styled-components'
+import { tw } from '@nui/utils/tw'
 
-export const TextareaWrapper = tw.div`w-full flex flex-col gap-[6px]`
+export const TextareaWrapper = styled.div.attrs({
+  className: tw`w-full flex flex-col gap-[6px]`,
+})``
 
 type TextareaMainProps = {
   isDanger?: boolean
 }
 
-// export const TextareaMain = styled.div(({ isDanger }: TextareaMainProps) => {
-//   const destructive = [
-//     !isDanger
-//       ? tw`rounded-border focus:( outline-none text-gray-900 border-primary-400 )`
-//       : tw`rounded-border border-danger-200 focus:( outline-none border-danger-400 )`,
-//   ]
-//   return [
-//     destructive,
-//     tw`relative pt-2 px-3 w-full text-sm bg-white border rounded-lg`,
-//   ]
-// })
+export const TextareaMain = styled.div<TextareaMainProps>`
+  > textarea {
+    position: relative;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background-color: var(--nui-color-white);
+    border-radius: 0.5rem;
+    border: 1px solid var(--nui-color-gray-200);
 
-export const TextareaMain = styled.div(({ isDanger }: TextareaMainProps) => {
-  const destructive = [
-    !isDanger
-      ? tw`rounded-border focus:( outline-none text-gray-900 border-primary-400 )`
-      : tw`rounded-border border-danger-200 focus:( outline-none border-danger-400 )`,
-  ]
+    &:focus {
+      outline: 2px solid var(--nui-color-transparent);
+      outline-offset: 2px;
+      color: var(--nui-color-gray-900);
+      border-color: var(--nui-color-primary-400);
+    }
 
-  return [
+    &:disabled {
+      background-color: var(--nui-color-gray-50);
+    }
+  }
+
+  ${({ isDanger }) =>
+    isDanger &&
     css`
       > textarea {
-        ${destructive}
-        ${tw`relative py-2 px-3 w-full text-sm bg-white border rounded-lg disabled:bg-gray-50`}
+        border-color: var(--nui-color-danger-200);
+
+        &:focus {
+          outline: 2px solid var(--nui-color-transparent);
+          outline-offset: 2px;
+          border-color: var(--nui-color-danger-400);
+        }
       }
-    `,
-  ]
-})
+    `}
+`

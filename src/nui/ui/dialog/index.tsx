@@ -1,19 +1,9 @@
-import { DialogContext, useDialog } from './hooks'
-import { DialogProps } from './types'
+import { Dialog } from './dialog'
 
-export * from './components/content'
-export * from './components/heading'
-export * from './components/trigger'
-export * from './components/description'
+export { DIALOG_PORTAL_ID, DialogClose } from './dialog'
+export { DialogBody, DialogFooter, DialogHeader } from './dialog.style'
+export { DialogProvider, useDialog } from './provider'
+export type { DialogAction, DialogConfig } from './provider'
+export * from './types'
 
-export default function Dialog({
-  children,
-  ...options
-}: {
-  children: React.ReactNode
-} & DialogProps) {
-  const dialog = useDialog(options)
-  return (
-    <DialogContext.Provider value={dialog}>{children}</DialogContext.Provider>
-  )
-}
+export default Dialog
