@@ -1,9 +1,8 @@
 import axios from 'axios'
 
 import { getToken } from '@/components/auth'
-import { ApiResponse } from '@/model/shared/query'
 
-const apiUrl = import.meta.env.VITE_API_ENDPOINT
+const apiUrl = `${import.meta.env.VITE_API_ENDPOINT}/api`
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,

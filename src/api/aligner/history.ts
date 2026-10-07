@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 
 import axiosInstance from '../axiosInstance'
 
-// Relative to VITE_API_ENDPOINT (e.g. http://localhost:5000/api)
 export const ALIGNER_HISTORY_ENDPOINT = '/livechat/aligner/history'
 
 export const alignerHistoryKey = ['aligner', 'history']
