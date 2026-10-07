@@ -5,6 +5,7 @@ import { AuthenticatedUser, useAuth } from '@/components/auth'
 import { AuthProvider } from '@/components/auth/provider'
 import Icon from '@nui/ui/icon'
 
+import { MobileMenu } from './mobile-menu'
 import {
   PortalBrand,
   PortalBrandLogo,
@@ -54,13 +55,14 @@ function PortalShell() {
               <Icon icon="lucide-home" size="xs" />
               <PortalNavLabel>Home</PortalNavLabel>
             </PortalNavLink>
-            <PortalNavLink to="/chat">
+            <PortalNavLink to="/livechat">
               <Icon icon="lucide-messages-square" size="xs" />
               <PortalNavLabel>Live Chat</PortalNavLabel>
             </PortalNavLink>
             <PortalNavDivider />
             <UserMenu name={userData?.fullname || userData?.username} />
           </PortalNav>
+          <MobileMenu name={userData?.fullname || userData?.username} />
         </PortalHeaderInner>
       </PortalHeader>
       <PortalMain>
