@@ -137,16 +137,14 @@ export function RemovalTracker() {
           </StatusBadge>
         )}
       </TrackerMeta>
-      {/* Same copy as Figma in both states; it stops the timer while active */}
       <Button
         wider="full"
         fontWeight="medium"
-        icon="lucide-play"
+        icon={isActive ? 'lucide-square' : 'lucide-play'}
         disabled={isLoading || isSubmitting}
-        aria-pressed={isActive}
         onClick={toggleTimer}
       >
-        Start removal timer
+        {isActive ? 'Stop removal timer' : 'Start removal timer'}
       </Button>
     </Card>
   )
