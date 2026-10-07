@@ -2,12 +2,15 @@
 FROM node:22-alpine AS builder
 ENV PNPM_HOME="/pnpm" PATH="/pnpm:$PATH" COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
+# Kosongkan = otomatis ikut lockfileVersion (5.x->7, 6.x->8, 9.x->9).
+# Override bila perlu: --build-arg PNPM_VERSION=10
 ARG PNPM_VERSION=
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
+# Pilih versi pnpm yang cocok dengan lockfile, lalu install dependency
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     set -eu; \
     corepack enable; \

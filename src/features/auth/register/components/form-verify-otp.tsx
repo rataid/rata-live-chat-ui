@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { useActionData, useLoaderData, useNavigation } from 'react-router-dom'
+import { useLoaderData, useNavigation } from 'react-router-dom'
 
+import { requestOtp } from '@/api/auth/otp'
+import { getApiErrorMessage } from '@/api/shared/error'
 import { verifyOtpSchema } from '@/model/user'
 import {
   Form,
@@ -20,20 +22,16 @@ import { maskPhone } from '@utils'
 import {
   AuthBackLink,
   AuthCard,
-  AuthError,
   AuthFooter,
   AuthHeading,
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
-import { AuthVerifyOtpActionData } from '../pages/verify-otp.route'
 
 const RESEND_COOLDOWN = 60
 
 export default function AuthFormVerifyOtp() {
   const { phone } = useLoaderData() as { phone: string }
-
-  const actionData = useActionData() as AuthVerifyOtpActionData | undefined
 
   const isSubmitting = useNavigation().state !== 'idle'
 
@@ -48,14 +46,28 @@ export default function AuthFormVerifyOtp() {
     return () => clearTimeout(timer)
   }, [cooldown])
 
-  const handleResend = () => {
-    // @todo: call the resend OTP API once the backend is ready
-    showToast({
-      type: 'success',
-      title: 'OTP Sent',
-      message: `A new OTP code has been sent to ${maskPhone(phone)}.`,
-    })
-    setCooldown(RESEND_COOLDOWN)
+  const [isResending, setIsResending] = useState(false)
+
+  const handleResend = async () => {
+    setIsResending(true)
+
+    try {
+      await requestOtp({ target: phone, channel: 'WA', purpose: 'REGISTER' })
+      showToast({
+        type: 'success',
+        title: 'OTP Sent',
+        message: `A new OTP code has been sent to ${maskPhone(phone)}.`,
+      })
+      setCooldown(RESEND_COOLDOWN)
+    } catch (error) {
+      showToast({
+        type: 'error',
+        title: 'Failed to Send OTP',
+        message: getApiErrorMessage(error, 'Please try again in a moment.'),
+      })
+    } finally {
+      setIsResending(false)
+    }
   }
 
   const { methods, onSubmit } = useFormHelper({
@@ -86,9 +98,6 @@ export default function AuthFormVerifyOtp() {
           , please check your SMS/WhatsApp.
         </AuthSubtitle>
       </AuthHeading>
-      {actionData?.success === false && (
-        <AuthError>{actionData.message}</AuthError>
-      )}
       <Form onSubmit={onSubmit}>
         <Controller
           name="phone"
@@ -129,10 +138,11 @@ export default function AuthFormVerifyOtp() {
         ) : (
           <button
             type="button"
-            className="font-medium text-primary-600 hover:text-primary-700 hover:underline"
+            className="font-medium text-primary-600 hover:text-primary-700 hover:underline disabled:cursor-wait disabled:text-gray-400 disabled:no-underline"
+            disabled={isResending}
             onClick={handleResend}
           >
-            Resend OTP
+            {isResending ? 'Sending...' : 'Resend OTP'}
           </button>
         )}
       </AuthFooter>

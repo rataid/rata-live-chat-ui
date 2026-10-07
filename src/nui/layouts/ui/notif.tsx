@@ -10,7 +10,10 @@ export default function LayoutUiNotif() {
 
   return (
     <LayoutUiNotifWrapper>
-      <ToastContainer position={sm ? 'top-right' : 'top-center'} />
+      <ToastContainer
+        position={sm ? 'top-right' : 'top-center'}
+        autoClose={3000}
+      />
     </LayoutUiNotifWrapper>
   )
 }
