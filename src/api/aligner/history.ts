@@ -23,8 +23,6 @@ export const getAlignerHistory = async (
   return res.data?.items ?? []
 }
 
-// The limit is part of the key; invalidating alignerHistoryKey still
-// refreshes every limit
 export const useAlignerHistory = (enabled: boolean, limit?: number) =>
   useQuery({
     queryKey: [...alignerHistoryKey, { limit }],
