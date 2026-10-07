@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
+import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
+import { getApiErrorMessage } from '@/api/shared/error'
 import { loginSchema } from '@/model/user'
 import {
   Form,
@@ -15,6 +17,7 @@ import {
 import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
 import { useDialog } from '@nui/ui/dialog'
+import { showToast } from '@nui/ui/toast'
 
 import {
   AuthCard,
@@ -40,14 +43,34 @@ export default function AuthFormLogin() {
   // Reopen on every submit that returns the inactive error
   useEffect(() => {
     if (isInactive) {
+      const email = actionData?.email
+
+      const handleResend = async () => {
+        if (!email) return
+
+        try {
+          await resendVerificationEmail(email)
+          showToast({
+            type: 'success',
+            title: 'Email Sent',
+            message: `A new activation link has been sent to ${email}.`,
+          })
+        } catch (error) {
+          showToast({
+            type: 'error',
+            title: 'Failed to Resend Email',
+            message: getApiErrorMessage(error, 'Please try again in a moment.'),
+          })
+        }
+      }
+
       openDialog({
         title: 'Verify your account',
         message:
           'Your account has not been activated yet. Check your email for the activation link, or request a new one.',
         actions: [
           { label: 'Close', variant: 'secondaryGray' },
-          // @todo: call the resend activation email API once available
-          { label: 'Resend Email' },
+          { label: 'Resend Email', onClick: handleResend },
         ],
       })
     }

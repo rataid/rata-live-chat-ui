@@ -1,7 +1,6 @@
 import { isAxiosError } from 'axios'
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
-import { requestOtp } from '@/api/auth/otp'
 import { register } from '@/api/auth/register'
 import { getApiErrorMessage } from '@/api/shared/error'
 import { registerSchema } from '@/model/user'
@@ -36,13 +35,25 @@ export async function authRegisterAction({
 
   const phone = `+${data.data.phone.replace(/^\+/, '')}`
 
+  let otpSent = true
+
   try {
-    await register({ name, email, phone, password })
+    const res = await register({ name, email, phone, password })
+    otpSent = res?.data?.otpSent !== false
   } catch (error) {
     const status = isAxiosError(error) ? error.response?.status : undefined
 
     if (status === 404) {
       return { success: false, code: REGISTER_ERROR_CUSTOMER_NOT_FOUND }
+    }
+
+    if (status === 429) {
+      showToast({
+        type: 'error',
+        title: 'Too Many OTP Requests',
+        message: getApiErrorMessage(error, 'Please try again later.'),
+      })
+      return { success: false }
     }
 
     if (status === 409) {
@@ -66,13 +77,11 @@ export async function authRegisterAction({
 
   setRegisterPhone(phone)
 
-  try {
-    await requestOtp({ target: phone, channel: 'WA', purpose: 'REGISTER' })
-  } catch (error) {
+  if (!otpSent) {
     showToast({
       type: 'error',
       title: 'Failed to Send OTP',
-      message: getApiErrorMessage(error, 'Please tap Resend OTP to try again.'),
+      message: 'Please tap Resend OTP to try again.',
     })
   }
 
