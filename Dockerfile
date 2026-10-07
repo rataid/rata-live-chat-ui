@@ -4,13 +4,31 @@
 FROM node:22-alpine AS builder
 ENV PNPM_HOME="/pnpm" PATH="/pnpm:$PATH" COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
-# Kunci pnpm ke versi 8 agar sesuai dengan lockfileVersion 6.0
-RUN corepack enable && corepack prepare pnpm@8 --activate
+# Kosongkan = otomatis ikut lockfileVersion (5.x->7, 6.x->8, 9.x->9).
+# Override bila perlu: --build-arg PNPM_VERSION=10
+ARG PNPM_VERSION=
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
+
+# Pilih versi pnpm yang cocok dengan lockfile, lalu install dependency
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    set -eu; \
+    corepack enable; \
+    LOCK_VER="$(sed -n 's/^lockfileVersion:[^0-9]*\([0-9][0-9.]*\).*/\1/p' pnpm-lock.yaml | head -n1)"; \
+    if [ -n "$PNPM_VERSION" ]; then \
+      PNPM_V="$PNPM_VERSION"; \
+    else \
+      case "$LOCK_VER" in \
+        5.*) PNPM_V=7 ;; \
+        6.*) PNPM_V=8 ;; \
+        9.*) PNPM_V=9 ;; \
+        *) echo "ERROR: lockfileVersion '$LOCK_VER' tidak dikenal, set --build-arg PNPM_VERSION" >&2; exit 1 ;; \
+      esac; \
+    fi; \
+    echo ">> lockfileVersion=${LOCK_VER} -> pnpm@${PNPM_V}"; \
+    corepack prepare "pnpm@${PNPM_V}" --activate; \
     pnpm install --frozen-lockfile
 
 COPY . .
