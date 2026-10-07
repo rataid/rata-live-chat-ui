@@ -34,7 +34,8 @@ export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
       (step) =>
         !step.element ||
         typeof step.element !== 'string' ||
-        document.querySelector(step.element)
+        // Present and visible (display: none has no client rects)
+        !!document.querySelector(step.element)?.getClientRects().length
     )
 
     if (available.length === 0) return

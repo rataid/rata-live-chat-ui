@@ -15,13 +15,11 @@ import {
 } from './components/home.style'
 import { HOME_TOUR_ID, HOME_TOUR_STEPS } from './tour'
 
-// Shared by the 3 brand homepages: greeting + brand tabs, then the brand page
 export function HomeLayout() {
   const { userData } = useAuth()
 
   useTour({ id: HOME_TOUR_ID, steps: HOME_TOUR_STEPS, autoStart: true })
 
-  // "Siti Rahma" -> "Siti"
   const firstName = (userData?.fullname || '').trim().split(/\s+/)[0]
 
   return (
@@ -32,7 +30,7 @@ export function HomeLayout() {
           <HomeIntroTop>
             <HomeTitle>Patient Portal</HomeTitle>
             <Button
-              to="/chat"
+              to="/livechat"
               size="sm"
               icon="lucide-messages-square"
               data-tour="chat-with-us"

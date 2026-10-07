@@ -1,6 +1,5 @@
 import { ChatMessage } from './types'
 
-// @todo: remove once messages come from the backend / socket
 const CLINIC_NAME = 'Klinik TANAM Pakubuwono'
 
 const at = (hour: number, minute: number) => {
