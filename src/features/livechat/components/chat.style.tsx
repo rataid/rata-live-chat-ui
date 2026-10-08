@@ -125,3 +125,15 @@ export const ChatEditorTextarea = styled.textarea.attrs({
 export const ChatEditorSend = styled.button.attrs({
   className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-primary-200`,
 })``
+
+export const ChatEmpty = styled.p.attrs({
+  className: tw`m-auto max-w-xs px-4 text-center text-sm text-gray-500`,
+})``
+
+export const ChatStatusBar = styled.div.attrs({
+  className: tw`shrink-0 border-b border-warning-200 bg-warning-50 px-4 py-2 text-xs text-warning-700`,
+})``
+
+export const ChatListNote = styled.p.attrs({
+  className: tw`py-3 text-center text-xs text-gray-500`,
+})``

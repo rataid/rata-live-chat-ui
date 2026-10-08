@@ -22,9 +22,10 @@ const toolbarItems = [
 
 type ChatEditorProps = {
   onSend: (text: string) => void
+  disabled?: boolean
 }
 
-export function ChatEditor({ onSend }: ChatEditorProps) {
+export function ChatEditor({ onSend, disabled = false }: ChatEditorProps) {
   const [text, setText] = useState('')
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -38,7 +39,7 @@ export function ChatEditor({ onSend }: ChatEditorProps) {
 
   const send = () => {
     const value = text.trim()
-    if (!value) return
+    if (!value || disabled) return
     onSend(value)
     setText('')
   }
@@ -80,7 +81,7 @@ export function ChatEditor({ onSend }: ChatEditorProps) {
         <ChatEditorSend
           type="button"
           aria-label="Send"
-          disabled={!text.trim()}
+          disabled={disabled || !text.trim()}
           onClick={send}
         >
           <Icon icon="lucide-send" size="xs" />

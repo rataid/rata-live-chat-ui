@@ -1,29 +1,30 @@
-import { useState } from 'react'
-
-import { randomString } from '@utils'
-
 import { ChatEditor } from '../components/chat-editor'
 import { ChatHeader } from '../components/chat-header'
 import { ChatMessageList } from '../components/chat-message-list'
-import { ChatPageContainer, ChatPageWrapper } from '../components/chat.style'
-import { DUMMY_CHAT_MESSAGES } from '../dummy'
-import { ChatMessage } from '../types'
+import {
+  ChatPageContainer,
+  ChatPageWrapper,
+  ChatStatusBar,
+} from '../components/chat.style'
+import { useLiveChat } from '../hooks/use-live-chat'
+
+const statusText = {
+  connecting: 'Connecting to the clinic...',
+  reconnecting: 'Connection lost. Reconnecting...',
+}
 
 export function LiveChatPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>(DUMMY_CHAT_MESSAGES)
-
-  const sendMessage = (body: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: randomString(12),
-        direction: 'outgoing',
-        body,
-        createdAt: new Date().toISOString(),
-        status: 'sent',
-      },
-    ])
-  }
+  const {
+    messages,
+    status,
+    sendMessage,
+    isLoadingHistory,
+    historyError,
+    retryHistory,
+    hasOlder,
+    isLoadingOlder,
+    loadOlder,
+  } = useLiveChat()
 
   return (
     <ChatPageWrapper>
@@ -34,11 +35,19 @@ export function LiveChatPage() {
           mobileTitle="Klinik TANAM Pakubuwono"
           mobileSubtitle="Live Chat Platform"
         />
+        {status !== 'connected' && (
+          <ChatStatusBar role="status">{statusText[status]}</ChatStatusBar>
+        )}
         <ChatMessageList
           messages={messages}
-          onQuickReply={(reply) => sendMessage(reply.label)}
+          isLoading={isLoadingHistory}
+          error={historyError}
+          onRetry={retryHistory}
+          hasOlder={hasOlder}
+          isLoadingOlder={isLoadingOlder}
+          onLoadOlder={loadOlder}
         />
-        <ChatEditor onSend={sendMessage} />
+        <ChatEditor onSend={sendMessage} disabled={status !== 'connected'} />
       </ChatPageContainer>
     </ChatPageWrapper>
   )
