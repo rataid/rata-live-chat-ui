@@ -1,6 +1,9 @@
 import { ActionFunctionArgs } from 'react-router-dom'
 
+import { forgotPassword } from '@/api/auth/password'
+import { getApiErrorMessage } from '@/api/shared/error'
 import { forgotPasswordSchema } from '@/model/user'
+import { showToast } from '@nui/ui/toast'
 
 export type AuthForgotPasswordActionData = {
   success: boolean
@@ -17,8 +20,14 @@ export async function authForgotPasswordAction({
     return { success: false, message: 'Email is invalid' }
   }
 
-  // @todo: call the forgot password API once the backend is ready.
-  // Always show the same result whether the email is registered or not,
-  // so the page can't be used to check which emails have an account.
+  try {
+    await forgotPassword(data.data.email)
+  } catch (error) {
+    const message = getApiErrorMessage(error, 'Please try again in a moment.')
+    showToast({ type: 'error', title: 'Failed to Send Email', message })
+
+    return { success: false, message }
+  }
+
   return { success: true }
 }
