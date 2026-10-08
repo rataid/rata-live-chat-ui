@@ -12,10 +12,6 @@ export enum MessageType {
   REACTION = 9,
   TEMPLATE = 10,
   BUTTON = 11,
-  NOTES = 23,
-  EVENT = 21,
-  SYSTEM = 22,
-  UNKNOWN = 99,
 }
 
 // INCOMING = from the customer,
