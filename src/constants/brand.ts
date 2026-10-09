@@ -1,4 +1,6 @@
-import { LogoRata, LogoTanam, LogoVinir } from '@/assets'
+import logoRata from '@/assets/images/logo-rata.png'
+import logoTanam from '@/assets/images/logo-tanam.png'
+import logoVinir from '@/assets/images/logo-vinir.png'
 
 // The 3 products every patient can browse in the portal
 export const BRANDS = ['rata', 'tanam', 'vinir'] as const
@@ -12,12 +14,13 @@ export const BRAND_INFO: Record<
   {
     label: string
     caption: string
-    Logo: (props: { className?: string }) => JSX.Element
+    // Image url, rendered with <img alt={label}>
+    logo: string
   }
 > = {
-  rata: { label: 'RATA', caption: 'RATA Aligner', Logo: LogoRata },
-  tanam: { label: 'TANAM', caption: 'TANAM Implant', Logo: LogoTanam },
-  vinir: { label: 'VINIR', caption: 'VINIR Veneer', Logo: LogoVinir },
+  rata: { label: 'RATA', caption: 'RATA Aligner', logo: logoRata },
+  tanam: { label: 'TANAM', caption: 'TANAM Implant', logo: logoTanam },
+  vinir: { label: 'VINIR', caption: 'VINIR Veneer', logo: logoVinir },
 }
 
 export const isBrand = (value?: string): value is Brand =>
