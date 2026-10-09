@@ -1,3 +1,5 @@
+import { useLiveChat } from '@/components/socket'
+
 import { ChatEditor } from '../components/chat-editor'
 import { ChatHeader } from '../components/chat-header'
 import { ChatMessageList } from '../components/chat-message-list'
@@ -6,7 +8,6 @@ import {
   ChatPageWrapper,
   ChatStatusBar,
 } from '../components/chat.style'
-import { useLiveChat } from '../hooks/use-live-chat'
 
 const statusText = {
   connecting: 'Connecting to the clinic...',

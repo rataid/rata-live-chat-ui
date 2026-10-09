@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { tw } from '@nui/utils/tw'
 
-import { ChatMessageDirection } from '../types'
+import { ChatMessageDirection } from '@/types/livechat'
 
 type DirectionProps = { $direction: ChatMessageDirection }
 

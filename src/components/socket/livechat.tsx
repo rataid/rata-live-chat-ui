@@ -1,27 +1,36 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import {
   LIVECHAT_MESSAGES_PAGE_SIZE,
   getLiveChatMessages,
 } from '@/api/livechat/messages'
-import {
-  LIVECHAT_EVENTS,
-  LivechatReceivedPayload,
-  LivechatSentAck,
-  LivechatServerMessage,
-} from '@/api/livechat/socket'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
 import {
   MessageDirection,
   MessageStatus,
   MessageType,
 } from '@/constants/message'
+import {
+  ChatMessage,
+  ChatMessageStatus,
+  LivechatServerMessage,
+} from '@/types/livechat'
 import { connectSocket, livechatSocket } from '@libs/socket-client'
 import { showToast } from '@nui/ui/toast'
 import { randomString } from '@utils'
 
-import { ChatMessage, ChatMessageStatus } from '../types'
+import { sendLivechatMessage } from './livechat-utils'
+import { LivechatReceivedPayload, LivechatSentAck } from './types'
 
 export type LiveChatStatus = 'connecting' | 'connected' | 'reconnecting'
 
@@ -65,7 +74,21 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
   }
 }
 
-export function useLiveChat() {
+type LiveChatContextValue = {
+  messages: ChatMessage[]
+  status: LiveChatStatus
+  sendMessage: (body: string) => void
+  isLoadingHistory: boolean
+  historyError: boolean
+  retryHistory: () => void
+  hasOlder: boolean
+  isLoadingOlder: boolean
+  loadOlder: () => void
+}
+
+const LiveChatContext = createContext<LiveChatContextValue | null>(null)
+
+export function LiveChatProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
 
   const pendingIdsRef = useRef<string[]>([])
@@ -80,9 +103,7 @@ export function useLiveChat() {
   const [historyError, setHistoryError] = useState(false)
 
   const addFromServer = useCallback((items: LivechatServerMessage[]) => {
-    setMessages((prev) =>
-      mergeMessages(prev, items.map(toChatMessage))
-    )
+    setMessages((prev) => mergeMessages(prev, items.map(toChatMessage)))
   }, [])
 
   const loadLatest = useCallback(async () => {
@@ -129,9 +150,9 @@ export function useLiveChat() {
       showToast({
         type: 'error',
         title: 'Session Expired',
-        message: 'Please log in again to continue the chat.',
+        message: 'Please log in again to continue.',
       })
-      navigate(`/login?from=${encodeURIComponent('/livechat')}`, {
+      navigate(`/login?from=${encodeURIComponent(window.location.pathname)}`, {
         replace: true,
       })
     }
@@ -183,18 +204,17 @@ export function useLiveChat() {
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
-    socket.on(LIVECHAT_EVENTS.sent, onSent)
-    socket.on(LIVECHAT_EVENTS.received, onReceived)
+    socket.on('message.sent', onSent)
+    socket.on('message.received', onReceived)
 
     connectSocket(socket, token)
 
-    // The socket is shared, so only this page's listeners are removed
     return () => {
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectError)
-      socket.off(LIVECHAT_EVENTS.sent, onSent)
-      socket.off(LIVECHAT_EVENTS.received, onReceived)
+      socket.off('message.sent', onSent)
+      socket.off('message.received', onReceived)
       socket.disconnect()
       pendingIdsRef.current = []
     }
@@ -218,18 +238,45 @@ export function useLiveChat() {
       },
     ])
 
-    socket.emit(LIVECHAT_EVENTS.send, { body })
+    sendLivechatMessage({ body })
   }, [])
 
-  return {
-    messages,
-    status,
-    sendMessage,
-    isLoadingHistory,
-    historyError,
-    retryHistory: loadLatest,
-    hasOlder,
-    isLoadingOlder,
-    loadOlder,
+  const value = useMemo(
+    () => ({
+      messages,
+      status,
+      sendMessage,
+      isLoadingHistory,
+      historyError,
+      retryHistory: loadLatest,
+      hasOlder,
+      isLoadingOlder,
+      loadOlder,
+    }),
+    [
+      messages,
+      status,
+      sendMessage,
+      isLoadingHistory,
+      historyError,
+      loadLatest,
+      hasOlder,
+      isLoadingOlder,
+      loadOlder,
+    ]
+  )
+
+  return (
+    <LiveChatContext.Provider value={value}>
+      {children}
+    </LiveChatContext.Provider>
+  )
+}
+
+export function useLiveChat() {
+  const context = useContext(LiveChatContext)
+  if (!context) {
+    throw new Error('useLiveChat must be used inside LiveChatProvider')
   }
+  return context
 }

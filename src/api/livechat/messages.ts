@@ -1,5 +1,6 @@
+import { LivechatServerMessage } from '@/types/livechat'
+
 import axiosInstance from '../axiosInstance'
-import { LivechatServerMessage } from './socket'
 
 export const LIVECHAT_MESSAGES_ENDPOINT = '/livechat/messages'
 

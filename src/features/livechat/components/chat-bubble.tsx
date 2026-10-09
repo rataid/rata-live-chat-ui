@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 
 import Icon from '@nui/ui/icon'
 
-import { ChatMessage, ChatMessageStatus, ChatQuickReply } from '../types'
+import { ChatMessage, ChatMessageStatus, ChatQuickReply } from '@/types/livechat'
 import {
   ChatBubbleContent,
   ChatBubbleMain,

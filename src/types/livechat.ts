@@ -1,3 +1,19 @@
+import {
+  MessageDirection,
+  MessageStatus,
+  MessageType,
+} from '@/constants/message'
+
+export type LivechatServerMessage = {
+  id: string
+  body: string | null
+  type: MessageType
+  direction: MessageDirection
+  status?: MessageStatus
+  createdAt: string
+  agentId: string | null
+}
+
 export type ChatMessageDirection = 'incoming' | 'outgoing'
 
 export type ChatMessageStatus = 'pending' | 'sent' | 'delivered' | 'read'

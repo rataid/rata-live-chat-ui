@@ -1,14 +1,22 @@
 import { Socket, io } from 'socket.io-client'
 
+import {
+  LivechatClientEvents,
+  LivechatServerEvents,
+} from '@/components/socket/types'
+
 export const SOCKET_URL = import.meta.env.VITE_API_ENDPOINT
 
-const createSocket = (namespace: string): Socket =>
+const createSocket = (namespace: string) =>
   io(`${SOCKET_URL}${namespace}`, {
     transports: ['websocket'],
     autoConnect: false,
   })
 
-export const livechatSocket = createSocket('/livechat')
+export const livechatSocket: Socket<
+  LivechatServerEvents,
+  LivechatClientEvents
+> = createSocket('/livechat')
 
 const sockets = [livechatSocket]
 
