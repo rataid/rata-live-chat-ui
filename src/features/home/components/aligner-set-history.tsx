@@ -1,4 +1,4 @@
-import { AlignerHistoryItem } from '@/api/aligner/history'
+import { AlignerHistoryItem } from '@/model/aligner'
 import { formatDayMonth } from '@utils'
 
 import {

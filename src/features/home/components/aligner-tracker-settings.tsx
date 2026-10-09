@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { isValid } from 'date-fns'
 import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
 
+import {
+  AlignerTrackerSettingsValues,
+  alignerTrackerSettingsSchema,
+} from '@/model/aligner'
 import { DatePicker, FormControl, FormLabel, Input } from '@nui/form'
 import Button from '@nui/ui/button'
 import {
@@ -13,29 +15,6 @@ import {
   DialogHeader,
   useDialog,
 } from '@nui/ui/dialog'
-
-const settingsSchema = z
-  .object({
-    currentSet: z.coerce.number().int().min(0, 'Must be at least 0'),
-    totalSets: z.coerce.number().int().min(1, 'Must be at least 1'),
-    daysPerSet: z.coerce.number().int().min(1, 'Must be at least 1 day'),
-    // yyyy-MM-dd from the date picker (shown as dd/mm/yyyy)
-    startDate: z
-      .string()
-      .min(1, 'Required')
-      .refine((value) => isValid(new Date(value)), {
-        message: 'Invalid date format (dd/mm/yyyy)',
-      })
-      .refine((value) => new Date(value) <= new Date(), {
-        message: 'Cannot be in the future',
-      }),
-  })
-  .refine((data) => data.currentSet <= data.totalSets, {
-    message: 'Cannot be more than the total sets',
-    path: ['currentSet'],
-  })
-
-export type AlignerTrackerSettingsValues = z.infer<typeof settingsSchema>
 
 type AlignerTrackerSettingsProps = {
   defaultValues: Partial<AlignerTrackerSettingsValues>
@@ -53,7 +32,7 @@ export function AlignerTrackerSettings({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AlignerTrackerSettingsValues>({
-    resolver: zodResolver(settingsSchema),
+    resolver: zodResolver(alignerTrackerSettingsSchema),
     defaultValues,
   })
 
