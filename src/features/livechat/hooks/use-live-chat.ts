@@ -10,8 +10,6 @@ import {
   LivechatReceivedPayload,
   LivechatSentAck,
   LivechatServerMessage,
-  LivechatSocket,
-  createLivechatSocket,
 } from '@/api/livechat/socket'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
 import {
@@ -19,6 +17,7 @@ import {
   MessageStatus,
   MessageType,
 } from '@/constants/message'
+import { connectSocket, livechatSocket } from '@libs/socket-client'
 import { showToast } from '@nui/ui/toast'
 import { randomString } from '@utils'
 
@@ -68,8 +67,6 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
 
 export function useLiveChat() {
   const navigate = useNavigate()
-
-  const socketRef = useRef<LivechatSocket>()
 
   const pendingIdsRef = useRef<string[]>([])
 
@@ -146,29 +143,28 @@ export function useLiveChat() {
 
     loadLatest()
 
-    const socket = createLivechatSocket(token)
-    socketRef.current = socket
+    const socket = livechatSocket
 
-    socket.on('connect', () => setStatus('connected'))
+    const onConnect = () => setStatus('connected')
 
-    socket.on('disconnect', (reason) => {
+    const onDisconnect = (reason: string) => {
       if (reason === 'io server disconnect') {
         signInAgain()
         return
       }
       setStatus('reconnecting')
-    })
+    }
 
-    socket.on('connect_error', () => {
+    const onConnectError = () => {
       if (!isTokenValid(getToken())) {
         socket.disconnect()
         signInAgain()
         return
       }
       setStatus('reconnecting')
-    })
+    }
 
-    socket.on(LIVECHAT_EVENTS.sent, (ack: LivechatSentAck) => {
+    const onSent = (ack: LivechatSentAck) => {
       const tempId = pendingIdsRef.current.shift()
       if (!tempId) return
 
@@ -179,24 +175,34 @@ export function useLiveChat() {
             : message
         )
       )
-    })
+    }
 
-    socket.on(
-      LIVECHAT_EVENTS.received,
-      ({ message }: LivechatReceivedPayload) => addFromServer([message])
-    )
+    const onReceived = ({ message }: LivechatReceivedPayload) =>
+      addFromServer([message])
 
+    socket.on('connect', onConnect)
+    socket.on('disconnect', onDisconnect)
+    socket.on('connect_error', onConnectError)
+    socket.on(LIVECHAT_EVENTS.sent, onSent)
+    socket.on(LIVECHAT_EVENTS.received, onReceived)
+
+    connectSocket(socket, token)
+
+    // The socket is shared, so only this page's listeners are removed
     return () => {
-      socket.removeAllListeners()
+      socket.off('connect', onConnect)
+      socket.off('disconnect', onDisconnect)
+      socket.off('connect_error', onConnectError)
+      socket.off(LIVECHAT_EVENTS.sent, onSent)
+      socket.off(LIVECHAT_EVENTS.received, onReceived)
       socket.disconnect()
-      socketRef.current = undefined
       pendingIdsRef.current = []
     }
   }, [addFromServer, loadLatest, navigate])
 
   const sendMessage = useCallback((body: string) => {
-    const socket = socketRef.current
-    if (!socket?.connected) return
+    const socket = livechatSocket
+    if (!socket.connected) return
 
     const tempId = `local-${randomString(12)}`
     pendingIdsRef.current.push(tempId)
