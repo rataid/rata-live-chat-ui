@@ -1,7 +1,8 @@
 import { isSameDay } from 'date-fns'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { ChatMessage, ChatQuickReply } from '@/types/livechat'
+import { ChatMessage, ChatQuickReply } from '@/model/livechat'
+
 import { ChatBubble } from './chat-bubble'
 import { ChatDateSeparator } from './chat-date-separator'
 import {

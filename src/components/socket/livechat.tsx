@@ -24,7 +24,7 @@ import {
   ChatMessage,
   ChatMessageStatus,
   LivechatServerMessage,
-} from '@/types/livechat'
+} from '@/model/livechat'
 import { connectSocket, livechatSocket } from '@libs/socket-client'
 import { showToast } from '@nui/ui/toast'
 import { randomString } from '@utils'

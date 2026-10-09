@@ -1,4 +1,4 @@
-import { LivechatServerMessage } from '@/types/livechat'
+import { LivechatServerMessage } from '@/model/livechat'
 
 export type LivechatSendPayload = { body: string }
 

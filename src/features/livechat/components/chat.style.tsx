@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { ChatMessageDirection } from '@/model/livechat'
 import { tw } from '@nui/utils/tw'
-
-import { ChatMessageDirection } from '@/types/livechat'
 
 type DirectionProps = { $direction: ChatMessageDirection }
 

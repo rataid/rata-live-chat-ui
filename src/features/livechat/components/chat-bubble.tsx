@@ -1,8 +1,12 @@
 import { format } from 'date-fns'
 
+import {
+  ChatMessage,
+  ChatMessageStatus,
+  ChatQuickReply,
+} from '@/model/livechat'
 import Icon from '@nui/ui/icon'
 
-import { ChatMessage, ChatMessageStatus, ChatQuickReply } from '@/types/livechat'
 import {
   ChatBubbleContent,
   ChatBubbleMain,

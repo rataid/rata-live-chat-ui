@@ -32,3 +32,9 @@ export type ChatMessage = {
   status?: ChatMessageStatus
   quickReplies?: ChatQuickReply[]
 }
+
+// GET /livechat/messages, cursor = id of the oldest message already loaded
+export type GetLiveChatMessagesParams = {
+  cursor?: string
+  take?: number
+}
