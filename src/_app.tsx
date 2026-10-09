@@ -20,6 +20,7 @@ import { DialogProvider } from '@nui/ui/dialog'
 import authRoutes from '@features/auth/routes'
 import faqRoutes from '@features/faq/routes'
 import homeRoutes from '@features/home/routes'
+import livechatRoutes from '@features/livechat/routes'
 
 import { PortalLayout } from './components/portal-layout'
 import ErrorBoundary from './error-boundary'
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
         loader: (args) => routeGuard(args, portalLoader),
         element: <PortalLayout />,
         errorElement: <ErrorBoundary />,
-        children: [...homeRoutes, ...faqRoutes],
+        children: [...homeRoutes, ...faqRoutes, ...livechatRoutes],
       },
 
       {

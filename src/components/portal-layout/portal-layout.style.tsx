@@ -27,11 +27,12 @@ export const PortalBrandLogo = styled.div.attrs({
 })``
 
 export const PortalBrandName = styled.span.attrs({
-  className: tw`hidden truncate text-sm font-semibold text-gray-900 sm:inline`,
+  className: tw`truncate text-sm font-semibold text-gray-900`,
 })``
 
+// Desktop nav; replaced by the hamburger menu below sm
 export const PortalNav = styled.nav.attrs({
-  className: tw`flex items-center gap-1 sm:gap-2`,
+  className: tw`hidden items-center gap-2 sm:flex`,
 })``
 
 // Plain component: NavLink needs a className function to style the active page,
@@ -61,10 +62,12 @@ export function PortalNavLink({ activePaths, ...props }: PortalNavLinkProps) {
   )
 }
 
-// Labels are hidden on phones, icons stay
-export const PortalNavLabel = styled.span.attrs({
-  className: tw`hidden sm:inline`,
-})``
+// Hidden on phones in the header; `$always` shows it (mobile menu)
+export const PortalNavLabel = styled.span.attrs<{ $always?: boolean }>(
+  ({ $always }) => ({
+    className: $always ? '' : tw`hidden sm:inline`,
+  })
+)<{ $always?: boolean }>``
 
 export const PortalNavDivider = styled.span.attrs({
   className: tw`mx-1 h-6 w-px bg-gray-200 sm:mx-2`,
@@ -104,4 +107,31 @@ export const UserMenuName = styled.div.attrs({
 
 export const UserMenuItem = styled.button.attrs({
   className: tw`flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-danger-600 hover:bg-gray-50`,
+})``
+
+// Mobile menu
+
+export const MobileMenuWrapper = styled.div.attrs({
+  className: tw`sm:hidden`,
+})``
+
+export const MobileMenuButton = styled.button.attrs({
+  className: tw`flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-50`,
+})``
+
+// Drops down under the fixed header, full width
+export const MobileMenuPanel = styled.nav.attrs({
+  className: tw`absolute inset-x-0 top-16 flex flex-col gap-1 border-b border-gray-200 bg-white px-4 py-3 shadow-lg`,
+})``
+
+export const MobileMenuDivider = styled.hr.attrs({
+  className: tw`my-1 border-gray-200`,
+})``
+
+export const MobileMenuName = styled.div.attrs({
+  className: tw`truncate px-2.5 py-1.5 text-xs text-gray-500`,
+})``
+
+export const MobileMenuSignOut = styled.button.attrs({
+  className: tw`flex w-full items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-left text-sm font-medium text-danger-600 hover:bg-gray-50`,
 })``
