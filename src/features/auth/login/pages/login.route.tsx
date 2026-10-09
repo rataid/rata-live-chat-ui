@@ -17,6 +17,7 @@ import { queryClient } from '@libs/query-client'
 import { showToast } from '@nui/ui/toast'
 
 export const LOGIN_ERROR_ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE'
+export const LOGIN_ERROR_RATE_LIMITED = 'LOGIN_RATE_LIMITED'
 
 export type AuthLoginActionData = {
   success: boolean
@@ -81,6 +82,22 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
         email: body.email,
         message: typeof body.message === 'string' ? body.message : undefined,
       }
+    }
+
+    if (
+      body?.code === LOGIN_ERROR_RATE_LIMITED ||
+      (isAxiosError(error) && error.response?.status === 429)
+    ) {
+      showToast({
+        type: 'error',
+        title: 'Too Many Attempts',
+        message:
+          typeof body?.message === 'string'
+            ? body.message
+            : 'Too many login attempts. Try again in 15 minutes.',
+      })
+
+      return { success: false, code: LOGIN_ERROR_RATE_LIMITED }
     }
 
     showToast({

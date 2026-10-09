@@ -28,7 +28,14 @@ import {
   AuthTitle,
 } from '../../components/auth.style'
 
-const RESEND_COOLDOWN = 60
+const RESEND_COOLDOWN = 5 * 60
+
+function formatCooldown(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+
+  return `${minutes}:${String(seconds).padStart(2, '0')}`
+}
 
 export default function AuthFormVerifyOtp() {
   const { phone } = useLoaderData() as { phone: string }
@@ -133,7 +140,7 @@ export default function AuthFormVerifyOtp() {
         Didn&apos;t receive OTP?{' '}
         {cooldown > 0 ? (
           <span className="font-medium text-gray-400">
-            Resend OTP in {cooldown}s
+            Resend OTP in {formatCooldown(cooldown)}
           </span>
         ) : (
           <button
