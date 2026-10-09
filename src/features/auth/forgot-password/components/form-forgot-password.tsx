@@ -60,8 +60,13 @@ export default function AuthFormForgotPassword() {
           <AuthTitle>Check Your Email</AuthTitle>
           <AuthSubtitle>
             If your email is registered, we&apos;ve sent password reset
-            instructions to your inbox. Please check your inbox and spam
-            folders.
+            instructions to{' '}
+            {actionData.email ? (
+              <strong>{actionData.email}</strong>
+            ) : (
+              'your inbox'
+            )}
+            . Please check your inbox and spam folders.
           </AuthSubtitle>
         </AuthHeading>
       </AuthCard>
