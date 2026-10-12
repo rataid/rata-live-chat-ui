@@ -1,11 +1,13 @@
 import { LogoSmiledental } from '@/assets'
 import Icon from '@nui/ui/icon'
 
+import { useNotificationMuted } from '../notification-preference'
 import {
   ChatHeaderBack,
   ChatHeaderBrand,
   ChatHeaderLogo,
   ChatHeaderMobile,
+  ChatHeaderMute,
   ChatHeaderSubtitle,
   ChatHeaderTitle,
   ChatHeaderWrapper,
@@ -24,6 +26,8 @@ export function ChatHeader({
   mobileTitle,
   mobileSubtitle,
 }: ChatHeaderProps) {
+  const { muted, toggle } = useNotificationMuted()
+
   return (
     <ChatHeaderWrapper>
       <ChatHeaderBrand>
@@ -48,6 +52,14 @@ export function ChatHeader({
           )}
         </div>
       </ChatHeaderMobile>
+      <ChatHeaderMute
+        type="button"
+        aria-pressed={muted}
+        aria-label={muted ? 'Unmute notifications' : 'Mute notifications'}
+        onClick={toggle}
+      >
+        <Icon icon={muted ? 'lucide-bell-off' : 'lucide-bell'} size="xs" />
+      </ChatHeaderMute>
     </ChatHeaderWrapper>
   )
 }

@@ -136,3 +136,35 @@ export const ChatStatusBar = styled.div.attrs({
 export const ChatListNote = styled.p.attrs({
   className: tw`py-3 text-center text-xs text-gray-500`,
 })``
+
+export const ChatHeaderMute = styled.button.attrs({
+  className: tw`ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
+})``
+
+export const NotificationPromptCard = styled.aside.attrs({
+  className: tw`fixed bottom-4 right-4 z-40 w-[calc(100vw-2rem)] max-w-[38rem] rounded-xl border border-gray-200 bg-white p-4 shadow-lg sm:bottom-6 sm:right-6 sm:w-max`,
+})``
+
+export const NotificationPromptTitle = styled.h2.attrs({
+  className: tw`text-sm font-semibold text-gray-900`,
+})``
+
+export const NotificationPromptBody = styled.p.attrs({
+  className: tw`mt-1 text-sm text-gray-500 sm:whitespace-nowrap`,
+})``
+
+export const NotificationPromptActions = styled.div.attrs({
+  className: tw`mt-4 flex items-center gap-2`,
+})``
+
+export const NotificationPromptEnable = styled.button.attrs({
+  className: tw`rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
+})``
+
+export const NotificationPromptLater = styled.button.attrs({
+  className: tw`rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50`,
+})``
+
+export const NotificationPromptNote = styled.p.attrs({
+  className: tw`mt-3 text-xs text-gray-400 sm:whitespace-nowrap`,
+})``
