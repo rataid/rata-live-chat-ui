@@ -57,11 +57,6 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   const body = message.body || 'You have a new message.'
 
-  showToast(
-    { type: 'info', title: CLINIC_NAME, message: body },
-    { autoClose: 5000 }
-  )
-
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
@@ -77,15 +72,19 @@ async function showSystemNotification(body: string) {
       await registration.showNotification(CLINIC_NAME, {
         body,
         icon: '/icons/icon-192.png',
+        requireInteraction: true,
       })
       return true
     }
   } catch {
-    // Chrome Android rejects `new Notification()`. Fall through to that, then toast.
+    // Chrome Android rejects `new Notification()`. Fall through to that.
   }
 
   try {
-    const notification = new Notification(CLINIC_NAME, { body })
+    const notification = new Notification(CLINIC_NAME, {
+      body,
+      requireInteraction: true,
+    })
     notification.onclick = () => {
       window.focus()
       notification.close()
