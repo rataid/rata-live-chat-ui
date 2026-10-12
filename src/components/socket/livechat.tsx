@@ -21,6 +21,7 @@ import {
   MessageStatus,
   MessageType,
 } from '@/constants/message'
+import { isNotificationMuted } from '@/features/livechat/notification-preference'
 import {
   ChatMessage,
   ChatMessageStatus,
@@ -47,6 +48,36 @@ const statusMap: Partial<Record<MessageStatus, ChatMessageStatus>> = {
 }
 
 const isLocalId = (id: string) => id.startsWith('local-')
+
+function isReadingLiveChat() {
+  return window.location.pathname.startsWith('/livechat') && !document.hidden
+}
+
+function notifyClinicMessage(message: LivechatServerMessage) {
+  if (message.direction !== MessageDirection.OUTGOING) return
+  if (isNotificationMuted()) return
+  if (isReadingLiveChat()) return
+
+  const body = message.body || 'You have a new message.'
+
+  if (
+    typeof Notification !== 'undefined' &&
+    Notification.permission === 'granted'
+  ) {
+    const notification = new Notification(CLINIC_NAME, { body })
+    notification.onclick = () => {
+      window.focus()
+      notification.close()
+    }
+    return
+  }
+
+  showToast({
+    type: 'info',
+    title: CLINIC_NAME,
+    message: body,
+  })
+}
 
 function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
   const ids = new Set(current.map((message) => message.id))
@@ -216,6 +247,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     const onReceived = ({ message, chatRoom }: LivechatReceivedPayload) => {
       chatRoomIdRef.current = chatRoom.id
       addFromServer([message])
+      notifyClinicMessage(message)
+    }
     }
 
     // Status of the patient's own messages (sent → delivered → read)

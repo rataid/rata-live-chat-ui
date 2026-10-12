@@ -6,7 +6,7 @@ import { getApiErrorMessage } from '@/api/shared/error'
 import { registerSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
-import { setRegisterPhone } from '../register-session'
+import { setRegisterEmail, setRegisterPhone } from '../register-session'
 
 // The phone number doesn't match any registered customer (API returns 404)
 export const REGISTER_ERROR_CUSTOMER_NOT_FOUND = 'CUSTOMER_NOT_FOUND'
@@ -76,6 +76,7 @@ export async function authRegisterAction({
   }
 
   setRegisterPhone(phone)
+  setRegisterEmail(email.trim().toLowerCase())
 
   if (!otpSent) {
     showToast({

@@ -4,23 +4,20 @@ import { useState } from 'react'
 
 import { alignerHistoryKey, useAlignerHistory } from '@/api/aligner/history'
 import {
-  AlignerPlan,
   alignerPlanKey,
   changeToNextAlignerSet,
   saveAlignerPlan,
   useAlignerPlan,
 } from '@/api/aligner/plan'
 import { getApiErrorMessage } from '@/api/shared/error'
+import { AlignerPlan, AlignerTrackerSettingsValues } from '@/model/aligner'
 import Button from '@nui/ui/button'
 import { useDialog } from '@nui/ui/dialog'
 import { showToast } from '@nui/ui/toast'
 import Tooltip from '@nui/ui/tooltip'
 
 import { AlignerSetHistory } from './aligner-set-history'
-import {
-  AlignerTrackerSettings,
-  AlignerTrackerSettingsValues,
-} from './aligner-tracker-settings'
+import { AlignerTrackerSettings } from './aligner-tracker-settings'
 import {
   Card,
   CardLabel,

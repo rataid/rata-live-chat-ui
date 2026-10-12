@@ -2,13 +2,13 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
 import {
-  WearToday,
   startWearTimer,
   stopWearTimer,
   useWearToday,
   wearTodayKey,
 } from '@/api/aligner/wear'
 import { getApiErrorMessage } from '@/api/shared/error'
+import { WearToday } from '@/model/aligner'
 import Button from '@nui/ui/button'
 import { showToast } from '@nui/ui/toast'
 

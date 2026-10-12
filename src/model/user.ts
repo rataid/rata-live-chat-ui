@@ -60,26 +60,29 @@ export const resetPasswordSchema = z
   })
   .refine(passwordsMatch, passwordsMatchError)
 
-export interface User {
-  id: number
-  employee_id: string
+// API payloads
+export type RegisterPayload = {
   name: string
-  position: string
-  organization: string
   email: string
-  approval_line: number
-  approval_line_employee_id?: string | null
-  grade: string
-  is_active: boolean
-  created_at: string
-  created_by?: null | string
-  updated_at: string
-  updated_by: string
-  division: EmployeeDivision
+  phone: string
+  password: string
 }
 
-export interface EmployeeDivision {
-  id: string
+export type ResetPasswordPayload = {
+  token: string
+  password: string
+}
+
+export type OtpChannel = 'WA'
+export type OtpPurpose = 'REGISTER'
+
+export type RequestOtpPayload = {
+  target: string
+  channel: OtpChannel
+  purpose: OtpPurpose
+}
+
+export type VerifyOtpPayload = RequestOtpPayload & {
+  // 6 digit code the user received
   code: string
-  name: string
 }

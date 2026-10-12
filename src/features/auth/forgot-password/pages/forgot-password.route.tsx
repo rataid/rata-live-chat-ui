@@ -8,6 +8,7 @@ import { showToast } from '@nui/ui/toast'
 export type AuthForgotPasswordActionData = {
   success: boolean
   message?: string
+  email?: string
 }
 
 export async function authForgotPasswordAction({
@@ -29,5 +30,5 @@ export async function authForgotPasswordAction({
     return { success: false, message }
   }
 
-  return { success: true }
+  return { success: true, email: data.data.email.trim().toLowerCase() }
 }
