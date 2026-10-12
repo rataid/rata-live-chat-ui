@@ -64,7 +64,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
-    const notification = new Notification(CLINIC_NAME, { body })
+    const notification = new Notification(LIVECHAT_CLINIC_NAME, { body })
     notification.onclick = () => {
       window.focus()
       notification.close()
@@ -74,7 +74,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   showToast({
     type: 'info',
-    title: CLINIC_NAME,
+    title: LIVECHAT_CLINIC_NAME,
     message: body,
   })
 }
@@ -248,7 +248,6 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       chatRoomIdRef.current = chatRoom.id
       addFromServer([message])
       notifyClinicMessage(message)
-    }
     }
 
     // Status of the patient's own messages (sent → delivered → read)
