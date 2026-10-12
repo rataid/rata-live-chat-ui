@@ -57,23 +57,43 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   const body = message.body || 'You have a new message.'
 
+  showToast(
+    { type: 'info', title: CLINIC_NAME, message: body },
+    { autoClose: 5000 }
+  )
+
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
+    void showSystemNotification(body)
+  }
+}
+
+async function showSystemNotification(body: string) {
+  try {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.ready
+      await registration.showNotification(CLINIC_NAME, {
+        body,
+        icon: '/icons/icon-192.png',
+      })
+      return true
+    }
+  } catch {
+    // Chrome Android rejects `new Notification()`. Fall through to that, then toast.
+  }
+
+  try {
     const notification = new Notification(CLINIC_NAME, { body })
     notification.onclick = () => {
       window.focus()
       notification.close()
     }
-    return
+    return true
+  } catch {
+    return false
   }
-
-  showToast({
-    type: 'info',
-    title: CLINIC_NAME,
-    message: body,
-  })
 }
 
 function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
@@ -172,6 +192,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       setIsLoadingOlder(false)
     }
   }, [addFromServer, hasOlder, isLoadingOlder, messages])
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+    void navigator.serviceWorker
+      .register('/livechat-notification-sw.js')
+      .catch(() => undefined)
+  }, [])
 
   useEffect(() => {
     const token = getToken()

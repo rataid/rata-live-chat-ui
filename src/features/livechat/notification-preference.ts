@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 const MUTE_KEY = 'livechat.notification.muted'
 const DISMISS_KEY = 'livechat.notification.promptDismissed'
+const IOS_INSTALL_DISMISS_KEY = 'livechat.notification.iosInstallDismissed'
 const MUTE_EVENT = 'livechat-notification-mute'
 
 export function isNotificationMuted() {
@@ -19,6 +20,31 @@ export function isNotificationPromptDismissed() {
 
 export function dismissNotificationPrompt() {
   localStorage.setItem(DISMISS_KEY, '1')
+}
+
+export function isIosDevice() {
+  const ua = navigator.userAgent
+  return (
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  )
+}
+
+export function isHomeScreenApp() {
+  const standalone = (navigator as Navigator & { standalone?: boolean })
+    .standalone
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    standalone === true
+  )
+}
+
+export function isIosInstallDismissed() {
+  return localStorage.getItem(IOS_INSTALL_DISMISS_KEY) === '1'
+}
+
+export function dismissIosInstallPrompt() {
+  localStorage.setItem(IOS_INSTALL_DISMISS_KEY, '1')
 }
 
 export function useNotificationMuted() {

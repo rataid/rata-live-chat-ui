@@ -149,9 +149,16 @@ export const NotificationPromptTitle = styled.h2.attrs({
   className: tw`text-sm font-semibold text-gray-900`,
 })``
 
-export const NotificationPromptBody = styled.p.attrs({
-  className: tw`mt-1 text-sm text-gray-500 sm:whitespace-nowrap`,
-})``
+export const NotificationPromptBody = styled.p.attrs<{ $wrap?: boolean }>(
+  ({ $wrap }) => ({
+    className: [
+      tw`mt-1 max-w-md text-sm text-gray-500`,
+      $wrap ? '' : tw`sm:whitespace-nowrap`,
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<{ $wrap?: boolean }>``
 
 export const NotificationPromptActions = styled.div.attrs({
   className: tw`mt-4 flex items-center gap-2`,
@@ -165,6 +172,13 @@ export const NotificationPromptLater = styled.button.attrs({
   className: tw`rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50`,
 })``
 
-export const NotificationPromptNote = styled.p.attrs({
-  className: tw`mt-3 text-xs text-gray-400 sm:whitespace-nowrap`,
-})``
+export const NotificationPromptNote = styled.p.attrs<{ $wrap?: boolean }>(
+  ({ $wrap }) => ({
+    className: [
+      tw`mt-3 max-w-md text-xs text-gray-400`,
+      $wrap ? '' : tw`sm:whitespace-nowrap`,
+    ]
+      .filter(Boolean)
+      .join(' '),
+  })
+)<{ $wrap?: boolean }>``
