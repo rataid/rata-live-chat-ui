@@ -15,6 +15,7 @@ import {
   getLiveChatMessages,
 } from '@/api/livechat/messages'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
+import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
 import {
   MessageDirection,
   MessageStatus,
@@ -29,12 +30,14 @@ import { connectSocket, livechatSocket } from '@libs/socket-client'
 import { showToast } from '@nui/ui/toast'
 import { randomString } from '@utils'
 
-import { sendLivechatMessage } from './livechat-utils'
-import { LivechatReceivedPayload, LivechatSentAck } from './types'
+import { readLivechatMessages, sendLivechatMessage } from './livechat-utils'
+import {
+  LivechatReceivedPayload,
+  LivechatSentAck,
+  LivechatStatusChangePayload,
+} from './types'
 
 export type LiveChatStatus = 'connecting' | 'connected' | 'reconnecting'
-
-const CLINIC_NAME = 'Klinik TANAM Pakubuwono'
 
 const statusMap: Partial<Record<MessageStatus, ChatMessageStatus>> = {
   [MessageStatus.PENDING]: 'pending',
@@ -62,7 +65,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
   return {
     id: message.id,
     direction: fromClinic ? 'incoming' : 'outgoing',
-    senderName: fromClinic ? CLINIC_NAME : undefined,
+    senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
     body:
       message.type === MessageType.TEXT
         ? message.body ?? ''
@@ -84,6 +87,8 @@ type LiveChatContextValue = {
   hasOlder: boolean
   isLoadingOlder: boolean
   loadOlder: () => void
+  // Marks the clinic's messages as read (chatRoom.readMessages)
+  readMessages: () => void
 }
 
 const LiveChatContext = createContext<LiveChatContextValue | null>(null)
@@ -92,6 +97,9 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
 
   const pendingIdsRef = useRef<string[]>([])
+
+  // The patient has one chat room; its id comes with every message/ack
+  const chatRoomIdRef = useRef<string>()
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [status, setStatus] = useState<LiveChatStatus>('connecting')
@@ -103,6 +111,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   const [historyError, setHistoryError] = useState(false)
 
   const addFromServer = useCallback((items: LivechatServerMessage[]) => {
+    if (items[0]?.chatRoomId) chatRoomIdRef.current = items[0].chatRoomId
     setMessages((prev) => mergeMessages(prev, items.map(toChatMessage)))
   }, [])
 
@@ -186,26 +195,50 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
 
     const onSent = (ack: LivechatSentAck) => {
+      chatRoomIdRef.current = ack.chatRoomId
+
       const tempId = pendingIdsRef.current.shift()
       if (!tempId) return
 
       setMessages((prev) =>
         prev.map((message) =>
           message.id === tempId
-            ? { ...message, id: ack.id, status: 'sent' }
+            ? {
+                ...message,
+                id: ack.id,
+                status: statusMap[ack.status] ?? 'sent',
+              }
             : message
         )
       )
     }
 
-    const onReceived = ({ message }: LivechatReceivedPayload) =>
+    const onReceived = ({ message, chatRoom }: LivechatReceivedPayload) => {
+      chatRoomIdRef.current = chatRoom.id
       addFromServer([message])
+    }
+
+    // Status of the patient's own messages (sent → delivered → read)
+    const onStatusChange = ({
+      message,
+      chatRoom,
+    }: LivechatStatusChangePayload) => {
+      chatRoomIdRef.current = chatRoom.id
+      const next = toChatMessage(message)
+
+      setMessages((prev) =>
+        prev.map((item) =>
+          item.id === next.id ? { ...item, status: next.status } : item
+        )
+      )
+    }
 
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
     socket.on('message.sent', onSent)
     socket.on('message.received', onReceived)
+    socket.on('message.statusChange', onStatusChange)
 
     connectSocket(socket, token)
 
@@ -215,6 +248,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       socket.off('connect_error', onConnectError)
       socket.off('message.sent', onSent)
       socket.off('message.received', onReceived)
+      socket.off('message.statusChange', onStatusChange)
       socket.disconnect()
       pendingIdsRef.current = []
     }
@@ -241,6 +275,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     sendLivechatMessage({ body })
   }, [])
 
+  const readMessages = useCallback(() => {
+    const id = chatRoomIdRef.current
+    if (!id || !livechatSocket.connected) return
+
+    readLivechatMessages({ id })
+  }, [])
+
   const value = useMemo(
     () => ({
       messages,
@@ -252,6 +293,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       hasOlder,
       isLoadingOlder,
       loadOlder,
+      readMessages,
     }),
     [
       messages,
@@ -263,6 +305,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       hasOlder,
       isLoadingOlder,
       loadOlder,
+      readMessages,
     ]
   )
 
