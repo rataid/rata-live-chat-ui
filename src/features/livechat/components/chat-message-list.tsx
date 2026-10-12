@@ -1,7 +1,8 @@
 import { isSameDay } from 'date-fns'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { ChatMessage, ChatQuickReply } from '@/model/livechat'
+import Icon from '@nui/ui/icon'
 
 import { ChatBubble } from './chat-bubble'
 import { ChatDateSeparator } from './chat-date-separator'
@@ -13,6 +14,7 @@ import {
   ChatMessageList as ChatMessageListWrapper,
   ChatMessageSection,
   ChatMessageSender,
+  ChatNewMessagesButton,
 } from './chat.style'
 
 type ChatMessageListProps = {
@@ -27,6 +29,9 @@ type ChatMessageListProps = {
 }
 
 const LOAD_OLDER_THRESHOLD = 80
+
+// Within this distance from the bottom, new messages scroll into view
+const AT_BOTTOM_THRESHOLD = 80
 
 type MessageGroup = {
   key: string
@@ -75,18 +80,55 @@ export function ChatMessageList({
 
   const hasScrolledRef = useRef(false)
 
+  const heightBeforeLoadRef = useRef<number | null>(null)
+
+  const isAtBottomRef = useRef(true)
+
+  const [newCount, setNewCount] = useState(0)
+
+  const knownIdsRef = useRef(new Set<string>())
+  const animatedIdsRef = useRef(new Set<string>())
+
+  const shouldAnimate = (message: ChatMessage) => {
+    if (animatedIdsRef.current.has(message.id)) return true
+
+    const isNew =
+      hasScrolledRef.current &&
+      heightBeforeLoadRef.current === null &&
+      !knownIdsRef.current.has(message.id) &&
+      message.direction === 'incoming'
+
+    if (isNew) animatedIdsRef.current.add(message.id)
+    return isNew
+  }
+
+  useEffect(() => {
+    messages.forEach(({ id }) => knownIdsRef.current.add(id))
+  }, [messages])
+
+  const scrollToBottom = (behavior: ScrollBehavior) => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior })
+  }
+
   useEffect(() => {
     const list = listRef.current
-    if (!list || !lastMessageId) return
+    const lastMessage = messages.at(-1)
+    if (!list || !lastMessage) return
 
-    list.scrollTo({
-      top: list.scrollHeight,
-      behavior: hasScrolledRef.current ? 'smooth' : 'auto',
-    })
-    hasScrolledRef.current = true
+    // First load: jump to the latest message
+    if (!hasScrolledRef.current) {
+      scrollToBottom('auto')
+      hasScrolledRef.current = true
+    } else if (lastMessage.direction === 'outgoing' || isAtBottomRef.current) {
+      // The patient's own message, or they're already following the chat
+      scrollToBottom('smooth')
+    } else {
+      // Reading older messages: don't pull them down, show the pill instead
+      setNewCount((count) => count + 1)
+    }
+
+    // Only reacts to a new last message, not to status updates
   }, [lastMessageId])
-
-  const heightBeforeLoadRef = useRef<number | null>(null)
 
   useLayoutEffect(() => {
     const list = listRef.current
@@ -99,7 +141,15 @@ export function ChatMessageList({
 
   const handleScroll = () => {
     const list = listRef.current
-    if (!list || !onLoadOlder || !hasOlder || isLoadingOlder) return
+    if (!list) return
+
+    isAtBottomRef.current =
+      list.scrollHeight - list.scrollTop - list.clientHeight <
+      AT_BOTTOM_THRESHOLD
+
+    if (isAtBottomRef.current && newCount > 0) setNewCount(0)
+
+    if (!onLoadOlder || !hasOlder || isLoadingOlder) return
 
     if (list.scrollTop < LOAD_OLDER_THRESHOLD) {
       heightBeforeLoadRef.current = list.scrollHeight
@@ -144,7 +194,10 @@ export function ChatMessageList({
                 {direction === 'outgoing' ? 'You' : senderName}
               </ChatMessageSender>
               {group.messages.map((message) => (
-                <ChatBubbleWrapper key={message.id}>
+                <ChatBubbleWrapper
+                  key={message.id}
+                  $animate={shouldAnimate(message)}
+                >
                   <ChatBubble
                     message={message}
                     quickRepliesDisabled={message.id !== lastMessageId}
@@ -156,6 +209,18 @@ export function ChatMessageList({
           </ChatMessageSection>
         )
       })}
+      {newCount > 0 && (
+        <ChatNewMessagesButton
+          type="button"
+          onClick={() => {
+            scrollToBottom('smooth')
+            setNewCount(0)
+          }}
+        >
+          {newCount === 1 ? '1 new message' : `${newCount} new messages`}
+          <Icon icon="lucide-arrow-down" size="2xs" />
+        </ChatNewMessagesButton>
+      )}
     </ChatMessageListWrapper>
   )
 }
