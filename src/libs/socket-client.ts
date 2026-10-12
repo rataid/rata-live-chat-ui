@@ -5,12 +5,10 @@ import {
   LivechatServerEvents,
 } from '@/components/socket/types'
 
-export const SOCKET_URL = import.meta.env.VITE_SOCKET_ENDPOINT
-export const SOCKET_PATH = import.meta.env.VITE_SOCKET_PATH
+export const SOCKET_URL = import.meta.env.VITE_API_ENDPOINT
 
 const createSocket = (namespace: string) =>
   io(`${SOCKET_URL}${namespace}`, {
-    path: SOCKET_PATH,
     transports: ['websocket'],
     autoConnect: false,
   })
