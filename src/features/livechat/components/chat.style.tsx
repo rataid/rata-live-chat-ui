@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 
 import { ChatMessageDirection } from '@/model/livechat'
 import { tw } from '@nui/utils/tw'
@@ -69,9 +69,31 @@ export const ChatMessageSender = styled.div.attrs({
   className: tw`text-2xs font-semibold text-gray-900`,
 })``
 
+const bubbleIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`
+
+// $animate: a new message from the clinic that arrived while the chat is open
 export const ChatBubbleWrapper = styled.div.attrs({
   className: tw`flex max-w-[85%] flex-col sm:max-w-[75%]`,
-})``
+})<{ $animate?: boolean }>`
+  ${({ $animate }) =>
+    $animate &&
+    css`
+      animation: ${bubbleIn} 200ms ease-out;
+
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
+      }
+    `}
+`
 
 export const ChatBubbleMain = styled.div.attrs<DirectionProps>(
   ({ $direction }) => ({
@@ -182,3 +204,7 @@ export const NotificationPromptNote = styled.p.attrs<{ $wrap?: boolean }>(
       .join(' '),
   })
 )<{ $wrap?: boolean }>``
+
+export const ChatNewMessagesButton = styled.button.attrs({
+  className: tw`sticky bottom-3 z-10 mx-auto mt-3 flex shrink-0 items-center gap-1 rounded-full bg-primary-600 px-3 py-1.5 text-xs font-medium text-white shadow-md hover:bg-primary-700`,
+})``
