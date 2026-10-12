@@ -1,7 +1,12 @@
-import { MessageStatus } from '@/constants/message'
+import { MessageStatus, MessageType } from '@/constants/message'
 import { LivechatServerMessage } from '@/model/livechat'
 
-export type LivechatSendPayload = { body: string }
+type LivechatSendTextPayload = {
+  type: MessageType.TEXT
+  text: { body: string }
+}
+
+export type LivechatSendPayload = LivechatSendTextPayload
 
 export type LivechatSentAck = {
   id: string

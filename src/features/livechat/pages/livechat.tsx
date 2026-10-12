@@ -21,7 +21,7 @@ export function LiveChatPage() {
   const {
     messages,
     status,
-    sendMessage,
+    sendMessageText,
     isLoadingHistory,
     historyError,
     retryHistory,
@@ -60,7 +60,10 @@ export function LiveChatPage() {
           isLoadingOlder={isLoadingOlder}
           onLoadOlder={loadOlder}
         />
-        <ChatEditor onSend={sendMessage} disabled={status !== 'connected'} />
+        <ChatEditor
+          onSend={sendMessageText}
+          disabled={status !== 'connected'}
+        />
       </ChatPageContainer>
     </ChatPageWrapper>
   )

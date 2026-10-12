@@ -80,7 +80,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
 type LiveChatContextValue = {
   messages: ChatMessage[]
   status: LiveChatStatus
-  sendMessage: (body: string) => void
+  sendMessageText: (body: string) => void
   isLoadingHistory: boolean
   historyError: boolean
   retryHistory: () => void
@@ -254,7 +254,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
   }, [addFromServer, loadLatest, navigate])
 
-  const sendMessage = useCallback((body: string) => {
+  const sendMessageText = useCallback((body: string) => {
     const socket = livechatSocket
     if (!socket.connected) return
 
@@ -272,7 +272,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       },
     ])
 
-    sendLivechatMessage({ body })
+    sendLivechatMessage({ type: MessageType.TEXT, text: { body } })
   }, [])
 
   const readMessages = useCallback(() => {
@@ -286,7 +286,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     () => ({
       messages,
       status,
-      sendMessage,
+      sendMessageText,
       isLoadingHistory,
       historyError,
       retryHistory: loadLatest,
@@ -298,7 +298,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     [
       messages,
       status,
-      sendMessage,
+      sendMessageText,
       isLoadingHistory,
       historyError,
       loadLatest,
