@@ -15,6 +15,7 @@ import {
   getLiveChatMessages,
 } from '@/api/livechat/messages'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
+import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
 import {
   MessageDirection,
   MessageStatus,
@@ -30,12 +31,14 @@ import { connectSocket, livechatSocket } from '@libs/socket-client'
 import { showToast } from '@nui/ui/toast'
 import { randomString } from '@utils'
 
-import { sendLivechatMessage } from './livechat-utils'
-import { LivechatReceivedPayload, LivechatSentAck } from './types'
+import { readLivechatMessages, sendLivechatMessage } from './livechat-utils'
+import {
+  LivechatReceivedPayload,
+  LivechatSentAck,
+  LivechatStatusChangePayload,
+} from './types'
 
 export type LiveChatStatus = 'connecting' | 'connected' | 'reconnecting'
-
-const CLINIC_NAME = 'Klinik TANAM Pakubuwono'
 
 const statusMap: Partial<Record<MessageStatus, ChatMessageStatus>> = {
   [MessageStatus.PENDING]: 'pending',
@@ -61,7 +64,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
-    const notification = new Notification(CLINIC_NAME, { body })
+    const notification = new Notification(LIVECHAT_CLINIC_NAME, { body })
     notification.onclick = () => {
       window.focus()
       notification.close()
@@ -71,7 +74,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   showToast({
     type: 'info',
-    title: CLINIC_NAME,
+    title: LIVECHAT_CLINIC_NAME,
     message: body,
   })
 }
@@ -93,7 +96,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
   return {
     id: message.id,
     direction: fromClinic ? 'incoming' : 'outgoing',
-    senderName: fromClinic ? CLINIC_NAME : undefined,
+    senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
     body:
       message.type === MessageType.TEXT
         ? message.body ?? ''
@@ -108,13 +111,15 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
 type LiveChatContextValue = {
   messages: ChatMessage[]
   status: LiveChatStatus
-  sendMessage: (body: string) => void
+  sendMessageText: (body: string) => void
   isLoadingHistory: boolean
   historyError: boolean
   retryHistory: () => void
   hasOlder: boolean
   isLoadingOlder: boolean
   loadOlder: () => void
+  // Marks the clinic's messages as read (chatRoom.readMessages)
+  readMessages: () => void
 }
 
 const LiveChatContext = createContext<LiveChatContextValue | null>(null)
@@ -123,6 +128,9 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
 
   const pendingIdsRef = useRef<string[]>([])
+
+  // The patient has one chat room; its id comes with every message/ack
+  const chatRoomIdRef = useRef<string>()
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [status, setStatus] = useState<LiveChatStatus>('connecting')
@@ -134,6 +142,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   const [historyError, setHistoryError] = useState(false)
 
   const addFromServer = useCallback((items: LivechatServerMessage[]) => {
+    if (items[0]?.chatRoomId) chatRoomIdRef.current = items[0].chatRoomId
     setMessages((prev) => mergeMessages(prev, items.map(toChatMessage)))
   }, [])
 
@@ -217,21 +226,43 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
 
     const onSent = (ack: LivechatSentAck) => {
+      chatRoomIdRef.current = ack.chatRoomId
+
       const tempId = pendingIdsRef.current.shift()
       if (!tempId) return
 
       setMessages((prev) =>
         prev.map((message) =>
           message.id === tempId
-            ? { ...message, id: ack.id, status: 'sent' }
+            ? {
+                ...message,
+                id: ack.id,
+                status: statusMap[ack.status] ?? 'sent',
+              }
             : message
         )
       )
     }
 
-    const onReceived = ({ message }: LivechatReceivedPayload) => {
+    const onReceived = ({ message, chatRoom }: LivechatReceivedPayload) => {
+      chatRoomIdRef.current = chatRoom.id
       addFromServer([message])
       notifyClinicMessage(message)
+    }
+
+    // Status of the patient's own messages (sent → delivered → read)
+    const onStatusChange = ({
+      message,
+      chatRoom,
+    }: LivechatStatusChangePayload) => {
+      chatRoomIdRef.current = chatRoom.id
+      const next = toChatMessage(message)
+
+      setMessages((prev) =>
+        prev.map((item) =>
+          item.id === next.id ? { ...item, status: next.status } : item
+        )
+      )
     }
 
     socket.on('connect', onConnect)
@@ -239,6 +270,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     socket.on('connect_error', onConnectError)
     socket.on('message.sent', onSent)
     socket.on('message.received', onReceived)
+    socket.on('message.statusChange', onStatusChange)
 
     connectSocket(socket, token)
 
@@ -248,12 +280,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       socket.off('connect_error', onConnectError)
       socket.off('message.sent', onSent)
       socket.off('message.received', onReceived)
+      socket.off('message.statusChange', onStatusChange)
       socket.disconnect()
       pendingIdsRef.current = []
     }
   }, [addFromServer, loadLatest, navigate])
 
-  const sendMessage = useCallback((body: string) => {
+  const sendMessageText = useCallback((body: string) => {
     const socket = livechatSocket
     if (!socket.connected) return
 
@@ -271,31 +304,40 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       },
     ])
 
-    sendLivechatMessage({ body })
+    sendLivechatMessage({ type: MessageType.TEXT, text: { body } })
+  }, [])
+
+  const readMessages = useCallback(() => {
+    const id = chatRoomIdRef.current
+    if (!id || !livechatSocket.connected) return
+
+    readLivechatMessages({ id })
   }, [])
 
   const value = useMemo(
     () => ({
       messages,
       status,
-      sendMessage,
+      sendMessageText,
       isLoadingHistory,
       historyError,
       retryHistory: loadLatest,
       hasOlder,
       isLoadingOlder,
       loadOlder,
+      readMessages,
     }),
     [
       messages,
       status,
-      sendMessage,
+      sendMessageText,
       isLoadingHistory,
       historyError,
       loadLatest,
       hasOlder,
       isLoadingOlder,
       loadOlder,
+      readMessages,
     ]
   )
 

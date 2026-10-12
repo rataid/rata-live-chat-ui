@@ -14,6 +14,13 @@ import {
   ChatQuickReplyButton,
 } from './chat.style'
 
+const statusColors: Record<ChatMessageStatus, string> = {
+  pending: 'text-white',
+  sent: 'text-white',
+  delivered: 'text-white',
+  read: 'text-[#51A2FF]',
+}
+
 const statusIcons: Record<ChatMessageStatus, string> = {
   pending: 'lucide-clock',
   sent: 'lucide-check',
@@ -43,7 +50,7 @@ export function ChatBubble({
           <Icon
             icon={statusIcons[status]}
             size="2xs"
-            className={status === 'read' ? 'text-white' : undefined}
+            className={statusColors[status]}
           />
         )}
       </ChatBubbleMeta>

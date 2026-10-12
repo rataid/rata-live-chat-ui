@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
+
 import { useLiveChat } from '@/components/socket'
+import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
 
 import { ChatEditor } from '../components/chat-editor'
 import { ChatHeader } from '../components/chat-header'
@@ -18,14 +21,23 @@ export function LiveChatPage() {
   const {
     messages,
     status,
-    sendMessage,
+    sendMessageText,
     isLoadingHistory,
     historyError,
     retryHistory,
     hasOlder,
     isLoadingOlder,
     loadOlder,
+    readMessages,
   } = useLiveChat()
+
+  const lastIncomingId = messages.findLast(
+    (message) => message.direction === 'incoming'
+  )?.id
+
+  useEffect(() => {
+    if (status === 'connected' && lastIncomingId) readMessages()
+  }, [status, lastIncomingId, readMessages])
 
   return (
     <ChatPageWrapper>
@@ -33,7 +45,7 @@ export function LiveChatPage() {
         <ChatHeader
           title="Tanam Live Chat"
           subtitle="Klinik Tanam"
-          mobileTitle="Klinik TANAM Pakubuwono"
+          mobileTitle={LIVECHAT_CLINIC_NAME}
           mobileSubtitle="Live Chat Platform"
         />
         {status !== 'connected' && (
@@ -48,7 +60,10 @@ export function LiveChatPage() {
           isLoadingOlder={isLoadingOlder}
           onLoadOlder={loadOlder}
         />
-        <ChatEditor onSend={sendMessage} disabled={status !== 'connected'} />
+        <ChatEditor
+          onSend={sendMessageText}
+          disabled={status !== 'connected'}
+        />
       </ChatPageContainer>
     </ChatPageWrapper>
   )

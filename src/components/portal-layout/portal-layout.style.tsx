@@ -119,10 +119,16 @@ export const MobileMenuButton = styled.button.attrs({
   className: tw`flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-50`,
 })``
 
-// Drops down under the fixed header, full width
-export const MobileMenuPanel = styled.nav.attrs({
-  className: tw`absolute inset-x-0 top-16 flex flex-col gap-1 border-b border-gray-200 bg-white px-4 py-3 shadow-lg`,
-})``
+export const MobileMenuPanel = styled.nav.attrs<{ $open: boolean }>(
+  ({ $open }) => ({
+    className: [
+      tw`absolute inset-x-0 top-16 flex flex-col gap-1 border-b border-gray-200 bg-white px-4 py-3 shadow-lg transition-[opacity,transform,visibility] duration-200 ease-out motion-reduce:transition-none`,
+      $open
+        ? tw`visible translate-y-0 opacity-100`
+        : tw`pointer-events-none invisible -translate-y-2 opacity-0`,
+    ].join(' '),
+  })
+)<{ $open: boolean }>``
 
 export const MobileMenuDivider = styled.hr.attrs({
   className: tw`my-1 border-gray-200`,
