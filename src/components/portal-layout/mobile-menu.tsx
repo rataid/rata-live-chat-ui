@@ -56,25 +56,23 @@ export function MobileMenu({ name }: { name?: string }) {
       >
         <Icon icon={open ? 'lucide-x' : 'lucide-menu'} size="sm" />
       </MobileMenuButton>
-      {open && (
-        <MobileMenuPanel id="portal-mobile-menu">
-          <PortalNavLink to="/home" activePaths={['/faq']}>
-            <Icon icon="lucide-home" size="xs" />
-            <PortalNavLabel $always>Home</PortalNavLabel>
-          </PortalNavLink>
-          <PortalNavLink to="/livechat">
-            <Icon icon="lucide-messages-square" size="xs" />
-            <PortalNavLabel $always>Live Chat</PortalNavLabel>
-          </PortalNavLink>
-          <MobileMenuDivider />
-          <Form method="post" action="/logout">
-            <MobileMenuSignOut type="submit">
-              <Icon icon="lucide-log-out" size="xs" />
-              Sign out
-            </MobileMenuSignOut>
-          </Form>
-        </MobileMenuPanel>
-      )}
+      <MobileMenuPanel id="portal-mobile-menu" $open={open} aria-hidden={!open}>
+        <PortalNavLink to="/home" activePaths={['/faq']}>
+          <Icon icon="lucide-home" size="xs" />
+          <PortalNavLabel $always>Home</PortalNavLabel>
+        </PortalNavLink>
+        <PortalNavLink to="/livechat">
+          <Icon icon="lucide-messages-square" size="xs" />
+          <PortalNavLabel $always>Live Chat</PortalNavLabel>
+        </PortalNavLink>
+        <MobileMenuDivider />
+        <Form method="post" action="/logout">
+          <MobileMenuSignOut type="submit">
+            <Icon icon="lucide-log-out" size="xs" />
+            Sign out
+          </MobileMenuSignOut>
+        </Form>
+      </MobileMenuPanel>
     </MobileMenuWrapper>
   )
 }
