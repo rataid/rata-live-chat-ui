@@ -164,46 +164,36 @@ export const ChatHeaderMute = styled.button.attrs({
 })``
 
 export const NotificationPromptCard = styled.aside.attrs({
-  className: tw`fixed bottom-4 right-4 z-40 w-[calc(100vw-2rem)] max-w-[38rem] rounded-xl border border-gray-200 bg-white p-4 shadow-lg sm:bottom-6 sm:right-6 sm:w-max`,
+  className: tw`fixed left-1/2 top-1/2 z-40 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-gray-200 bg-white p-4 shadow-lg sm:bottom-6 sm:left-auto sm:right-6 sm:top-auto sm:w-full sm:translate-x-0 sm:translate-y-0`,
 })``
 
 export const NotificationPromptTitle = styled.h2.attrs({
   className: tw`text-sm font-semibold text-gray-900`,
 })``
 
-export const NotificationPromptBody = styled.p.attrs<{ $wrap?: boolean }>(
-  ({ $wrap }) => ({
-    className: [
-      tw`mt-1 max-w-md text-sm text-gray-500`,
-      $wrap ? '' : tw`sm:whitespace-nowrap`,
-    ]
-      .filter(Boolean)
-      .join(' '),
-  })
-)<{ $wrap?: boolean }>``
+export const NotificationPromptBody = styled.p.attrs({
+  className: tw`mt-1 max-w-md text-sm text-gray-500`,
+})``
 
 export const NotificationPromptActions = styled.div.attrs({
-  className: tw`mt-4 flex items-center gap-2`,
+  className: tw`mt-4 flex flex-wrap items-center gap-2`,
 })``
 
 export const NotificationPromptEnable = styled.button.attrs({
-  className: tw`rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
+  className: tw`appearance-none rounded-lg border-0 bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
 })``
 
 export const NotificationPromptLater = styled.button.attrs({
-  className: tw`rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50`,
+  className: tw`appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50`,
 })``
 
-export const NotificationPromptNote = styled.p.attrs<{ $wrap?: boolean }>(
-  ({ $wrap }) => ({
-    className: [
-      tw`mt-3 max-w-md text-xs text-gray-400`,
-      $wrap ? '' : tw`sm:whitespace-nowrap`,
-    ]
-      .filter(Boolean)
-      .join(' '),
-  })
-)<{ $wrap?: boolean }>``
+export const NotificationPromptSteps = styled.ol.attrs({
+  className: tw`mt-3 list-decimal space-y-1 pl-4 text-xs text-gray-500`,
+})``
+
+export const NotificationPromptNote = styled.p.attrs({
+  className: tw`mt-3 max-w-md text-xs text-gray-400`,
+})``
 
 export const ChatNewMessagesButton = styled.button.attrs({
   className: tw`sticky bottom-3 z-10 mx-auto mt-3 flex shrink-0 items-center gap-1 rounded-full bg-primary-600 px-3 py-1.5 text-xs font-medium text-white shadow-md hover:bg-primary-700`,

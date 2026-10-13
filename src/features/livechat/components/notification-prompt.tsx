@@ -15,6 +15,7 @@ import {
   NotificationPromptEnable,
   NotificationPromptLater,
   NotificationPromptNote,
+  NotificationPromptSteps,
   NotificationPromptTitle,
 } from './chat.style'
 
@@ -46,20 +47,21 @@ export function NotificationPrompt() {
   if (mode === 'hidden') return null
 
   const enable = () => {
-    const ask = () => {
-      void Notification.requestPermission().finally(() => setMode('hidden'))
-    }
+    // Chrome only keeps the click as a user gesture for the synchronous
+    // part of this handler. Awaiting service worker registration first
+    // drops that gesture, and Chrome then shows a quiet permission
+    // bubble whose Allow button does not accept clicks.
+    const permission = Notification.requestPermission()
 
-    if (!('serviceWorker' in navigator)) {
-      ask()
-      return
-    }
+    const ready =
+      'serviceWorker' in navigator
+        ? navigator.serviceWorker
+            .register('/livechat-notification-sw.js')
+            .then(() => navigator.serviceWorker.ready)
+            .catch(() => undefined)
+        : Promise.resolve()
 
-    void navigator.serviceWorker
-      .register('/livechat-notification-sw.js')
-      .then(() => navigator.serviceWorker.ready)
-      .then(ask)
-      .catch(ask)
+    void Promise.all([permission, ready]).finally(() => setMode('hidden'))
   }
 
   const later = () => {
@@ -78,11 +80,18 @@ export function NotificationPrompt() {
       <NotificationPromptTitle id="livechat-notification-prompt-title">
         {iosInstall ? 'Add to Home Screen' : "Don't miss any updates!"}
       </NotificationPromptTitle>
-      <NotificationPromptBody $wrap={iosInstall}>
+      <NotificationPromptBody>
         {iosInstall
           ? 'iPhone shows notifications only when this portal is opened from the Home Screen icon.'
           : "We'll send notifications when there's a reply, even if you're on another tab"}
       </NotificationPromptBody>
+      {iosInstall ? (
+        <NotificationPromptSteps>
+          <li>Tap the Share button at the bottom of Safari.</li>
+          <li>Tap Add to Home Screen, then Add.</li>
+          <li>Open the Tanam icon, log in, then tap Enable notifications.</li>
+        </NotificationPromptSteps>
+      ) : null}
       <NotificationPromptActions>
         {iosInstall ? null : (
           <NotificationPromptEnable type="button" onClick={enable}>
@@ -93,11 +102,11 @@ export function NotificationPrompt() {
           Maybe later
         </NotificationPromptLater>
       </NotificationPromptActions>
-      <NotificationPromptNote $wrap={iosInstall}>
-        {iosInstall
-          ? 'In Safari, tap Share, then Add to Home Screen. Open Tanam, log in, then tap Enable notifications.'
-          : 'You can change this permission anytime through your browser settings.'}
-      </NotificationPromptNote>
+      {iosInstall ? null : (
+        <NotificationPromptNote>
+          You can change this permission anytime through your browser settings.
+        </NotificationPromptNote>
+      )}
     </NotificationPromptCard>
   )
 }
