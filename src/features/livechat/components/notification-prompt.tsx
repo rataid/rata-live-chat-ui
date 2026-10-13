@@ -21,17 +21,32 @@ import {
 
 type PromptMode = 'hidden' | 'enable' | 'ios-install'
 
+function notificationPermission(): NotificationPermission | 'unavailable' {
+  try {
+    if (typeof Notification === 'undefined') return 'unavailable'
+    return Notification.permission
+  } catch {
+    return 'unavailable'
+  }
+}
+
 function canAskForNotificationPermission() {
   return (
-    typeof Notification !== 'undefined' &&
-    Notification.permission === 'default' &&
-    !isNotificationPromptDismissed()
+    notificationPermission() === 'default' && !isNotificationPromptDismissed()
   )
 }
 
 function promptMode(): PromptMode {
-  if (isIosDevice() && !isHomeScreenApp()) {
+  const installed = isHomeScreenApp()
+
+  if (isIosDevice() && !installed) {
     return isIosInstallDismissed() ? 'hidden' : 'ios-install'
+  }
+
+  // iOS only exposes Notification inside a Home Screen app whose manifest
+  // it accepted. Keep the Enable card up until permission is granted.
+  if (isIosDevice() && installed) {
+    return notificationPermission() === 'granted' ? 'hidden' : 'enable'
   }
 
   return canAskForNotificationPermission() ? 'enable' : 'hidden'
@@ -41,17 +56,32 @@ export function NotificationPrompt() {
   const [mode, setMode] = useState<PromptMode>('hidden')
 
   useEffect(() => {
-    setMode(promptMode())
+    const sync = () => setMode(promptMode())
+    sync()
+    window.addEventListener('pageshow', sync)
+    const timers = [300, 1000].map((delay) => window.setTimeout(sync, delay))
+
+    return () => {
+      window.removeEventListener('pageshow', sync)
+      timers.forEach((timer) => window.clearTimeout(timer))
+    }
   }, [])
 
   if (mode === 'hidden') return null
 
   const enable = () => {
+    if (typeof Notification === 'undefined') return
+
     // Chrome only keeps the click as a user gesture for the synchronous
     // part of this handler. Awaiting service worker registration first
     // drops that gesture, and Chrome then shows a quiet permission
     // bubble whose Allow button does not accept clicks.
-    const permission = Notification.requestPermission()
+    let permission: Promise<NotificationPermission>
+    try {
+      permission = Notification.requestPermission()
+    } catch {
+      return
+    }
 
     const ready =
       'serviceWorker' in navigator

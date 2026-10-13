@@ -1,6 +1,6 @@
 {
-  "name": "Tanam Patient Portal",
-  "short_name": "Tanam",
+  "name": "Dental Patient Portal",
+  "short_name": "Dental Patient",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -10,12 +10,14 @@
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

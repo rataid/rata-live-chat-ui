@@ -34,8 +34,9 @@ export function isHomeScreenApp() {
   const standalone = (navigator as Navigator & { standalone?: boolean })
     .standalone
   return (
+    standalone === true ||
     window.matchMedia('(display-mode: standalone)').matches ||
-    standalone === true
+    window.matchMedia('(display-mode: fullscreen)').matches
   )
 }
 
