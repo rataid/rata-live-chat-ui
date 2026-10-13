@@ -64,19 +64,38 @@ function notifyClinicMessage(message: LivechatServerMessage) {
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
-    const notification = new Notification(LIVECHAT_CLINIC_NAME, { body })
+    void showSystemNotification(body)
+  }
+}
+
+async function showSystemNotification(body: string) {
+  try {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.ready
+      await registration.showNotification(LIVECHAT_CLINIC_NAME, {
+        body,
+        icon: '/icons/icon-192.png',
+        requireInteraction: true,
+      })
+      return true
+    }
+  } catch {
+    // Chrome Android rejects `new Notification()`. Fall through to that.
+  }
+
+  try {
+    const notification = new Notification(LIVECHAT_CLINIC_NAME, {
+      body,
+      requireInteraction: true,
+    })
     notification.onclick = () => {
       window.focus()
       notification.close()
     }
-    return
+    return true
+  } catch {
+    return false
   }
-
-  showToast({
-    type: 'info',
-    title: LIVECHAT_CLINIC_NAME,
-    message: body,
-  })
 }
 
 function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
@@ -181,6 +200,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       setIsLoadingOlder(false)
     }
   }, [addFromServer, hasOlder, isLoadingOlder, messages])
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+    void navigator.serviceWorker
+      .register('/livechat-notification-sw.js')
+      .catch(() => undefined)
+  }, [])
 
   useEffect(() => {
     const token = getToken()
