@@ -81,7 +81,7 @@ export default function AuthFormForgotPassword() {
           Enter your primary email to receive a recovery link.
         </AuthSubtitle>
       </AuthHeading>
-      {actionData?.success === false && (
+      {actionData?.success === false && actionData.message && (
         <AuthError>{actionData.message}</AuthError>
       )}
       <Form onSubmit={onSubmit}>
