@@ -34,6 +34,7 @@ import { randomString } from '@utils'
 import { readLivechatMessages, sendLivechatMessage } from './livechat-utils'
 import {
   LivechatReceivedPayload,
+  LivechatSendPayload,
   LivechatSentAck,
   LivechatStatusChangePayload,
 } from './types'
@@ -93,6 +94,23 @@ function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
 function toChatMessage(message: LivechatServerMessage): ChatMessage {
   const fromClinic = message.direction === MessageDirection.OUTGOING
 
+  // BUTTON: the question is the bubble text, the buttons become quick replies
+  // A patient's own BUTTON reply has no buttons and shows as plain text
+  const button = message.metadata?.button
+  if (message.type === MessageType.BUTTON && button?.buttons?.length) {
+    return {
+      id: message.id,
+      direction: fromClinic ? 'incoming' : 'outgoing',
+      senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
+      body: button.body ?? message.body ?? '',
+      createdAt: message.createdAt,
+      quickReplies: button.buttons.map(({ id, text }) => ({
+        label: text,
+        value: id,
+      })),
+    }
+  }
+
   return {
     id: message.id,
     direction: fromClinic ? 'incoming' : 'outgoing',
@@ -112,6 +130,8 @@ type LiveChatContextValue = {
   messages: ChatMessage[]
   status: LiveChatStatus
   sendMessageText: (body: string) => void
+  // Reply by tapping a button of the clinic's BUTTON message
+  sendMessageButton: (text: string) => void
   isLoadingHistory: boolean
   historyError: boolean
   retryHistory: () => void
@@ -286,26 +306,42 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
   }, [addFromServer, loadLatest, navigate])
 
-  const sendMessageText = useCallback((body: string) => {
-    const socket = livechatSocket
-    if (!socket.connected) return
+  // Shows the message right away; message.sent only confirms it
+  const sendOptimistic = useCallback(
+    (body: string, payload: LivechatSendPayload) => {
+      if (!livechatSocket.connected) return
 
-    const tempId = `local-${randomString(12)}`
-    pendingIdsRef.current.push(tempId)
+      const tempId = `local-${randomString(12)}`
+      pendingIdsRef.current.push(tempId)
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: tempId,
-        direction: 'outgoing',
-        body,
-        createdAt: new Date().toISOString(),
-        status: 'pending',
-      },
-    ])
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: tempId,
+          direction: 'outgoing',
+          body,
+          createdAt: new Date().toISOString(),
+          // Until message.sent arrives with the status the backend stored
+          status: 'sent',
+        },
+      ])
 
-    sendLivechatMessage({ type: MessageType.TEXT, text: { body } })
-  }, [])
+      sendLivechatMessage(payload)
+    },
+    []
+  )
+
+  const sendMessageText = useCallback(
+    (body: string) =>
+      sendOptimistic(body, { type: MessageType.TEXT, text: { body } }),
+    [sendOptimistic]
+  )
+
+  const sendMessageButton = useCallback(
+    (text: string) =>
+      sendOptimistic(text, { type: MessageType.BUTTON, button: { text } }),
+    [sendOptimistic]
+  )
 
   const readMessages = useCallback(() => {
     const id = chatRoomIdRef.current
@@ -319,6 +355,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       messages,
       status,
       sendMessageText,
+      sendMessageButton,
       isLoadingHistory,
       historyError,
       retryHistory: loadLatest,
@@ -331,6 +368,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       messages,
       status,
       sendMessageText,
+      sendMessageButton,
       isLoadingHistory,
       historyError,
       loadLatest,

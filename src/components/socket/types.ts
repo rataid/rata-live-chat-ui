@@ -6,7 +6,14 @@ type LivechatSendTextPayload = {
   text: { body: string }
 }
 
-export type LivechatSendPayload = LivechatSendTextPayload
+type LivechatSendButtonPayload = {
+  type: MessageType.BUTTON
+  button: { text: string }
+}
+
+export type LivechatSendPayload =
+  | LivechatSendTextPayload
+  | LivechatSendButtonPayload
 
 export type LivechatSentAck = {
   id: string
