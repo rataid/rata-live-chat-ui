@@ -22,6 +22,7 @@ export function LiveChatPage() {
     messages,
     status,
     sendMessageText,
+    sendFile,
     sendMessageButton,
     isLoadingHistory,
     historyError,
@@ -65,6 +66,7 @@ export function LiveChatPage() {
         />
         <ChatEditor
           onSend={sendMessageText}
+          onSendFile={sendFile}
           disabled={status !== 'connected'}
         />
       </ChatPageContainer>

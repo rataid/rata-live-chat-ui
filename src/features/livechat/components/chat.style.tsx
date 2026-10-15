@@ -15,7 +15,7 @@ export const ChatPageContainer = styled.div.attrs({
 })``
 
 export const ChatHeaderWrapper = styled.header.attrs({
-  className: tw`flex shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3`,
+  className: tw`relative z-10 flex shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3`,
 })``
 
 export const ChatHeaderBrand = styled.div.attrs({
@@ -132,7 +132,7 @@ export const ChatEditorToolbar = styled.div.attrs({
 })``
 
 export const ChatEditorToolbarButton = styled.button.attrs({
-  className: tw`flex h-6 w-6 items-center justify-center rounded text-gray-400 disabled:cursor-not-allowed`,
+  className: tw`flex h-6 w-6 items-center justify-center rounded text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
 })``
 
 export const ChatEditorBox = styled.div.attrs({
@@ -159,12 +159,32 @@ export const ChatListNote = styled.p.attrs({
   className: tw`py-3 text-center text-xs text-gray-500`,
 })``
 
+export const ChatHeaderNotify = styled.div.attrs({
+  className: tw`relative ml-auto`,
+})``
+
 export const ChatHeaderMute = styled.button.attrs({
-  className: tw`ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
+  className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
+})``
+
+export const ChatNotifyMenu = styled.div.attrs({
+  className: tw`absolute right-0 top-full z-20 mt-2 w-64 rounded-xl border border-gray-200 bg-white p-3 shadow-lg`,
+})``
+
+export const ChatNotifyMenuTitle = styled.p.attrs({
+  className: tw`text-sm font-semibold text-gray-900`,
+})``
+
+export const ChatNotifyMenuBody = styled.p.attrs({
+  className: tw`mt-1 text-xs leading-5 text-gray-500`,
+})``
+
+export const ChatNotifyMenuAction = styled.button.attrs({
+  className: tw`mt-3 w-full rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
 })``
 
 export const NotificationPromptCard = styled.aside.attrs({
-  className: tw`fixed bottom-4 right-4 z-40 w-[calc(100vw-2rem)] max-w-[38rem] rounded-xl border border-gray-200 bg-white p-4 shadow-lg sm:bottom-6 sm:right-6 sm:w-max`,
+  className: tw`fixed left-1/2 top-1/2 z-40 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-gray-200 bg-white p-4 shadow-lg sm:bottom-6 sm:left-auto sm:right-6 sm:top-auto sm:w-full sm:translate-x-0 sm:translate-y-0`,
 })``
 
 export const NotificationPromptTitle = styled.h2.attrs({
@@ -172,23 +192,27 @@ export const NotificationPromptTitle = styled.h2.attrs({
 })``
 
 export const NotificationPromptBody = styled.p.attrs({
-  className: tw`mt-1 text-sm text-gray-500 sm:whitespace-nowrap`,
+  className: tw`mt-1 max-w-md text-sm text-gray-500`,
 })``
 
 export const NotificationPromptActions = styled.div.attrs({
-  className: tw`mt-4 flex items-center gap-2`,
+  className: tw`mt-4 flex flex-wrap items-center gap-2`,
 })``
 
 export const NotificationPromptEnable = styled.button.attrs({
-  className: tw`rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
+  className: tw`appearance-none rounded-lg border-0 bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
 })``
 
 export const NotificationPromptLater = styled.button.attrs({
-  className: tw`rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50`,
+  className: tw`appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50`,
+})``
+
+export const NotificationPromptSteps = styled.ol.attrs({
+  className: tw`mt-3 list-decimal space-y-1 pl-4 text-xs text-gray-500`,
 })``
 
 export const NotificationPromptNote = styled.p.attrs({
-  className: tw`mt-3 text-xs text-gray-400 sm:whitespace-nowrap`,
+  className: tw`mt-3 max-w-md text-xs text-gray-400`,
 })``
 
 export const ChatNewMessagesButton = styled.button.attrs({

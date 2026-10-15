@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import {
+  dismissIosInstallPrompt,
   dismissNotificationPrompt,
+  isHomeScreenApp,
+  isIosDevice,
+  isIosInstallDismissed,
   isNotificationPromptDismissed,
+  readNotificationPermission,
 } from '../notification-preference'
 import {
   NotificationPromptActions,
@@ -11,34 +16,68 @@ import {
   NotificationPromptEnable,
   NotificationPromptLater,
   NotificationPromptNote,
+  NotificationPromptSteps,
   NotificationPromptTitle,
 } from './chat.style'
 
+type PromptMode = 'hidden' | 'enable' | 'ios-install'
+
 function canAskForNotificationPermission() {
   return (
-    typeof Notification !== 'undefined' &&
-    Notification.permission === 'default' &&
-    !isNotificationPromptDismissed()
+    readNotificationPermission() === 'default' && !isNotificationPromptDismissed()
   )
 }
 
+function promptMode(): PromptMode {
+  const installed = isHomeScreenApp()
+
+  if (isIosDevice() && !installed) {
+    return isIosInstallDismissed() ? 'hidden' : 'ios-install'
+  }
+
+  // iOS only exposes Notification inside a Home Screen app whose manifest
+  // it accepted. Keep the Enable card up until permission is granted.
+  if (isIosDevice() && installed) {
+    return readNotificationPermission() === 'granted' ? 'hidden' : 'enable'
+  }
+
+  return canAskForNotificationPermission() ? 'enable' : 'hidden'
+}
+
 export function NotificationPrompt() {
-  const [open, setOpen] = useState(false)
+  const [mode, setMode] = useState<PromptMode>('hidden')
 
   useEffect(() => {
-    setOpen(canAskForNotificationPermission())
+    setMode(promptMode())
   }, [])
 
-  if (!open) return null
+  if (mode === 'hidden') return null
 
   const enable = () => {
-    void Notification.requestPermission().finally(() => setOpen(false))
+    // Chrome only keeps the click as a user gesture for the synchronous
+    // part of this handler. Awaiting service worker registration first
+    // drops that gesture, and Chrome then shows a quiet permission
+    // bubble whose Allow button does not accept clicks.
+    const permission = Notification.requestPermission()
+
+    const ready =
+      'serviceWorker' in navigator
+        ? navigator.serviceWorker
+            .register('/livechat-notification-sw.js')
+            .then(() => navigator.serviceWorker.ready)
+            .catch(() => undefined)
+        : Promise.resolve()
+
+    void Promise.all([permission, ready]).finally(() => setMode('hidden'))
   }
 
   const later = () => {
-    dismissNotificationPrompt()
-    setOpen(false)
+    if (mode === 'ios-install') dismissIosInstallPrompt()
+    else dismissNotificationPrompt()
+    setMode('hidden')
   }
+
+  const iosInstall = mode === 'ios-install'
 
   return (
     <NotificationPromptCard
@@ -46,23 +85,35 @@ export function NotificationPrompt() {
       aria-labelledby="livechat-notification-prompt-title"
     >
       <NotificationPromptTitle id="livechat-notification-prompt-title">
-        Don&apos;t miss any updates!
+        {iosInstall ? 'Add to Home Screen' : "Don't miss any updates!"}
       </NotificationPromptTitle>
       <NotificationPromptBody>
-        We&apos;ll send notifications when there&apos;s a reply, even if
-        you&apos;re on another tab
+        {iosInstall
+          ? 'iPhone shows notifications only when this portal is opened from the Home Screen icon.'
+          : "We'll send notifications when there's a reply, even if you're on another tab"}
       </NotificationPromptBody>
+      {iosInstall ? (
+        <NotificationPromptSteps>
+          <li>Tap the Share button at the bottom of Safari.</li>
+          <li>Tap Add to Home Screen, then Add.</li>
+          <li>Open the Tanam icon, log in, then tap Enable notifications.</li>
+        </NotificationPromptSteps>
+      ) : null}
       <NotificationPromptActions>
-        <NotificationPromptEnable type="button" onClick={enable}>
-          Enable notifications
-        </NotificationPromptEnable>
+        {iosInstall ? null : (
+          <NotificationPromptEnable type="button" onClick={enable}>
+            Enable notifications
+          </NotificationPromptEnable>
+        )}
         <NotificationPromptLater type="button" onClick={later}>
           Maybe later
         </NotificationPromptLater>
       </NotificationPromptActions>
-      <NotificationPromptNote>
-        You can change this permission anytime through your browser settings.
-      </NotificationPromptNote>
+      {iosInstall ? null : (
+        <NotificationPromptNote>
+          You can change this permission anytime through your browser settings.
+        </NotificationPromptNote>
+      )}
     </NotificationPromptCard>
   )
 }

@@ -14,6 +14,7 @@ import {
   LIVECHAT_MESSAGES_PAGE_SIZE,
   getLiveChatMessages,
 } from '@/api/livechat/messages'
+import { uploadLivechatFile } from '@/api/livechat/upload'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
 import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
 import {
@@ -54,6 +55,16 @@ function isReadingLiveChat() {
   return window.location.pathname.startsWith('/livechat') && !document.hidden
 }
 
+// Chrome keeps requireInteraction notifications open. Firefox and Safari
+// close that popup on their own, so those browsers also get an in-page notice.
+function systemNotificationStaysOpen() {
+  const ua = navigator.userAgent
+  return (
+    /Chrome|Chromium|Edg|OPR|SamsungBrowser/.test(ua) &&
+    !/Firefox|FxiOS/.test(ua)
+  )
+}
+
 function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
@@ -65,19 +76,45 @@ function notifyClinicMessage(message: LivechatServerMessage) {
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
-    const notification = new Notification(LIVECHAT_CLINIC_NAME, { body })
+    void showSystemNotification(body)
+  }
+
+  if (systemNotificationStaysOpen()) return
+
+  showToast(
+    { type: 'info', title: LIVECHAT_CLINIC_NAME, message: body },
+    { autoClose: false, closeButton: true }
+  )
+}
+
+async function showSystemNotification(body: string) {
+  try {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.ready
+      await registration.showNotification(LIVECHAT_CLINIC_NAME, {
+        body,
+        icon: '/icons/icon-192.png',
+        requireInteraction: true,
+      })
+      return true
+    }
+  } catch {
+    // Chrome Android rejects `new Notification()`. Fall through to that.
+  }
+
+  try {
+    const notification = new Notification(LIVECHAT_CLINIC_NAME, {
+      body,
+      requireInteraction: true,
+    })
     notification.onclick = () => {
       window.focus()
       notification.close()
     }
-    return
+    return true
+  } catch {
+    return false
   }
-
-  showToast({
-    type: 'info',
-    title: LIVECHAT_CLINIC_NAME,
-    message: body,
-  })
 }
 
 function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
@@ -91,8 +128,17 @@ function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
   )
 }
 
+function messageTypeFromFile(file: File) {
+  if (file.type.startsWith('image/')) return MessageType.IMAGE
+  if (file.type.startsWith('video/')) return MessageType.VIDEO
+  if (file.type.startsWith('audio/')) return MessageType.AUDIO
+  return MessageType.DOCUMENT
+}
+
 function toChatMessage(message: LivechatServerMessage): ChatMessage {
   const fromClinic = message.direction === MessageDirection.OUTGOING
+  const mediaUrl = message.metadata?.mediaUrl
+  const filename = message.metadata?.document?.filename
 
   // BUTTON: the question is the bubble text, the buttons become quick replies
   // A patient's own BUTTON reply has no buttons and shows as plain text
@@ -115,10 +161,14 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
     id: message.id,
     direction: fromClinic ? 'incoming' : 'outgoing',
     senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
+    type: message.type,
+    mediaUrl,
+    filename,
     body:
       message.type === MessageType.TEXT
         ? message.body ?? ''
-        : message.body || 'This message type is not supported yet.',
+        : message.body ||
+          (mediaUrl ? '' : 'This message type is not supported yet.'),
     createdAt: message.createdAt,
     status: fromClinic
       ? undefined
@@ -130,6 +180,7 @@ type LiveChatContextValue = {
   messages: ChatMessage[]
   status: LiveChatStatus
   sendMessageText: (body: string) => void
+  sendFile: (file: File) => Promise<void>
   // Reply by tapping a button of the clinic's BUTTON message
   sendMessageButton: (text: string) => void
   isLoadingHistory: boolean
@@ -201,6 +252,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       setIsLoadingOlder(false)
     }
   }, [addFromServer, hasOlder, isLoadingOlder, messages])
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+    void navigator.serviceWorker
+      .register('/livechat-notification-sw.js')
+      .catch(() => undefined)
+  }, [])
 
   useEffect(() => {
     const token = getToken()
@@ -350,11 +408,54 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     readLivechatMessages({ id })
   }, [])
 
+  const sendFile = useCallback(async (file: File) => {
+    const socket = livechatSocket
+    if (!socket.connected) return
+
+    const tempId = `local-${randomString(12)}`
+    const type = messageTypeFromFile(file)
+    const localUrl = URL.createObjectURL(file)
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: tempId,
+        direction: 'outgoing',
+        type,
+        mediaUrl: localUrl,
+        filename: file.name,
+        body: '',
+        createdAt: new Date().toISOString(),
+        status: 'pending',
+      },
+    ])
+
+    try {
+      const asset = await uploadLivechatFile(file)
+      pendingIdsRef.current.push(tempId)
+      sendLivechatMessage({
+        body: '',
+        type,
+        mediaAssetId: asset.id,
+        filename: asset.name || file.name,
+      })
+    } catch {
+      setMessages((prev) => prev.filter((message) => message.id !== tempId))
+      URL.revokeObjectURL(localUrl)
+      showToast({
+        type: 'error',
+        title: 'Upload Failed',
+        message: 'The file could not be sent. Please try again.',
+      })
+    }
+  }, [])
+
   const value = useMemo(
     () => ({
       messages,
       status,
       sendMessageText,
+      sendFile,
       sendMessageButton,
       isLoadingHistory,
       historyError,
@@ -368,6 +469,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       messages,
       status,
       sendMessageText,
+      sendFile,
       sendMessageButton,
       isLoadingHistory,
       historyError,

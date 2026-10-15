@@ -1,9 +1,12 @@
+import { isAxiosError } from 'axios'
 import { ActionFunctionArgs } from 'react-router-dom'
 
 import { forgotPassword } from '@/api/auth/password'
 import { getApiErrorMessage } from '@/api/shared/error'
 import { forgotPasswordSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
+
+const EMAIL_NOT_REGISTERED = 'EMAIL_NOT_REGISTERED'
 
 export type AuthForgotPasswordActionData = {
   success: boolean
@@ -24,6 +27,18 @@ export async function authForgotPasswordAction({
   try {
     await forgotPassword(data.data.email)
   } catch (error) {
+    const body = isAxiosError(error) ? error.response?.data : undefined
+
+    if (body?.code === EMAIL_NOT_REGISTERED) {
+      showToast({
+        type: 'error',
+        title: 'Email Not Registered',
+        message: 'This email is not registered.',
+      })
+
+      return { success: false }
+    }
+
     const message = getApiErrorMessage(error, 'Please try again in a moment.')
     showToast({ type: 'error', title: 'Failed to Send Email', message })
 

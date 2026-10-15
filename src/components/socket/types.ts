@@ -6,13 +6,22 @@ type LivechatSendTextPayload = {
   text: { body: string }
 }
 
+type LivechatSendMediaPayload = {
+  body: string
+  type?: MessageType
+  mediaAssetId?: string
+  filename?: string
+}
+
 type LivechatSendButtonPayload = {
   type: MessageType.BUTTON
   button: { text: string }
 }
 
 export type LivechatSendPayload =
+  |
   | LivechatSendTextPayload
+  | LivechatSendMediaPayload
   | LivechatSendButtonPayload
 
 export type LivechatSentAck = {
