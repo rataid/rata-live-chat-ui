@@ -20,6 +20,8 @@ import {
 type ChatMessageListProps = {
   messages: ChatMessage[]
   onQuickReply?: (reply: ChatQuickReply) => void
+  // e.g. while the socket is disconnected
+  quickRepliesDisabled?: boolean
   isLoading?: boolean
   error?: boolean
   onRetry?: () => void
@@ -66,6 +68,7 @@ function groupMessages(messages: ChatMessage[]) {
 export function ChatMessageList({
   messages,
   onQuickReply,
+  quickRepliesDisabled = false,
   isLoading = false,
   error = false,
   onRetry,
@@ -200,7 +203,9 @@ export function ChatMessageList({
                 >
                   <ChatBubble
                     message={message}
-                    quickRepliesDisabled={message.id !== lastMessageId}
+                    quickRepliesDisabled={
+                      quickRepliesDisabled || message.id !== lastMessageId
+                    }
                     onQuickReply={onQuickReply}
                   />
                 </ChatBubbleWrapper>

@@ -10,11 +10,21 @@ export type LivechatMessageReaction = {
   emoji: string
 }
 
+export type LivechatMessageButton = {
+  id: string
+  text: string
+}
+
 export type LivechatMessageMetadata = {
   type?: string
   text?: {
     body: string
     preview_url?: boolean
+  }
+  button?: {
+    body?: string
+    buttons?: LivechatMessageButton[]
+    text?: string
   }
   // Event messages (type EVENT): who did what, e.g. agent assigned
   event?: number

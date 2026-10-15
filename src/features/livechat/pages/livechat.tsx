@@ -23,6 +23,7 @@ export function LiveChatPage() {
     status,
     sendMessageText,
     sendFile,
+    sendMessageButton,
     isLoadingHistory,
     historyError,
     retryHistory,
@@ -60,6 +61,8 @@ export function LiveChatPage() {
           hasOlder={hasOlder}
           isLoadingOlder={isLoadingOlder}
           onLoadOlder={loadOlder}
+          onQuickReply={(reply) => sendMessageButton(reply.label)}
+          quickRepliesDisabled={status !== 'connected'}
         />
         <ChatEditor
           onSend={sendMessageText}

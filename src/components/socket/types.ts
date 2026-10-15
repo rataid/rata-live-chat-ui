@@ -13,9 +13,15 @@ type LivechatSendMediaPayload = {
   filename?: string
 }
 
+type LivechatSendButtonPayload = {
+  type: MessageType.BUTTON
+  button: { text: string }
+}
+
 export type LivechatSendPayload =
   | LivechatSendTextPayload
   | LivechatSendMediaPayload
+  | LivechatSendButtonPayload
 
 export type LivechatSentAck = {
   id: string
