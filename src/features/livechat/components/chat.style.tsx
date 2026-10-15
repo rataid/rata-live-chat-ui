@@ -15,7 +15,7 @@ export const ChatPageContainer = styled.div.attrs({
 })``
 
 export const ChatHeaderWrapper = styled.header.attrs({
-  className: tw`flex shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3`,
+  className: tw`relative z-10 flex shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3`,
 })``
 
 export const ChatHeaderBrand = styled.div.attrs({
@@ -132,7 +132,7 @@ export const ChatEditorToolbar = styled.div.attrs({
 })``
 
 export const ChatEditorToolbarButton = styled.button.attrs({
-  className: tw`flex h-6 w-6 items-center justify-center rounded text-gray-400 disabled:cursor-not-allowed`,
+  className: tw`flex h-6 w-6 items-center justify-center rounded text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
 })``
 
 export const ChatEditorBox = styled.div.attrs({
@@ -159,8 +159,28 @@ export const ChatListNote = styled.p.attrs({
   className: tw`py-3 text-center text-xs text-gray-500`,
 })``
 
+export const ChatHeaderNotify = styled.div.attrs({
+  className: tw`relative ml-auto`,
+})``
+
 export const ChatHeaderMute = styled.button.attrs({
-  className: tw`ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
+  className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
+})``
+
+export const ChatNotifyMenu = styled.div.attrs({
+  className: tw`absolute right-0 top-full z-20 mt-2 w-64 rounded-xl border border-gray-200 bg-white p-3 shadow-lg`,
+})``
+
+export const ChatNotifyMenuTitle = styled.p.attrs({
+  className: tw`text-sm font-semibold text-gray-900`,
+})``
+
+export const ChatNotifyMenuBody = styled.p.attrs({
+  className: tw`mt-1 text-xs leading-5 text-gray-500`,
+})``
+
+export const ChatNotifyMenuAction = styled.button.attrs({
+  className: tw`mt-3 w-full rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
 })``
 
 export const NotificationPromptCard = styled.aside.attrs({

@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 
+import { MessageType } from '@/constants/message'
 import {
   ChatMessage,
   ChatMessageStatus,
@@ -39,11 +40,34 @@ export function ChatBubble({
   quickRepliesDisabled = false,
   onQuickReply,
 }: ChatBubbleProps) {
-  const { direction, body, createdAt, status, quickReplies } = message
+  const { direction, body, createdAt, status, quickReplies, type, mediaUrl, filename } =
+    message
+  const isImage = type === MessageType.IMAGE && !!mediaUrl
 
   return (
     <ChatBubbleMain $direction={direction}>
-      <ChatBubbleContent>{body}</ChatBubbleContent>
+      {isImage && (
+        <a href={mediaUrl} target="_blank" rel="noreferrer">
+          <img
+            src={mediaUrl}
+            alt={filename || 'Image'}
+            className="max-h-60 w-full object-cover"
+          />
+        </a>
+      )}
+      {mediaUrl && !isImage && (
+        <a
+          href={mediaUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="block px-3.5 pt-2.5 text-sm underline"
+        >
+          {filename || body || 'Attachment'}
+        </a>
+      )}
+      {body && !(!isImage && mediaUrl && body === filename) && (
+        <ChatBubbleContent>{body}</ChatBubbleContent>
+      )}
       <ChatBubbleMeta $direction={direction}>
         {format(new Date(createdAt), 'HH:mm')}
         {direction === 'outgoing' && status && (

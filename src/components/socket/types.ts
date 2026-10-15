@@ -6,7 +6,16 @@ type LivechatSendTextPayload = {
   text: { body: string }
 }
 
-export type LivechatSendPayload = LivechatSendTextPayload
+type LivechatSendMediaPayload = {
+  body: string
+  type?: MessageType
+  mediaAssetId?: string
+  filename?: string
+}
+
+export type LivechatSendPayload =
+  | LivechatSendTextPayload
+  | LivechatSendMediaPayload
 
 export type LivechatSentAck = {
   id: string

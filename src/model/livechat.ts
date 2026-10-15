@@ -27,6 +27,8 @@ export type LivechatMessageMetadata = {
     new?: unknown
     old?: unknown
   }
+  mediaUrl?: string
+  document?: { filename?: string }
 }
 
 export type LivechatServerMessage = {
@@ -76,6 +78,9 @@ export type ChatMessage = {
   createdAt: string
   status?: ChatMessageStatus
   quickReplies?: ChatQuickReply[]
+  type?: MessageType
+  mediaUrl?: string
+  filename?: string
 }
 
 // GET /livechat/messages, cursor = id of the oldest message already loaded
