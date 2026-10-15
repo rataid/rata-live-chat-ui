@@ -68,7 +68,7 @@ export const HOME_TOUR_STEPS: TourStep[] = [
       title: 'Chat with us',
       description:
         'Still unsure? Start a live chat with the clinic from any page.',
-      side: 'bottom',
+      side: 'top',
       align: 'end',
     },
   },

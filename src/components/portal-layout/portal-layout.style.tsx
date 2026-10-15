@@ -1,4 +1,4 @@
-import { NavLink, NavLinkProps, useLocation } from 'react-router-dom'
+import { Link, NavLink, NavLinkProps, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { tw } from '@nui/utils/tw'
@@ -75,7 +75,8 @@ export const PortalNavDivider = styled.span.attrs({
 
 // Pushed below the fixed header
 export const PortalMain = styled.main.attrs({
-  className: tw`px-4 pt-16`,
+  // pb: room so the floating chat button never covers the last content
+  className: tw`px-4 pb-24 pt-16`,
 })``
 
 // Every page after login shares this 910px content width
@@ -141,3 +142,12 @@ export const MobileMenuName = styled.div.attrs({
 export const MobileMenuSignOut = styled.button.attrs({
   className: tw`flex w-full items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-left text-sm font-medium text-danger-600 hover:bg-gray-50`,
 })``
+
+// Floating "Chat with Us" button, bottom right on every portal page.
+// Mobile: round icon-only button; the label shows from sm up.
+export const ChatFab = styled(Link).attrs({
+  className: tw`fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center gap-2 rounded-full bg-primary-600 text-sm font-medium text-white shadow-lg transition-colors hover:bg-primary-700 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-4 sm:py-3`,
+})`
+  /* Clear the iOS home indicator */
+  margin-bottom: env(safe-area-inset-bottom);
+`
