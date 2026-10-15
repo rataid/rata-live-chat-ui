@@ -22,13 +22,20 @@ const toolbarItems = [
 
 type ChatEditorProps = {
   onSend: (text: string) => void
+  onSendFile: (file: File) => Promise<void>
   disabled?: boolean
 }
 
-export function ChatEditor({ onSend, disabled = false }: ChatEditorProps) {
+export function ChatEditor({
+  onSend,
+  onSendFile,
+  disabled = false,
+}: ChatEditorProps) {
   const [text, setText] = useState('')
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
 
   useLayoutEffect(() => {
     const textarea = textareaRef.current
@@ -47,17 +54,37 @@ export function ChatEditor({ onSend, disabled = false }: ChatEditorProps) {
   return (
     <ChatEditorWrapper>
       <ChatEditorToolbar>
-        {toolbarItems.map(({ icon, label }) => (
-          <ChatEditorToolbarButton
-            key={icon}
-            type="button"
-            aria-label={label}
-            title={label}
-            disabled
-          >
-            <Icon icon={icon} size="xs" />
-          </ChatEditorToolbarButton>
-        ))}
+        <input
+          ref={fileRef}
+          type="file"
+          hidden
+          accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+          onChange={(event) => {
+            const file = event.target.files?.[0]
+            event.target.value = ''
+            if (!file || disabled || uploading) return
+            setUploading(true)
+            void onSendFile(file).finally(() => setUploading(false))
+          }}
+        />
+        {toolbarItems.map(({ icon, label }) => {
+          const isImage = icon === 'lucide-image'
+
+          return (
+            <ChatEditorToolbarButton
+              key={icon}
+              type="button"
+              aria-label={label}
+              title={label}
+              disabled={!isImage || disabled || uploading}
+              onClick={
+                isImage ? () => fileRef.current?.click() : undefined
+              }
+            >
+              <Icon icon={icon} size="xs" />
+            </ChatEditorToolbarButton>
+          )
+        })}
       </ChatEditorToolbar>
       <ChatEditorBox>
         <ChatEditorTextarea

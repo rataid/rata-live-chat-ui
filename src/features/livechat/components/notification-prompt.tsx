@@ -7,6 +7,7 @@ import {
   isIosDevice,
   isIosInstallDismissed,
   isNotificationPromptDismissed,
+  readNotificationPermission,
 } from '../notification-preference'
 import {
   NotificationPromptActions,
@@ -23,15 +24,21 @@ type PromptMode = 'hidden' | 'enable' | 'ios-install'
 
 function canAskForNotificationPermission() {
   return (
-    typeof Notification !== 'undefined' &&
-    Notification.permission === 'default' &&
-    !isNotificationPromptDismissed()
+    readNotificationPermission() === 'default' && !isNotificationPromptDismissed()
   )
 }
 
 function promptMode(): PromptMode {
-  if (isIosDevice() && !isHomeScreenApp()) {
+  const installed = isHomeScreenApp()
+
+  if (isIosDevice() && !installed) {
     return isIosInstallDismissed() ? 'hidden' : 'ios-install'
+  }
+
+  // iOS only exposes Notification inside a Home Screen app whose manifest
+  // it accepted. Keep the Enable card up until permission is granted.
+  if (isIosDevice() && installed) {
+    return readNotificationPermission() === 'granted' ? 'hidden' : 'enable'
   }
 
   return canAskForNotificationPermission() ? 'enable' : 'hidden'
