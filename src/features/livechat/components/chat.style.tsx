@@ -135,6 +135,50 @@ export const ChatEditorToolbarButton = styled.button.attrs({
   className: tw`flex h-6 w-6 items-center justify-center rounded text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
 })``
 
+export const ChatAttachMenu = styled.div.attrs({
+  className: tw`z-20 grid w-[220px] grid-cols-3 gap-x-1.5 gap-y-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg`,
+})``
+
+export const ChatAttachItem = styled.button.attrs({
+  className: tw`flex flex-col items-center gap-1 rounded-md px-2 py-2.5 text-2xs font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50`,
+})``
+
+export const ChatCameraOverlay = styled.div.attrs({
+  className: tw`fixed inset-0 z-50 bg-black/40`,
+})``
+
+export const ChatCameraDialog = styled.div.attrs({
+  className: tw`fixed left-1/2 top-1/2 z-50 w-[min(440px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl`,
+})``
+
+export const ChatCameraHeader = styled.div.attrs({
+  className: tw`mb-4 flex items-center justify-between`,
+})``
+
+export const ChatCameraTitle = styled.h2.attrs({
+  className: tw`text-base font-semibold text-gray-900`,
+})``
+
+export const ChatCameraClose = styled.button.attrs({
+  className: tw`flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-50`,
+})``
+
+export const ChatCameraPreview = styled.div.attrs({
+  className: tw`flex min-h-[240px] items-center justify-center overflow-hidden rounded-lg bg-gray-100`,
+})``
+
+export const ChatCameraFooter = styled.div.attrs({
+  className: tw`mt-8 flex items-center justify-center gap-4`,
+})``
+
+export const ChatCameraButton = styled.button.attrs({
+  className: tw`flex h-12 w-12 items-center justify-center rounded-full bg-primary-600 text-white hover:bg-primary-700 disabled:cursor-wait disabled:opacity-70`,
+})``
+
+export const ChatCameraRetake = styled.button.attrs({
+  className: tw`flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50`,
+})``
+
 export const ChatEditorBox = styled.div.attrs({
   className: tw`flex items-end gap-2 rounded-lg border border-gray-200 px-3 py-2 focus-within:border-primary-400`,
 })``

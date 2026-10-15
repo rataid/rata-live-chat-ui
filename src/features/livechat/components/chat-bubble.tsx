@@ -65,7 +65,7 @@ export function ChatBubble({
           {filename || body || 'Attachment'}
         </a>
       )}
-      {body && !(!isImage && mediaUrl && body === filename) && (
+      {body && body !== filename && (
         <ChatBubbleContent>{body}</ChatBubbleContent>
       )}
       <ChatBubbleMeta $direction={direction}>

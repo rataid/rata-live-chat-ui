@@ -1,8 +1,6 @@
-import axios from 'axios'
+import axiosInstance from '../axiosInstance'
 
 import { ApiResponse } from '@/model/shared/query'
-
-import axiosInstance from '../axiosInstance'
 
 export type UploadedAsset = {
   id: string
@@ -10,42 +8,23 @@ export type UploadedAsset = {
   name: string
 }
 
-type PresignedUpload = {
-  uploadId: string
-  uploadUrl: string
-  contentType: string
-}
-
 export async function uploadLivechatFile(file: File): Promise<UploadedAsset> {
-  const presign = await axiosInstance.post<ApiResponse<PresignedUpload>>(
-    '/livechat/uploads',
-    {
-      fileName: file.name,
-      contentType: file.type || 'application/octet-stream',
-      size: file.size,
-    }
-  )
-
-  const upload = presign.data?.data
-
-  if (!upload?.uploadId || !upload.uploadUrl) {
-    throw new Error('Upload failed')
-  }
-
-  await axios.put(upload.uploadUrl, file, {
-    headers: { 'Content-Type': upload.contentType },
-    timeout: 120000,
-  })
-
   const done = await axiosInstance.post<ApiResponse<UploadedAsset>>(
-    '/livechat/uploads/complete',
-    { uploadId: upload.uploadId },
-    { timeout: 60000 }
+    '/livechat/uploads',
+    file,
+    {
+      timeout: 120000,
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-file-name': encodeURIComponent(file.name),
+      },
+      transformRequest: [(data) => data],
+    }
   )
 
   const asset = done.data?.data
 
-  if (!asset?.id) {
+  if (!asset?.id || !asset.url) {
     throw new Error('Upload failed')
   }
 

@@ -7,9 +7,8 @@ type LivechatSendTextPayload = {
 }
 
 type LivechatSendMediaPayload = {
-  body: string
-  type?: MessageType
-  mediaAssetId?: string
+  type: MessageType
+  mediaKey: string
   filename?: string
 }
 
