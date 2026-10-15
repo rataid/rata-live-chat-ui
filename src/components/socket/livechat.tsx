@@ -434,9 +434,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       const asset = await uploadLivechatFile(file)
       pendingIdsRef.current.push(tempId)
       sendLivechatMessage({
-        body: '',
         type,
-        mediaAssetId: asset.id,
+        mediaKey: asset.id,
         filename: asset.name || file.name,
       })
     } catch {
