@@ -19,7 +19,6 @@ type LivechatSendButtonPayload = {
 }
 
 export type LivechatSendPayload =
-  |
   | LivechatSendTextPayload
   | LivechatSendMediaPayload
   | LivechatSendButtonPayload
