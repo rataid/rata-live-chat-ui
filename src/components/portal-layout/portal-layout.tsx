@@ -7,6 +7,7 @@ import { LiveChatProvider } from '@/components/socket'
 import { NotificationPrompt } from '@/features/livechat/components/notification-prompt'
 import Icon from '@nui/ui/icon'
 
+import { ChatFab } from './chat-fab'
 import { MobileMenu } from './mobile-menu'
 import {
   PortalBrand,
@@ -76,6 +77,7 @@ function PortalShell() {
           <Outlet />
         </PortalContent>
       </PortalMain>
+      <ChatFab />
     </PortalWrapper>
   )
 }

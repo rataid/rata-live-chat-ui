@@ -2,7 +2,6 @@ import { Outlet } from 'react-router-dom'
 
 import { useAuth } from '@/components/auth'
 import { useTour } from '@/components/tour'
-import Button from '@nui/ui/button'
 
 import { HomeBrandTabs } from './components/brand-tabs'
 import {
@@ -29,14 +28,6 @@ export function HomeLayout() {
           <HomeWelcome>Welcome{firstName ? `, ${firstName}` : ''}</HomeWelcome>
           <HomeIntroTop>
             <HomeTitle>Patient Portal</HomeTitle>
-            <Button
-              to="/livechat"
-              size="sm"
-              icon="lucide-messages-square"
-              data-tour="chat-with-us"
-            >
-              Chat with us
-            </Button>
           </HomeIntroTop>
           <HomeSubtitle>
             Track your treatment progress and find answers for your dental
