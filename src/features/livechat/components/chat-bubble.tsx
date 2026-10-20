@@ -40,8 +40,17 @@ export function ChatBubble({
   quickRepliesDisabled = false,
   onQuickReply,
 }: ChatBubbleProps) {
-  const { direction, body, createdAt, status, quickReplies, type, mediaUrl, filename } =
-    message
+  const {
+    direction,
+    body,
+    createdAt,
+    status,
+    quickReplies,
+    type,
+    mediaUrl,
+    filename,
+    isPinned,
+  } = message
   const isImage = type === MessageType.IMAGE && !!mediaUrl
 
   return (
@@ -69,6 +78,12 @@ export function ChatBubble({
         <ChatBubbleContent>{body}</ChatBubbleContent>
       )}
       <ChatBubbleMeta $direction={direction}>
+        {isPinned && (
+          <>
+            <Icon icon="lucide-pin" size="2xs" />
+            <span className="sr-only">Pinned</span>
+          </>
+        )}
         {format(new Date(createdAt), 'HH:mm')}
         {direction === 'outgoing' && status && (
           <Icon
