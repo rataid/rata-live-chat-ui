@@ -8,6 +8,7 @@ import {
 } from '@/model/livechat'
 import Icon from '@nui/ui/icon'
 
+import { ChatText } from './chat-text'
 import {
   ChatBubbleContent,
   ChatBubbleMain,
@@ -66,7 +67,9 @@ export function ChatBubble({
         </a>
       )}
       {body && body !== filename && (
-        <ChatBubbleContent>{body}</ChatBubbleContent>
+        <ChatBubbleContent>
+          <ChatText text={body} />
+        </ChatBubbleContent>
       )}
       <ChatBubbleMeta $direction={direction}>
         {format(new Date(createdAt), 'HH:mm')}
