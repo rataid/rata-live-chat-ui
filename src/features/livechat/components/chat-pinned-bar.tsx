@@ -1,6 +1,7 @@
 import { ChatMessage } from '@/model/livechat'
 import Icon from '@nui/ui/icon'
 
+import { stripChatFormatting } from './chat-text'
 import {
   ChatPinnedBar as ChatPinnedBarWrapper,
   ChatPinnedOpen,
@@ -14,7 +15,8 @@ type ChatPinnedBarProps = {
 
 // Read-only: only the clinic can pin or unpin
 export function ChatPinnedBar({ message, onOpen }: ChatPinnedBarProps) {
-  const text = message.body || message.filename || 'Attachment'
+  const text =
+    stripChatFormatting(message.body) || message.filename || 'Attachment'
 
   return (
     <ChatPinnedBarWrapper>
