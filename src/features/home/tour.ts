@@ -65,7 +65,7 @@ export const HOME_TOUR_STEPS: TourStep[] = [
   {
     element: '[data-tour="chat-with-us"]',
     popover: {
-      title: 'Chat with us',
+      title: 'Hubungi Kami',
       description:
         'Still unsure? Start a live chat with the clinic from any page.',
       side: 'top',
