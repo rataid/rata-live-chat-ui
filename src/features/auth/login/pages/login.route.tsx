@@ -2,13 +2,11 @@ import { isAxiosError } from 'axios'
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
 import { login } from '@/api/auth/login'
+import { getLoginErrorMessage } from '@/api/auth/login-error'
 import {
-  AuthenticatedUser,
   getToken,
   isTokenValid,
-  parseToken,
   removeToken,
-  setPermissions,
   setToken,
   setUserName,
 } from '@/components/auth'
@@ -67,7 +65,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
       type: 'error',
       title: 'Login Failed',
       message:
-        'The email or password you entered is incorrect. Please check again.',
+        'The login service returned an invalid response. Please try again later.',
     })
 
     return { success: false }
@@ -103,8 +101,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
     showToast({
       type: 'error',
       title: 'Login Failed',
-      message:
-        'The email or password you entered is incorrect. Please check again.',
+      message: getLoginErrorMessage(error),
     })
 
     return { success: false }

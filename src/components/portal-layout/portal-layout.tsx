@@ -4,7 +4,6 @@ import { LogoSmiledental } from '@/assets'
 import { AuthenticatedUser, useAuth } from '@/components/auth'
 import { AuthProvider } from '@/components/auth/provider'
 import { LiveChatProvider } from '@/components/socket'
-import { NotificationPrompt } from '@/features/livechat/components/notification-prompt'
 import Icon from '@nui/ui/icon'
 
 import { ChatFab } from './chat-fab'
@@ -71,7 +70,6 @@ function PortalShell() {
           <MobileMenu name={userData?.fullname || userData?.username} />
         </PortalHeaderInner>
       </PortalHeader>
-      <NotificationPrompt />
       <PortalMain>
         <PortalContent>
           <Outlet />
