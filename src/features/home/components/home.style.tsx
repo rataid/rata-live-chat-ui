@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+import Button from '@nui/ui/button'
 import { tw } from '@nui/utils/tw'
 
 export const HomeContainer = styled.div.attrs({
@@ -240,4 +241,10 @@ export const HistoryCollapse = styled.div.attrs<{ $open: boolean }>(
 
 export const HistoryCollapseInner = styled.div.attrs({
   className: tw`min-h-0 overflow-hidden`,
+})``
+
+// Contact us
+
+export const ContactUsButtonWrapper = styled(Button).attrs({
+  className: tw`!h-auto !px-5 !py-4 !h-14`,
 })``
