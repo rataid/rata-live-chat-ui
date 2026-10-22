@@ -22,6 +22,7 @@ import {
   PortalNavLink,
   PortalWrapper,
 } from './portal-layout.style'
+import { SessionActivity } from './session-activity'
 import { UserMenu } from './user-menu'
 
 // Layout for the patient pages after login. Provides the auth store from the
@@ -45,6 +46,7 @@ function PortalShell() {
 
   return (
     <PortalWrapper>
+      <SessionActivity />
       <PortalHeader>
         <PortalHeaderInner>
           <PortalBrand to="/home">

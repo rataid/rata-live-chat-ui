@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { getToken } from '@/components/auth'
+import { saveSessionToken } from '@/libs/session'
 
 const apiUrl = `${import.meta.env.VITE_API_ENDPOINT}/api`
 
@@ -25,7 +26,11 @@ axiosInstance.interceptors.request.use(
 )
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const token = response.headers['x-livechat-access-token']
+    if (typeof token === 'string') saveSessionToken(token)
+    return response
+  },
   (error) => {
     console.error('API Error:', error.response || error.message)
     return Promise.reject(error)

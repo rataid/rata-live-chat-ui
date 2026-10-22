@@ -1,5 +1,6 @@
 import { Socket, io } from 'socket.io-client'
 
+import { getToken } from '@/components/auth/helpers'
 import {
   LivechatClientEvents,
   LivechatServerEvents,
@@ -21,7 +22,7 @@ export const livechatSocket: Socket<
 const sockets = [livechatSocket]
 
 export function connectSocket(socket: Socket, token: string) {
-  socket.auth = { token }
+  socket.auth = (callback) => callback({ token: getToken() || token })
   if (!socket.connected) socket.connect()
 }
 
