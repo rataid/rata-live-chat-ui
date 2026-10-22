@@ -200,6 +200,8 @@ export function ChatMessageList({
                 <ChatBubbleWrapper
                   key={message.id}
                   $animate={shouldAnimate(message)}
+                  // Target of "scroll to pinned message"
+                  data-message-id={message.id}
                 >
                   <ChatBubble
                     message={message}

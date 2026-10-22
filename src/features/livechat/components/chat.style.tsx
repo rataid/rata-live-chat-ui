@@ -262,3 +262,15 @@ export const NotificationPromptNote = styled.p.attrs({
 export const ChatNewMessagesButton = styled.button.attrs({
   className: tw`sticky bottom-3 z-10 mx-auto mt-3 flex shrink-0 items-center gap-1 rounded-full bg-primary-600 px-3 py-1.5 text-xs font-medium text-white shadow-md hover:bg-primary-700`,
 })``
+
+export const ChatPinnedBar = styled.div.attrs({
+  className: tw`flex shrink-0 items-center gap-1 border-b border-gray-200 bg-white px-2 py-1.5`,
+})``
+
+export const ChatPinnedOpen = styled.button.attrs({
+  className: tw`flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-1 text-left hover:bg-gray-50`,
+})``
+
+export const ChatPinnedText = styled.div.attrs({
+  className: tw`truncate text-sm text-gray-700`,
+})``

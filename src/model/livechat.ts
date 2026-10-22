@@ -91,6 +91,7 @@ export type ChatMessage = {
   type?: MessageType
   mediaUrl?: string
   filename?: string
+  isPinned?: boolean
 }
 
 // GET /livechat/messages, cursor = id of the oldest message already loaded

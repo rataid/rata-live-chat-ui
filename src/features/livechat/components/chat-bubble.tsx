@@ -8,6 +8,7 @@ import {
 } from '@/model/livechat'
 import Icon from '@nui/ui/icon'
 
+import { ChatText } from './chat-text'
 import {
   ChatBubbleContent,
   ChatBubbleMain,
@@ -19,7 +20,7 @@ const statusColors: Record<ChatMessageStatus, string> = {
   pending: 'text-white',
   sent: 'text-white',
   delivered: 'text-white',
-  read: 'text-[#51A2FF]',
+  read: 'text-white',
 }
 
 const statusIcons: Record<ChatMessageStatus, string> = {
@@ -40,8 +41,17 @@ export function ChatBubble({
   quickRepliesDisabled = false,
   onQuickReply,
 }: ChatBubbleProps) {
-  const { direction, body, createdAt, status, quickReplies, type, mediaUrl, filename } =
-    message
+  const {
+    direction,
+    body,
+    createdAt,
+    status,
+    quickReplies,
+    type,
+    mediaUrl,
+    filename,
+    isPinned,
+  } = message
   const isImage = type === MessageType.IMAGE && !!mediaUrl
 
   return (
@@ -66,9 +76,17 @@ export function ChatBubble({
         </a>
       )}
       {body && body !== filename && (
-        <ChatBubbleContent>{body}</ChatBubbleContent>
+        <ChatBubbleContent>
+          <ChatText text={body} />
+        </ChatBubbleContent>
       )}
       <ChatBubbleMeta $direction={direction}>
+        {isPinned && (
+          <>
+            <Icon icon="lucide-pin" size="2xs" />
+            <span className="sr-only">Pinned</span>
+          </>
+        )}
         {format(new Date(createdAt), 'HH:mm')}
         {direction === 'outgoing' && status && (
           <Icon

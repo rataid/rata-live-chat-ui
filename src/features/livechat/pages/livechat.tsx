@@ -6,6 +6,7 @@ import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
 import { ChatEditor } from '../components/chat-editor'
 import { ChatHeader } from '../components/chat-header'
 import { ChatMessageList } from '../components/chat-message-list'
+import { ChatPinnedBar } from '../components/chat-pinned-bar'
 import {
   ChatPageContainer,
   ChatPageWrapper,
@@ -31,6 +32,7 @@ export function LiveChatPage() {
     isLoadingOlder,
     loadOlder,
     readMessages,
+    pinnedMessage,
   } = useLiveChat()
 
   const lastIncomingId = messages.findLast(
@@ -52,6 +54,17 @@ export function LiveChatPage() {
         />
         {status !== 'connected' && (
           <ChatStatusBar role="status">{statusText[status]}</ChatStatusBar>
+        )}
+        {pinnedMessage && (
+          <ChatPinnedBar
+            message={pinnedMessage}
+            // Only works when the message is in the loaded history
+            onOpen={() =>
+              document
+                .querySelector(`[data-message-id="${pinnedMessage.id}"]`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
+          />
         )}
         <ChatMessageList
           messages={messages}

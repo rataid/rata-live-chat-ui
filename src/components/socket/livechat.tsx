@@ -32,12 +32,18 @@ import { connectSocket, livechatSocket } from '@libs/socket-client'
 import { showToast } from '@nui/ui/toast'
 import { randomString } from '@utils'
 
-import { readLivechatMessages, sendLivechatMessage } from './livechat-utils'
+import {
+  fetchPinnedLivechatMessages,
+  readLivechatMessages,
+  sendLivechatMessage,
+} from './livechat-utils'
 import {
   LivechatReceivedPayload,
   LivechatSendPayload,
   LivechatSentAck,
   LivechatStatusChangePayload,
+  MessageFetchPinnedDonePayload,
+  MessagePinnedPayload,
 } from './types'
 
 export type LiveChatStatus = 'connecting' | 'connected' | 'reconnecting'
@@ -150,6 +156,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
       senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
       body: button.body ?? message.body ?? '',
       createdAt: message.createdAt,
+      isPinned: message.isPinned,
       quickReplies: button.buttons.map(({ id, text }) => ({
         label: text,
         value: id,
@@ -164,6 +171,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
     type: message.type,
     mediaUrl,
     filename,
+    isPinned: message.isPinned,
     body:
       message.type === MessageType.TEXT
         ? message.body ?? ''
@@ -191,6 +199,8 @@ type LiveChatContextValue = {
   loadOlder: () => void
   // Marks the clinic's messages as read (chatRoom.readMessages)
   readMessages: () => void
+  // Latest pinned message of the room (may be older than the loaded history)
+  pinnedMessage: ChatMessage | null
 }
 
 const LiveChatContext = createContext<LiveChatContextValue | null>(null)
@@ -212,6 +222,16 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   const [hasOlder, setHasOlder] = useState(false)
   const [historyError, setHistoryError] = useState(false)
 
+  const [pinnedMessages, setPinnedMessages] = useState<ChatMessage[]>([])
+
+  // Needs the chat room id, known from the history or any socket message
+  const fetchPinned = useCallback(() => {
+    const chatRoomId = chatRoomIdRef.current
+    if (!chatRoomId || !livechatSocket.connected) return
+
+    fetchPinnedLivechatMessages({ chatRoomId })
+  }, [])
+
   const addFromServer = useCallback((items: LivechatServerMessage[]) => {
     if (items[0]?.chatRoomId) chatRoomIdRef.current = items[0].chatRoomId
     setMessages((prev) => mergeMessages(prev, items.map(toChatMessage)))
@@ -225,12 +245,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       const items = await getLiveChatMessages()
       addFromServer(items)
       setHasOlder(items.length === LIVECHAT_MESSAGES_PAGE_SIZE)
+      fetchPinned()
     } catch {
       setHistoryError(true)
     } finally {
       setIsLoadingHistory(false)
     }
-  }, [addFromServer])
+  }, [addFromServer, fetchPinned])
 
   const loadOlder = useCallback(async () => {
     const oldest = messages.find((message) => !isLocalId(message.id))
@@ -284,7 +305,11 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
     const socket = livechatSocket
 
-    const onConnect = () => setStatus('connected')
+    const onConnect = () => {
+      setStatus('connected')
+      // Also after a reconnect, in case a pin changed meanwhile
+      fetchPinned()
+    }
 
     const onDisconnect = (reason: string) => {
       if (reason === 'io server disconnect') {
@@ -343,12 +368,43 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       )
     }
 
+    const onFetchPinnedDone = ({ nodes }: MessageFetchPinnedDonePayload) => {
+      const pinned = nodes.map(toChatMessage)
+      const pinnedIds = new Set(pinned.map(({ id }) => id))
+
+      setPinnedMessages(pinned)
+      setMessages((prev) =>
+        prev.map((message) => ({
+          ...message,
+          isPinned: pinnedIds.has(message.id),
+        }))
+      )
+    }
+
+    // One event per message whose pin changed, matched by id
+    const onPinned = ({ message, chatRoom }: MessagePinnedPayload) => {
+      chatRoomIdRef.current = chatRoom.id
+      const next = toChatMessage(message)
+
+      setMessages((prev) =>
+        prev.map((item) =>
+          item.id === next.id ? { ...item, isPinned: next.isPinned } : item
+        )
+      )
+      setPinnedMessages((prev) => {
+        const others = prev.filter(({ id }) => id !== next.id)
+        return next.isPinned ? [next, ...others] : others
+      })
+    }
+
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
     socket.on('message.sent', onSent)
     socket.on('message.received', onReceived)
     socket.on('message.statusChange', onStatusChange)
+    socket.on('message.fetchPinnedDone', onFetchPinnedDone)
+    socket.on('message.pinned', onPinned)
 
     connectSocket(socket, token)
 
@@ -359,10 +415,12 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       socket.off('message.sent', onSent)
       socket.off('message.received', onReceived)
       socket.off('message.statusChange', onStatusChange)
+      socket.off('message.fetchPinnedDone', onFetchPinnedDone)
+      socket.off('message.pinned', onPinned)
       socket.disconnect()
       pendingIdsRef.current = []
     }
-  }, [addFromServer, loadLatest, navigate])
+  }, [addFromServer, fetchPinned, loadLatest, navigate])
 
   // Shows the message right away; message.sent only confirms it
   const sendOptimistic = useCallback(
@@ -449,6 +507,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
+  const pinnedMessage = pinnedMessages[0] ?? null
+
   const value = useMemo(
     () => ({
       messages,
@@ -463,6 +523,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       isLoadingOlder,
       loadOlder,
       readMessages,
+      pinnedMessage,
     }),
     [
       messages,
@@ -477,6 +538,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       isLoadingOlder,
       loadOlder,
       readMessages,
+      pinnedMessage,
     ]
   )
 
