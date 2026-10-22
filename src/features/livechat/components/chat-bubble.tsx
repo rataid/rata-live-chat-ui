@@ -20,7 +20,7 @@ const statusColors: Record<ChatMessageStatus, string> = {
   pending: 'text-white',
   sent: 'text-white',
   delivered: 'text-white',
-  read: 'text-[#51A2FF]',
+  read: 'text-white',
 }
 
 const statusIcons: Record<ChatMessageStatus, string> = {
