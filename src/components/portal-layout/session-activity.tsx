@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import axiosInstance from '@/api/axiosInstance'
-import { getToken, isTokenValid, removeToken } from '@/components/auth/helpers'
+import { getToken, removeToken } from '@/components/auth/helpers'
 
 // Only real foreground interaction renews an otherwise idle session. There is
 // deliberately no interval or heartbeat that keeps an unattended tab logged in.
@@ -24,7 +24,7 @@ export function SessionActivity() {
     const recordActivity = () => {
       if (document.visibilityState !== 'visible' || pending) return
       const token = getToken()
-      if (!isTokenValid(token)) return expire()
+      if (!token) return expire()
       if (Date.now() - lastActivity < 60_000) return
       lastActivity = Date.now()
       pending = true
@@ -49,6 +49,7 @@ export function SessionActivity() {
     const onVisible = () => {
       if (document.visibilityState === 'visible') recordActivity()
     }
+    window.addEventListener('livechat-session-expired', expire)
     recordActivity()
     window.addEventListener('pointerdown', onInteraction, { passive: true })
     window.addEventListener('keydown', onInteraction)
@@ -59,6 +60,7 @@ export function SessionActivity() {
     document.addEventListener('visibilitychange', onVisible)
     return () => {
       disposed = true
+      window.removeEventListener('livechat-session-expired', expire)
       window.removeEventListener('pointerdown', onInteraction)
       window.removeEventListener('keydown', onInteraction)
       window.removeEventListener('scroll', onInteraction, true)

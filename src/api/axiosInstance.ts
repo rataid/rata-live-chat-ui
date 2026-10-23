@@ -1,40 +1,38 @@
-import axios from 'axios'
+import axios, { InternalAxiosRequestConfig } from 'axios'
 
 import { getToken } from '@/components/auth'
-import { saveSessionToken } from '@/libs/session'
-
-const apiUrl = `${import.meta.env.VITE_API_ENDPOINT}/api`
+import { refreshAccessToken } from '@/libs/session'
 
 const axiosInstance = axios.create({
-  baseURL: apiUrl,
+  baseURL: `${import.meta.env.VITE_API_ENDPOINT}/api`,
   timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 })
-
-// Optional: interceptors (for request/response handling)
-axiosInstance.interceptors.request.use(
-  (config) => {
-    // you can add auth tokens dynamically here
-    const token = getToken()
-    if (token) config.headers.Authorization = `Bearer ${token}`
-    return config
-  },
-  (error) => Promise.reject(error)
-)
-
+axiosInstance.interceptors.request.use((config) => {
+  const token = getToken()
+  if (token && config.url !== '/livechat/login')
+    config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 axiosInstance.interceptors.response.use(
-  (response) => {
-    const token = response.headers['x-livechat-access-token']
-    if (typeof token === 'string') saveSessionToken(token)
-    return response
-  },
-  (error) => {
-    console.error('API Error:', error.response || error.message)
+  (response) => response,
+  async (error) => {
+    const config = error.config as
+      | (InternalAxiosRequestConfig & { sessionRetried?: boolean })
+      | undefined
+    if (
+      error.response?.status === 401 &&
+      config?.headers.Authorization &&
+      !config.sessionRetried &&
+      config.url !== '/livechat/login'
+    ) {
+      config.sessionRetried = true
+      const accessToken = await refreshAccessToken(true)
+      config.headers.Authorization = `Bearer ${accessToken}`
+      return axiosInstance.request(config)
+    }
     return Promise.reject(error)
   }
 )
-
 export default axiosInstance

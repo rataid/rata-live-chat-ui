@@ -10,6 +10,7 @@ import {
   setToken,
   setUserName,
 } from '@/components/auth'
+import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import { loginSchema } from '@/model/user'
 import { queryClient } from '@libs/query-client'
 import { showToast } from '@nui/ui/toast'
@@ -25,7 +26,15 @@ export type AuthLoginActionData = {
 }
 
 export async function authLoginLoader({ request }: ActionFunctionArgs) {
-  const token = getToken()
+  let token = getToken()
+  if (token && !isTokenValid(token)) {
+    try {
+      token = await refreshAccessToken()
+    } catch (error) {
+      if (!isSessionExpired(error)) throw error
+      token = null
+    }
+  }
 
   if (token) {
     if (isTokenValid(token)) {

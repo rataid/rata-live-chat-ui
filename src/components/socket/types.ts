@@ -38,7 +38,6 @@ export type LivechatStatusChangePayload = LivechatReceivedPayload
 export type ChatRoomReadMessagesPayload = { id: string }
 
 export type LivechatServerEvents = {
-  'session.renewed': (payload: { accessToken: string }) => void
   'message.sent': (ack: LivechatSentAck) => void
   'message.received': (payload: LivechatReceivedPayload) => void
   'message.statusChange': (payload: LivechatStatusChangePayload) => void

@@ -22,7 +22,8 @@ export const livechatSocket: Socket<
 const sockets = [livechatSocket]
 
 export function connectSocket(socket: Socket, token: string) {
-  socket.auth = (callback) => callback({ token: getToken() || token })
+  if (!token) return
+  socket.auth = (callback) => callback({ token: getToken() })
   if (!socket.connected) socket.connect()
 }
 
