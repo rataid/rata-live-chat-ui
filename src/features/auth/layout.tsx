@@ -1,27 +1,36 @@
 import { Outlet } from 'react-router-dom'
 
-import { LogoClinics } from '@/assets'
+import { LogoSmiledental } from '@/assets'
+import { PORTAL_NAME } from '@/constants/portal'
 
 import {
   AuthBrand,
+  AuthBrandLogo,
   AuthBrandSubtitle,
   AuthBrandTitle,
   AuthLayoutContainer,
   AuthLayoutWrapper,
 } from './components/auth.style'
+import { RegistrationGuide } from './components/registration-guide'
 
 export function Layout() {
   return (
     <AuthLayoutWrapper>
       <AuthLayoutContainer>
         <AuthBrand>
-          <LogoClinics />
-          <AuthBrandTitle>Dental Patient Portal</AuthBrandTitle>
+          <AuthBrandLogo>
+            <div className="w-1/2">
+              <LogoSmiledental />
+            </div>
+          </AuthBrandLogo>
+          <AuthBrandTitle>{PORTAL_NAME}</AuthBrandTitle>
           <AuthBrandSubtitle>
-            Welcome to your one-stop portal for your dental needs
+            Selamat datang di {PORTAL_NAME} untuk <br /> memenuhi kebutuhan
+            perawatan gigi Anda.
           </AuthBrandSubtitle>
         </AuthBrand>
         <Outlet />
+        <RegistrationGuide />
       </AuthLayoutContainer>
     </AuthLayoutWrapper>
   )

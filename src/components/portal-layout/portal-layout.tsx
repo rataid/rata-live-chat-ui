@@ -4,6 +4,7 @@ import { LogoSmiledental } from '@/assets'
 import { AuthenticatedUser, useAuth } from '@/components/auth'
 import { AuthProvider } from '@/components/auth/provider'
 import { LiveChatProvider } from '@/components/socket'
+import { PORTAL_NAME } from '@/constants/portal'
 import Icon from '@nui/ui/icon'
 
 import { ChatFab } from './chat-fab'
@@ -55,7 +56,7 @@ function PortalShell() {
                 <LogoSmiledental />
               </div>
             </PortalBrandLogo>
-            <PortalBrandName>Dental Patient Portal</PortalBrandName>
+            <PortalBrandName>{PORTAL_NAME}</PortalBrandName>
           </PortalBrand>
           <PortalNav aria-label="Main">
             <PortalNavLink to="/home" activePaths={['/faq']}>

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
+import { PORTAL_NAME } from '@/constants/portal'
 import { registerSchema } from '@/model/user'
 import {
   Form,
@@ -42,9 +43,8 @@ export default function AuthFormRegister() {
     if (!isNotFound) return
 
     openDialog({
-      title: 'Data Not Found',
-      message:
-        "We couldn't find your details in our system. Live Chat is for registered patients only. Feel free to contact us if you think this is a mistake.",
+      title: 'Data tidak ditemukan',
+      message: `Data Anda tidak ditemukan. ${PORTAL_NAME} hanya untuk pasien terdaftar. Hubungi kami jika ini kesalahan.`,
       closable: true,
     })
   }, [actionData, isNotFound, openDialog])
@@ -74,22 +74,22 @@ export default function AuthFormRegister() {
   return (
     <AuthCard>
       <AuthHeading>
-        <AuthTitle>Account Activation</AuthTitle>
+        <AuthTitle>Aktivasi Akun</AuthTitle>
         <AuthSubtitle>
-          Create a password to start using your patient account.
+          Buat kata sandi untuk mulai menggunakan akun pasien Anda.
         </AuthSubtitle>
       </AuthHeading>
       <Form onSubmit={onSubmit}>
         <FormMain gap="sm">
           <FormControl required error={errors.name}>
-            <FormLabel>Fullname</FormLabel>
+            <FormLabel>Nama Lengkap</FormLabel>
             <Controller
               name="name"
               defaultValue=""
               control={control}
               render={({ field }) => (
                 <Input
-                  placeholder="e.g. Budi Santoso"
+                  placeholder="cth. Budi Santoso"
                   autoComplete="name"
                   {...field}
                 />
@@ -114,7 +114,7 @@ export default function AuthFormRegister() {
             />
           </FormControl>
           <FormControl required error={errors.phone}>
-            <FormLabel>Phone Number</FormLabel>
+            <FormLabel>Nomor Telepon</FormLabel>
             <Controller
               name="phone"
               defaultValue=""
@@ -125,7 +125,7 @@ export default function AuthFormRegister() {
             />
           </FormControl>
           <FormControl required error={errors.password}>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Kata Sandi</FormLabel>
             <Controller
               name="password"
               defaultValue=""
@@ -133,7 +133,7 @@ export default function AuthFormRegister() {
               render={({ field }) => (
                 <Input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Minimum 8 karakter"
                   autoComplete="new-password"
                   {...field}
                 />
@@ -141,7 +141,7 @@ export default function AuthFormRegister() {
             />
           </FormControl>
           <FormControl required error={errors.password_confirmation}>
-            <FormLabel>Confirm Password</FormLabel>
+            <FormLabel>Konfirmasi Kata Sandi</FormLabel>
             <Controller
               name="password_confirmation"
               defaultValue=""
@@ -149,7 +149,7 @@ export default function AuthFormRegister() {
               render={({ field }) => (
                 <Input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Ulangi kata sandi"
                   autoComplete="new-password"
                   {...field}
                 />
@@ -164,12 +164,12 @@ export default function AuthFormRegister() {
             fontWeight="medium"
             disabled={!isFilled || isSubmitting}
           >
-            {isSubmitting ? 'Activating...' : 'Activate Account'}
+            {isSubmitting ? 'Aktivasi...' : 'Aktivasi Akun'}
           </Button>
         </FormAction>
       </Form>
       <AuthFooter>
-        Already active? <AuthLink to="/login">Log in</AuthLink>
+        Akun sudah aktif? <AuthLink to="/login">Masuk</AuthLink>
       </AuthFooter>
     </AuthCard>
   )

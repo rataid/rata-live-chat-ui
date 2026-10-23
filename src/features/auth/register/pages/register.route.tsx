@@ -2,11 +2,15 @@ import { isAxiosError } from 'axios'
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
 import { register } from '@/api/auth/register'
-import { getApiErrorMessage } from '@/api/shared/error'
+import { getApiErrorMessage, showApiErrorToast } from '@/api/shared/error'
 import { registerSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
-import { setRegisterEmail, setRegisterPhone } from '../register-session'
+import {
+  setRegisterEmail,
+  setRegisterEmailSent,
+  setRegisterPhone,
+} from '../register-session'
 
 // The phone number doesn't match any registered customer (API returns 404)
 export const REGISTER_ERROR_CUSTOMER_NOT_FOUND = 'CUSTOMER_NOT_FOUND'
@@ -35,11 +39,8 @@ export async function authRegisterAction({
 
   const phone = `+${data.data.phone.replace(/^\+/, '')}`
 
-  let otpSent = true
-
   try {
-    const res = await register({ name, email, phone, password })
-    otpSent = res?.data?.otpSent !== false
+    await register({ name, email, phone, password })
   } catch (error) {
     const status = isAxiosError(error) ? error.response?.status : undefined
 
@@ -47,44 +48,27 @@ export async function authRegisterAction({
       return { success: false, code: REGISTER_ERROR_CUSTOMER_NOT_FOUND }
     }
 
-    if (status === 429) {
-      showToast({
-        type: 'error',
-        title: 'Too Many OTP Requests',
-        message: getApiErrorMessage(error, 'Please try again later.'),
-      })
-      return { success: false }
-    }
-
     if (status === 409) {
       showToast({
         type: 'error',
-        title: 'Account Already Registered',
+        title: 'Akun sudah aktif',
         message:
-          'Your details are already registered. Please log in using your password.',
+          'Data Anda sudah terdaftar dan sudah aktif. Silakan masuk menggunakan kata sandi Anda.',
       })
       return { success: false }
     }
 
     // Any other error (validation, server, network) is shown as a toast
-    showToast({
-      type: 'error',
-      title: 'Account Activation Failed',
-      message: getApiErrorMessage(error, 'Please try again in a moment.'),
+    showApiErrorToast(error, {
+      title: 'Aktivasi Akun Gagal',
     })
     return { success: false }
   }
 
+  // The phone is kept for the WhatsApp OTP step after the email link
   setRegisterPhone(phone)
   setRegisterEmail(email.trim().toLowerCase())
+  setRegisterEmailSent()
 
-  if (!otpSent) {
-    showToast({
-      type: 'error',
-      title: 'Failed to Send OTP',
-      message: 'Please tap Resend OTP to try again.',
-    })
-  }
-
-  return redirect('/register/verify-otp')
+  return redirect('/register/email-sent')
 }
