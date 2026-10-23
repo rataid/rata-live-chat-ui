@@ -43,7 +43,7 @@ const registerRoutes: RouteObject[] = [
         },
       },
       {
-        // After the OTP is verified, before the user clicks the email link
+        // Right after the register form, until the user opens the email link
         path: 'email-sent',
         loader: async (args) =>
           (await authLoginLoader(args)) ??

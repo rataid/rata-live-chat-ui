@@ -1,32 +1,88 @@
-import Icon from '@nui/ui/icon'
+import { useEffect, useState } from 'react'
+
+import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
+import { getApiErrorMessage, showApiErrorToast } from '@/api/shared/error'
+import { showToast } from '@nui/ui/toast'
 
 import {
-  AuthBackLink,
   AuthCard,
   AuthHeading,
+  AuthResendButton,
+  AuthResendRow,
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
 import { getRegisterEmail } from '../register-session'
 
-// Shown after the OTP is verified: the account is activated from the email link
+// Seconds before Kirim Ulang is enabled, after the first email and each resend
+export const RESEND_EMAIL_COOLDOWN = 60
+
+// Right after the register form: the email link leads to the WhatsApp OTP
 export default function AuthEmailSent() {
   const email = getRegisterEmail()
 
+  // The email was just sent by the register step
+  const [cooldown, setCooldown] = useState(RESEND_EMAIL_COOLDOWN)
+  const [isResending, setIsResending] = useState(false)
+
+  useEffect(() => {
+    if (cooldown <= 0) return undefined
+
+    const timer = setTimeout(() => setCooldown((s) => s - 1), 1000)
+
+    return () => clearTimeout(timer)
+  }, [cooldown])
+
+  const handleResend = async () => {
+    if (!email) return
+
+    setIsResending(true)
+
+    try {
+      await resendVerificationEmail(email)
+      showToast({
+        type: 'success',
+        title: 'Email Verifikasi Dikirim!',
+        message: `Tautan verifikasi baru telah dikirim ke ${email}.`,
+      })
+      setCooldown(RESEND_EMAIL_COOLDOWN)
+    } catch (error) {
+      showApiErrorToast(error, {
+        title: 'Email Verifikasi Gagal Dikirim!',
+      })
+    } finally {
+      setIsResending(false)
+    }
+  }
+
   return (
     <AuthCard>
-      <AuthBackLink to="/login">
-        <Icon icon="lucide-arrow-left" size="2xs" />
-        Back to Login
-      </AuthBackLink>
       <AuthHeading className="!mb-0">
-        <AuthTitle>Your account is almost ready!</AuthTitle>
+        <AuthTitle>Cek Email Anda</AuthTitle>
         <AuthSubtitle>
-          We have sent a verification link to{' '}
-          {email ? <strong>{email}</strong> : 'your email'}. Please open the
-          email and click the link to activate your account.
+          Kami telah mengirim tautan verifikasi ke{' '}
+          {email ? (
+            <strong className="font-medium text-gray-900">{email}</strong>
+          ) : (
+            'email Anda'
+          )}
+          . Klik tautan tersebut untuk lanjut ke verifikasi nomor WhatsApp.
         </AuthSubtitle>
       </AuthHeading>
+      <AuthResendRow>
+        Belum menerima email?{' '}
+        <AuthResendButton
+          type="button"
+          disabled={!email || isResending || cooldown > 0}
+          onClick={handleResend}
+        >
+          {isResending
+            ? 'Mengirim...'
+            : cooldown > 0
+            ? `Kirim Ulang (${cooldown}s)`
+            : 'Kirim Ulang'}
+        </AuthResendButton>
+      </AuthResendRow>
     </AuthCard>
   )
 }

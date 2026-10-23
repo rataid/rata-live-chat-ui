@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { useLoaderData, useNavigation } from 'react-router-dom'
+import {
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { requestOtp } from '@/api/auth/otp'
-import { getApiErrorMessage } from '@/api/shared/error'
+import { getApiErrorCode, showApiErrorToast } from '@/api/shared/error'
+import { AuthErrorCode } from '@/constants/auth-error-code'
 import { verifyOtpSchema } from '@/model/user'
 import {
   Form,
@@ -27,8 +33,10 @@ import {
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
+import { VERIFY_OTP_STATUS } from '../pages/verify-otp.route'
+import { clearRegisterSession } from '../register-session'
 
-const RESEND_COOLDOWN = 5 * 60
+const RESEND_COOLDOWN = 1 * 60
 
 function formatCooldown(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60)
@@ -38,12 +46,22 @@ function formatCooldown(totalSeconds: number) {
 }
 
 export default function AuthFormVerifyOtp() {
+  const [searchParams] = useSearchParams()
+  const otpFailed = searchParams.get('status') === VERIFY_OTP_STATUS.otpFailed
+
+  return <OtpForm otpFailed={otpFailed} />
+}
+
+function OtpForm({ otpFailed }: { otpFailed: boolean }) {
   const { phone } = useLoaderData() as { phone: string }
+
+  const navigate = useNavigate()
 
   const isSubmitting = useNavigation().state !== 'idle'
 
-  // The OTP was just sent by the register step
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN)
+  // The backend sent the OTP when the email link was opened. If that failed,
+  // Resend OTP is available right away.
+  const [cooldown, setCooldown] = useState(otpFailed ? 0 : RESEND_COOLDOWN)
 
   useEffect(() => {
     if (cooldown <= 0) return undefined
@@ -67,10 +85,22 @@ export default function AuthFormVerifyOtp() {
       })
       setCooldown(RESEND_COOLDOWN)
     } catch (error) {
-      showToast({
-        type: 'error',
-        title: 'Failed to Send OTP',
-        message: getApiErrorMessage(error, 'Please try again in a moment.'),
+      // The pending registration is gone (expired or email not verified):
+      // nothing to send an OTP for, so the patient registers again
+      if (getApiErrorCode(error) === AuthErrorCode.REGISTRATION_NOT_PENDING) {
+        clearRegisterSession()
+        showToast({
+          type: 'error',
+          title: 'Gagal Kirim OTP',
+          message:
+            'Aktivasi akun Anda sudah tidak berlaku. Silakan lakukan registrasi ulang.',
+        })
+        navigate('/register', { replace: true })
+        return
+      }
+
+      showApiErrorToast(error, {
+        title: 'Gagal Kirim OTP',
       })
     } finally {
       setIsResending(false)
@@ -91,18 +121,14 @@ export default function AuthFormVerifyOtp() {
 
   return (
     <AuthCard>
-      <AuthBackLink to="/login">
-        <Icon icon="lucide-arrow-left" size="2xs" />
-        Back to Login
-      </AuthBackLink>
       <AuthHeading>
-        <AuthTitle>Verification Code (SMS/WA)</AuthTitle>
+        <AuthTitle>Satu Langkah Lagi</AuthTitle>
         <AuthSubtitle>
-          We have sent the OTP code to{' '}
+          Kami telah mengirimkan kode OTP ke{' '}
           <span className="font-semibold text-gray-900">
-            {maskPhone(phone)}
+            {maskPhone(phone)}.
           </span>
-          , please check your SMS/WhatsApp.
+          Masukkan kode tersebut untuk menyelesaikan pendaftaran.{' '}
         </AuthSubtitle>
       </AuthHeading>
       <Form onSubmit={onSubmit}>
@@ -114,7 +140,7 @@ export default function AuthFormVerifyOtp() {
         />
         <FormMain gap="sm">
           <FormControl required error={errors.otp}>
-            <FormLabel>OTP</FormLabel>
+            <FormLabel>Kode OTP</FormLabel>
             <Controller
               name="otp"
               defaultValue=""
@@ -132,15 +158,15 @@ export default function AuthFormVerifyOtp() {
             fontWeight="medium"
             disabled={!isFilled || isSubmitting}
           >
-            {isSubmitting ? 'Verifying...' : 'Verification'}
+            {isSubmitting ? 'Verifikasi...' : 'Verifikasi'}
           </Button>
         </FormAction>
       </Form>
       <AuthFooter>
-        Didn&apos;t receive OTP?{' '}
+        Belum menerima OTP?{' '}
         {cooldown > 0 ? (
           <span className="font-medium text-gray-400">
-            Resend OTP in {formatCooldown(cooldown)}
+            Kirim Ulang OTP ({formatCooldown(cooldown)})
           </span>
         ) : (
           <button
