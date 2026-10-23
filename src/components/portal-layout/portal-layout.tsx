@@ -4,7 +4,6 @@ import { LogoSmiledental } from '@/assets'
 import { AuthenticatedUser, useAuth } from '@/components/auth'
 import { AuthProvider } from '@/components/auth/provider'
 import { LiveChatProvider } from '@/components/socket'
-import { NotificationPrompt } from '@/features/livechat/components/notification-prompt'
 import Icon from '@nui/ui/icon'
 
 import { ChatFab } from './chat-fab'
@@ -23,6 +22,7 @@ import {
   PortalNavLink,
   PortalWrapper,
 } from './portal-layout.style'
+import { SessionActivity } from './session-activity'
 import { UserMenu } from './user-menu'
 
 // Layout for the patient pages after login. Provides the auth store from the
@@ -46,6 +46,7 @@ function PortalShell() {
 
   return (
     <PortalWrapper>
+      <SessionActivity />
       <PortalHeader>
         <PortalHeaderInner>
           <PortalBrand to="/home">
@@ -71,7 +72,6 @@ function PortalShell() {
           <MobileMenu name={userData?.fullname || userData?.username} />
         </PortalHeaderInner>
       </PortalHeader>
-      <NotificationPrompt />
       <PortalMain>
         <PortalContent>
           <Outlet />
