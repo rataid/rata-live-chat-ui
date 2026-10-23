@@ -23,6 +23,7 @@ import {
   MessageType,
 } from '@/constants/message'
 import { isNotificationMuted } from '@/features/livechat/notification-preference'
+import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import {
   ChatMessage,
   ChatMessageStatus,
@@ -284,23 +285,34 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
     const socket = livechatSocket
 
-    const onConnect = () => setStatus('connected')
-
-    const onDisconnect = (reason: string) => {
-      if (reason === 'io server disconnect') {
-        signInAgain()
-        return
-      }
+    let active = true
+    let recovering = false
+    let retryTimer: ReturnType<typeof setTimeout> | undefined
+    const recover = () => {
+      if (!active || recovering) return
+      recovering = true
       setStatus('reconnecting')
+      void refreshAccessToken(true)
+        .then((accessToken) => {
+          if (active) connectSocket(socket, accessToken)
+        })
+        .catch((error) => {
+          if (!active) return
+          if (isSessionExpired(error) || !getToken()) signInAgain()
+          else retryTimer = setTimeout(recover, 5000)
+        })
+        .finally(() => {
+          recovering = false
+        })
     }
-
-    const onConnectError = () => {
-      if (!isTokenValid(getToken())) {
-        socket.disconnect()
-        signInAgain()
-        return
-      }
+    const onConnect = () => setStatus('connected')
+    const onDisconnect = (reason: string) => {
       setStatus('reconnecting')
+      if (reason === 'io server disconnect') recover()
+    }
+    const onConnectError = () => {
+      setStatus('reconnecting')
+      if (!isTokenValid(getToken())) recover()
     }
 
     const onSent = (ack: LivechatSentAck) => {
@@ -353,6 +365,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     connectSocket(socket, token)
 
     return () => {
+      active = false
+      clearTimeout(retryTimer)
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectError)

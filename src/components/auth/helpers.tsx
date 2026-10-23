@@ -176,7 +176,18 @@ export async function routeGuard(
   permissions: string[] = [],
   mode: 'some' | 'every' = 'every'
 ) {
-  const token = getToken()
+  let token = getToken()
+  if (token && !isTokenValid(token)) {
+    const { refreshAccessToken, isSessionExpired } = await import(
+      '@/libs/session'
+    )
+    try {
+      token = await refreshAccessToken()
+    } catch (error) {
+      if (!isSessionExpired(error)) throw error
+      token = null
+    }
+  }
   const decodedToken = parseToken(token) as AuthenticatedUser
 
   if (!decodedToken) {
