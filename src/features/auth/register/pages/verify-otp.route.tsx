@@ -1,15 +1,20 @@
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
 import { verifyOtp } from '@/api/auth/otp'
-import { getApiErrorMessage } from '@/api/shared/error'
+import { showApiErrorToast } from '@/api/shared/error'
 import { verifyOtpSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
-import {
-  clearRegisterPhone,
-  getRegisterPhone,
-  setRegisterEmailSent,
-} from '../register-session'
+import { clearRegisterSession, getRegisterPhone } from '../register-session'
+
+// Result of the email link, passed to the OTP page as ?status=
+export const VERIFY_OTP_STATUS = {
+  // Email verified, but the backend couldn't send the OTP: resend right away
+  otpFailed: 'otp-failed',
+} as const
+
+export type VerifyOtpStatus =
+  (typeof VERIFY_OTP_STATUS)[keyof typeof VERIFY_OTP_STATUS]
 
 export type AuthVerifyOtpActionData = {
   success: boolean
@@ -18,7 +23,9 @@ export type AuthVerifyOtpActionData = {
 export async function authVerifyOtpLoader() {
   const phone = getRegisterPhone()
 
-  // Only reachable after submitting the register form in this tab
+  // The phone comes from the register form in this browser.
+  // @todo: take it from the verify email response once the backend sends it,
+  // so the email link also works in another browser or device
   if (!phone) return redirect('/register')
 
   return { phone }
@@ -33,8 +40,8 @@ export async function authVerifyOtpAction({
   if (!data.success) {
     showToast({
       type: 'error',
-      title: 'Verification Failed',
-      message: 'OTP must be 6 digits',
+      title: 'OTP Gagal Diverifikasi!',
+      message: 'OTP tidak valid. Silakan periksa kembali dan coba lagi.',
     })
     return { success: false }
   }
@@ -47,16 +54,19 @@ export async function authVerifyOtpAction({
       code: data.data.otp,
     })
   } catch (error) {
-    showToast({
-      type: 'error',
-      title: 'Verification Failed',
-      message: getApiErrorMessage(error, 'Invalid OTP code, please try again.'),
+    showApiErrorToast(error, {
+      title: 'OTP Gagal Diverifikasi!',
     })
     return { success: false }
   }
 
-  clearRegisterPhone()
-  setRegisterEmailSent()
+  clearRegisterSession()
 
-  return redirect('/register/email-sent')
+  showToast({
+    type: 'success',
+    title: 'Akun Berhasil Diaktifkan!',
+    message: 'Akun Anda aktif. Masuk dengan kata sandi Anda.',
+  })
+
+  return redirect('/login')
 }

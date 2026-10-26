@@ -9,25 +9,25 @@ export const loginSchema = z.object({
   email: z
     .string()
     .trim()
-    .min(1, { message: 'Email or phone number is required' })
+    .min(1, { message: 'Email atau nomor telepon wajib diisi' })
     .refine(isEmailOrPhone, {
-      message: 'Email or phone number is invalid',
+      message: 'Email atau nomor telepon tidak valid',
     }),
-  password: z.string().min(1, { message: 'Password is required' }),
+  password: z.string().min(1, { message: 'Kata sandi wajib diisi' }),
 })
 
 export const verifyOtpSchema = z.object({
   phone: z.string().min(8),
-  otp: z.string().regex(/^\d{6}$/, { message: 'OTP must be 6 digits' }),
+  otp: z.string().regex(/^\d{6}$/, { message: 'OTP harus berupa 6 digit' }),
 })
 
 const newPasswordFields = {
   password: z
     .string()
-    .min(8, { message: 'Password must be at least 8 characters' }),
+    .min(8, { message: 'Kata sandi harus minimal 8 karakter' }),
   password_confirmation: z
     .string()
-    .min(1, { message: 'Confirm password is required' }),
+    .min(1, { message: 'Konfirmasi kata sandi wajib diisi' }),
 }
 
 const passwordsMatch = (data: {
@@ -36,21 +36,21 @@ const passwordsMatch = (data: {
 }) => data.password === data.password_confirmation
 
 const passwordsMatchError = {
-  message: 'Passwords do not match',
+  message: 'Kata sandi dan konfirmasi kata sandi tidak cocok',
   path: ['password_confirmation'],
 }
 
 export const registerSchema = z
   .object({
-    name: z.string().trim().min(1, { message: 'Full name is required' }),
-    email: z.string().email({ message: 'Email is invalid' }),
-    phone: z.string().min(8, { message: 'Phone number is invalid' }),
+    name: z.string().trim().min(1, { message: 'Nama Lengkap wajib diisi' }),
+    email: z.string().email({ message: 'Email tidak valid' }),
+    phone: z.string().min(8, { message: 'Nomor telepon tidak valid' }),
     ...newPasswordFields,
   })
   .refine(passwordsMatch, passwordsMatchError)
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email({ message: 'Email is invalid' }),
+  email: z.string().email({ message: 'Email tidak valid' }),
 })
 
 export const resetPasswordSchema = z

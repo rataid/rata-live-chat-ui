@@ -21,6 +21,7 @@ import authRoutes from '@features/auth/routes'
 import faqRoutes from '@features/faq/routes'
 import homeRoutes from '@features/home/routes'
 import livechatRoutes from '@features/livechat/routes'
+import notFoundRoutes from '@features/not-found/routes'
 
 import { PortalLayout } from './components/portal-layout'
 import ErrorBoundary from './error-boundary'
@@ -68,6 +69,8 @@ const router = createBrowserRouter([
         path: '/',
         loader: () => redirect('/home'),
       },
+
+      ...notFoundRoutes,
     ],
   },
 ])

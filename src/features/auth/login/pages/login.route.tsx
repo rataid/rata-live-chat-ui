@@ -2,16 +2,15 @@ import { isAxiosError } from 'axios'
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
 import { login } from '@/api/auth/login'
+import { getLoginErrorMessage } from '@/api/auth/login-error'
 import {
-  AuthenticatedUser,
   getToken,
   isTokenValid,
-  parseToken,
   removeToken,
-  setPermissions,
   setToken,
   setUserName,
 } from '@/components/auth'
+import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import { loginSchema } from '@/model/user'
 import { queryClient } from '@libs/query-client'
 import { showToast } from '@nui/ui/toast'
@@ -27,7 +26,15 @@ export type AuthLoginActionData = {
 }
 
 export async function authLoginLoader({ request }: ActionFunctionArgs) {
-  const token = getToken()
+  let token = getToken()
+  if (token && !isTokenValid(token)) {
+    try {
+      token = await refreshAccessToken()
+    } catch (error) {
+      if (!isSessionExpired(error)) throw error
+      token = null
+    }
+  }
 
   if (token) {
     if (isTokenValid(token)) {
@@ -67,7 +74,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
       type: 'error',
       title: 'Login Failed',
       message:
-        'The email or password you entered is incorrect. Please check again.',
+        'The login service returned an invalid response. Please try again later.',
     })
 
     return { success: false }
@@ -103,8 +110,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
     showToast({
       type: 'error',
       title: 'Login Failed',
-      message:
-        'The email or password you entered is incorrect. Please check again.',
+      message: getLoginErrorMessage(error),
     })
 
     return { success: false }

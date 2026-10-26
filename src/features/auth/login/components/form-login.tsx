@@ -105,8 +105,8 @@ export default function AuthFormLogin() {
   return (
     <AuthCard>
       <AuthHeading>
-        <AuthTitle>Exclusively for Rata, Tanam and Vinir customers</AuthTitle>
-        <AuthSubtitle>Log in to continue.</AuthSubtitle>
+        <AuthTitle>Ekslusif untuk pelanggan Rata</AuthTitle>
+        <AuthSubtitle>Silakan masuk untuk melanjutkan.</AuthSubtitle>
       </AuthHeading>
       <Form
         onSubmit={async (event) => {
@@ -122,7 +122,7 @@ export default function AuthFormLogin() {
       >
         <FormMain gap="sm">
           <FormControl required error={errors.email}>
-            <FormLabel>Email / Phone Number</FormLabel>
+            <FormLabel>Email / Nomor Telepon</FormLabel>
             <Controller
               name="email"
               defaultValue=""
@@ -131,7 +131,7 @@ export default function AuthFormLogin() {
                 <InputIcase
                   displayCase="lower"
                   allowSpace={false}
-                  placeholder="you@email.com or 08XXXXXXXXXX"
+                  placeholder="you@email.com atau 08XXXXXXXXXXX"
                   autoComplete="username"
                   {...field}
                 />
@@ -139,7 +139,7 @@ export default function AuthFormLogin() {
             />
           </FormControl>
           <FormControl required error={errors.password}>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Kata Sandi</FormLabel>
             <Controller
               name="password"
               defaultValue=""
@@ -156,7 +156,7 @@ export default function AuthFormLogin() {
           </FormControl>
         </FormMain>
         <AuthMore>
-          <AuthLink to="/forgot-password">Forgot password?</AuthLink>
+          <AuthLink to="/forgot-password">Lupa kata sandi?</AuthLink>
         </AuthMore>
         <FormAction className="!pt-3">
           <Button
@@ -165,13 +165,12 @@ export default function AuthFormLogin() {
             fontWeight="medium"
             disabled={!isFilled || isSubmitting}
           >
-            {isSubmitting ? 'Logging in...' : 'Login'}
+            {isSubmitting ? 'Masuk...' : 'Masuk'}
           </Button>
         </FormAction>
       </Form>
       <AuthFooter>
-        Don&apos;t have an account yet?{' '}
-        <AuthLink to="/register">Account Activation</AuthLink>
+        Belum memiliki akun? <AuthLink to="/register">Aktivasi Akun</AuthLink>
       </AuthFooter>
     </AuthCard>
   )
