@@ -246,5 +246,5 @@ export const HistoryCollapseInner = styled.div.attrs({
 // Contact us
 
 export const ContactUsButtonWrapper = styled(Button).attrs({
-  className: tw`!h-auto !px-5 !py-4 !h-14`,
+  className: tw`!h-auto !px-5 !py-[6px] !h-14`,
 })``
