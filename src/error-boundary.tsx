@@ -1,6 +1,7 @@
 import { useNavigate, useRouteError } from 'react-router-dom'
 
 import NotfoundSvg from '@/assets/svg/not-found'
+import { NotFoundPage } from '@/features/not-found/not-found'
 import Dump from '@nui/ui/dump'
 import { errorStatusMap } from '@nui/ui/error/error-status-map'
 import GeneralError from '@nui/ui/error/general'
@@ -27,11 +28,15 @@ export default function ErrorBoundary() {
     (error?.name === 'Die and dump' || error?.name === 'ZodError')
   ) {
     return (
-      <div className="grid place-content-center h-screen">
+      <div className="grid h-screen place-content-center">
         <Dump>{JSON.parse(error?.message)}</Dump>
       </div>
     )
   }
+
+  // A loader threw 404 (e.g. an FAQ that doesn't exist): same page as an
+  // unknown URL
+  if (error?.status === 404) return <NotFoundPage />
 
   const data = errorStatusMap.find((item) =>
     item.statuses.includes(error?.status ?? 0)
