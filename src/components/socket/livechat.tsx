@@ -391,6 +391,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
         {
           id: tempId,
           direction: 'outgoing',
+          // BUTTON for a tapped quick reply; it closes the buttons above it
+          type: payload.type,
           body,
           createdAt: new Date().toISOString(),
           // Until message.sent arrives with the status the backend stored

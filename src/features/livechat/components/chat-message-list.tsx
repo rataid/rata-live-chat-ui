@@ -1,6 +1,7 @@
 import { isSameDay } from 'date-fns'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
+import { MessageType } from '@/constants/message'
 import { ChatMessage, ChatQuickReply } from '@/model/livechat'
 import Icon from '@nui/ui/icon'
 
@@ -79,6 +80,16 @@ export function ChatMessageList({
   const listRef = useRef<HTMLElement>(null)
 
   const lastMessageId = messages.at(-1)?.id
+
+  // Quick replies close once the patient answers with a button (a BUTTON
+  // message from the patient). Typing a text reply keeps them open.
+  const lastButtonReplyAt = messages.findLastIndex(
+    (message) =>
+      message.direction === 'outgoing' && message.type === MessageType.BUTTON
+  )
+  const messageIndex = new Map(messages.map(({ id }, index) => [id, index]))
+  const isAnswered = (id: string) =>
+    (messageIndex.get(id) ?? Infinity) < lastButtonReplyAt
   const firstMessageId = messages[0]?.id
 
   const hasScrolledRef = useRef(false)
@@ -204,7 +215,7 @@ export function ChatMessageList({
                   <ChatBubble
                     message={message}
                     quickRepliesDisabled={
-                      quickRepliesDisabled || message.id !== lastMessageId
+                      quickRepliesDisabled || isAnswered(message.id)
                     }
                     onQuickReply={onQuickReply}
                   />
