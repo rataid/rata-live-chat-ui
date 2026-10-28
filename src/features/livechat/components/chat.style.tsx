@@ -180,7 +180,7 @@ export const ChatCameraRetake = styled.button.attrs({
 })``
 
 export const ChatEditorBox = styled.div.attrs({
-  className: tw`flex items-end gap-2 rounded-3xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus-within:border-primary-400`,
+  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 bg-white px-3 py-3 focus-within:border-primary-400`,
 })``
 
 export const ChatEditorTextarea = styled.textarea.attrs({

@@ -12,6 +12,7 @@ import {
   ChatEditorBox,
   ChatEditorSend,
   ChatEditorTextarea,
+  ChatEditorToolbar,
   ChatEditorToolbarButton,
   ChatEditorWrapper,
 } from './chat.style'
@@ -185,27 +186,7 @@ export function ChatEditor({
         }}
       />
 
-      <ChatEditorBox>
-        <ChatEditorTextarea
-          ref={textareaRef}
-          rows={1}
-          value={text}
-          placeholder="Tulis pesan..."
-          aria-label="Tulis pesan"
-          disabled={disabled}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            // Enter sends, Shift+Enter adds a new line
-            if (
-              e.key === 'Enter' &&
-              !e.shiftKey &&
-              !e.nativeEvent.isComposing
-            ) {
-              e.preventDefault()
-              send()
-            }
-          }}
-        />
+      <ChatEditorToolbar>
         {mobile ? (
           <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <Dialog.Trigger asChild>{attachmentTrigger}</Dialog.Trigger>
@@ -248,6 +229,29 @@ export function ChatEditor({
             </Popover.Portal>
           </Popover.Root>
         )}
+      </ChatEditorToolbar>
+
+      <ChatEditorBox>
+        <ChatEditorTextarea
+          ref={textareaRef}
+          rows={1}
+          value={text}
+          placeholder="Tulis pesan..."
+          aria-label="Tulis pesan"
+          disabled={disabled}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            // Enter sends, Shift+Enter adds a new line
+            if (
+              e.key === 'Enter' &&
+              !e.shiftKey &&
+              !e.nativeEvent.isComposing
+            ) {
+              e.preventDefault()
+              send()
+            }
+          }}
+        />
         <ChatEditorSend
           type="button"
           aria-label="Kirim pesan"
