@@ -72,9 +72,9 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
 
     showToast({
       type: 'error',
-      title: 'Login Failed',
+      title: 'Gagal Masuk',
       message:
-        'The login service returned an invalid response. Please try again later.',
+        'Layanan masuk sedang mengalami kendala. Silakan coba beberapa saat lagi.',
     })
 
     return { success: false }
@@ -97,11 +97,9 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
     ) {
       showToast({
         type: 'error',
-        title: 'Too Many Attempts',
+        title: 'Terlalu Banyak Percobaan',
         message:
-          typeof body?.message === 'string'
-            ? body.message
-            : 'Too many login attempts. Try again in 15 minutes.',
+          'Terlalu banyak percobaan masuk dalam waktu yang singkat. Silakan coba masuk lagi setelah 15 menit.',
       })
 
       return { success: false, code: LOGIN_ERROR_RATE_LIMITED }
@@ -109,7 +107,7 @@ export async function authLoginAction({ request }: ActionFunctionArgs) {
 
     showToast({
       type: 'error',
-      title: 'Login Failed',
+      title: 'Gagal Masuk',
       message: getLoginErrorMessage(error),
     })
 

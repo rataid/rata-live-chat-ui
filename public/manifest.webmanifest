@@ -1,7 +1,7 @@
 {
-  "name": "Tanam Patient Portal",
-  "short_name": "Tanam",
-  "start_url": "/",
+  "name": "Smile Hub",
+  "short_name": "Smile Hub",
+  "start_url": "/home",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",

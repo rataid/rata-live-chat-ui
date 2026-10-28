@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Outlet, useLoaderData } from 'react-router-dom'
 
 import { LogoSmiledental } from '@/assets'
@@ -5,6 +6,7 @@ import { AuthenticatedUser, useAuth } from '@/components/auth'
 import { AuthProvider } from '@/components/auth/provider'
 import { LiveChatProvider } from '@/components/socket'
 import { PORTAL_NAME } from '@/constants/portal'
+import { syncWebPush } from '@/features/livechat/push/push-client'
 import Icon from '@nui/ui/icon'
 
 import { ChatFab } from './chat-fab'
@@ -43,6 +45,21 @@ export function PortalLayout() {
 
 // Fixed header + page content, reads the user from the auth store
 function PortalShell() {
+  useEffect(() => {
+    const sync = () => {
+      void syncWebPush().catch(() => undefined)
+    }
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') sync()
+    }
+    sync()
+    window.addEventListener('online', sync)
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      window.removeEventListener('online', sync)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [])
   const { userData } = useAuth()
 
   return (

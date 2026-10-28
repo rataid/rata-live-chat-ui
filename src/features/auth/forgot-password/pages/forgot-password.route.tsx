@@ -2,7 +2,6 @@ import { isAxiosError } from 'axios'
 import { ActionFunctionArgs } from 'react-router-dom'
 
 import { forgotPassword } from '@/api/auth/password'
-import { getApiErrorMessage } from '@/api/shared/error'
 import { forgotPasswordSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
@@ -21,7 +20,7 @@ export async function authForgotPasswordAction({
   const data = forgotPasswordSchema.safeParse(Object.fromEntries(formData))
 
   if (!data.success) {
-    return { success: false, message: 'Email is invalid' }
+    return { success: false, message: 'Masukkan alamat email yang valid.' }
   }
 
   try {
@@ -30,17 +29,15 @@ export async function authForgotPasswordAction({
     const body = isAxiosError(error) ? error.response?.data : undefined
 
     if (body?.code === EMAIL_NOT_REGISTERED) {
-      showToast({
-        type: 'error',
-        title: 'Email Not Registered',
-        message: 'This email is not registered.',
-      })
-
+      // Unknown emails leave the form unchanged, per the reset-password flow.
       return { success: false }
     }
 
-    const message = getApiErrorMessage(error, 'Please try again in a moment.')
-    showToast({ type: 'error', title: 'Failed to Send Email', message })
+    const message =
+      isAxiosError(error) && error.response?.status === 429
+        ? 'Terlalu banyak permintaan. Tunggu minimal 1 menit sebelum mencoba lagi. Maksimal 5 permintaan dalam 1 jam.'
+        : 'Email belum dapat dikirim. Periksa koneksi Anda dan coba beberapa saat lagi.'
+    showToast({ type: 'error', title: 'Gagal Mengirim Email', message })
 
     return { success: false, message }
   }
