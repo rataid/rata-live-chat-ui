@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { LogoSmiledental } from '@/assets'
 import { PortalBrandLogo } from '@/components/portal-layout/portal-layout.style'
 import {
+  NOTIFICATION_PROMPT_SETTLED_EVENT,
+  isHomeNotificationPromptSettled,
   isHomeScreenApp,
   isIosDevice,
 } from '@/features/livechat/notification-preference'
@@ -11,7 +13,8 @@ import Icon from '@nui/ui/icon'
 
 import { clearInstallPrompt, getInstallPrompt, isInstallReminderDue } from '../install-prompt'
 
-const LAST_SHOWN = 'smilehub.install.lastShownAt'
+const lastShownKey = (placement: 'dashboard' | 'login') =>
+  `smilehub.install.lastShownAt:${placement}`
 const buttonClass =
   'w-full rounded-lg bg-[#6941c6] px-4 py-3 text-sm font-medium text-white hover:bg-[#53389e] disabled:opacity-50'
 
@@ -47,21 +50,35 @@ export function InstallHomeScreen({
         setOpen(false)
         return
       }
+      // Home: wait until the post-tour notification prompt is done.
+      if (placement === 'dashboard' && !isHomeNotificationPromptSettled()) {
+        setOpen(false)
+        return
+      }
       if (shownThisMount) return
+      const storageKey = lastShownKey(placement)
       let lastShown = 0
       try {
-        lastShown = Number(localStorage.getItem(LAST_SHOWN)) || 0
+        lastShown = Number(localStorage.getItem(storageKey)) || 0
+        // Migrate the old shared key so Android tests do not suppress iOS login.
+        if (!lastShown && placement === 'dashboard') {
+          lastShown = Number(localStorage.getItem('smilehub.install.lastShownAt')) || 0
+        }
       } catch {}
       if (!isInstallReminderDue(lastShown)) return
       shownThisMount = true
       try {
-        localStorage.setItem(LAST_SHOWN, String(Date.now()))
+        localStorage.setItem(storageKey, String(Date.now()))
       } catch {}
       setOpen(true)
     }
     sync()
     window.addEventListener('smilehub-install-ready', sync)
-    return () => window.removeEventListener('smilehub-install-ready', sync)
+    window.addEventListener(NOTIFICATION_PROMPT_SETTLED_EVENT, sync)
+    return () => {
+      window.removeEventListener('smilehub-install-ready', sync)
+      window.removeEventListener(NOTIFICATION_PROMPT_SETTLED_EVENT, sync)
+    }
   }, [ios, previewAndroid, placement])
 
   const dismiss = () => {
