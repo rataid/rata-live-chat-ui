@@ -1,6 +1,12 @@
 import { TourStep } from '@/components/tour'
+import { PORTAL_NAME } from '@/constants'
 
 export const HOME_TOUR_ID = 'home'
+
+export const HOME_TOUR_INTRO = {
+  title: `Selamat Datang di ${PORTAL_NAME} 👋🏻`,
+  description: `Semua yang Anda butuhkan ada di sini. Mari kita lihat fitur apa saja yang ada di ${PORTAL_NAME}.`,
+}
 
 export const HOME_TOUR_STEPS: TourStep[] = [
   {
@@ -16,29 +22,19 @@ export const HOME_TOUR_STEPS: TourStep[] = [
   {
     element: '[data-tour="aligner-tracker"]',
     popover: {
-      title: 'Aligner Tracker',
+      title: 'Pantau Progres Aligner',
       description:
-        'See which set you are on, how many days are left, and your overall progress.',
-      side: 'bottom',
-      align: 'start',
-    },
-  },
-  {
-    element: '[data-tour="change-set"]',
-    popover: {
-      title: 'Change to the next set',
-      description:
-        'Tap here on the day you switch. The countdown restarts and the change is saved to History.',
-      side: 'bottom',
+        'Pantau tahapan perawatan aligner gigi Anda, jumlah hari yang tersisa, dan ketahui perkembangan perawatan Anda',
+      side: 'right',
       align: 'start',
     },
   },
   {
     element: '[data-tour="removal-tracker"]',
     popover: {
-      title: 'Aligner Removal Tracker',
+      title: 'Pemantauan Waktu Lepas Aligner',
       description:
-        'Start the timer whenever you take your aligner out. Keep it under 2 hours a day.',
+        'Mulai timer setiap kali Anda melepas aligner. Pastikan total waktu tanpa aligner tidak lebih dari 2 jam sehari.',
       side: 'bottom',
       align: 'start',
     },
@@ -46,9 +42,9 @@ export const HOME_TOUR_STEPS: TourStep[] = [
   {
     element: '[data-tour="faq-title"]',
     popover: {
-      title: 'Frequently Asked Questions',
+      title: 'Pertanyaan yang sering diajukan (FAQ)',
       description:
-        'The questions patients ask most, answered by our clinical team.',
+        'Pertanyaan yang paling sering diajukan, dijawab langsung oleh Tim Klinik kami.',
       side: 'bottom',
       align: 'start',
     },
@@ -56,29 +52,20 @@ export const HOME_TOUR_STEPS: TourStep[] = [
   {
     element: '[data-tour="faq-groups"]',
     popover: {
-      title: 'FAQ Groups',
-      description: 'Browse every answer by topic, from daily care to shipping.',
-      side: 'top',
+      title: 'Cari Topik Pilihanmu',
+      description:
+        'Jelajahi semua jawaban berdasarkan topik, mulai dari perawatan sehari-hari hingga pengiriman.',
+      side: 'bottom',
       align: 'start',
     },
   },
   {
     element: '[data-tour="chat-with-us"]',
     popover: {
-      title: 'Hubungi Kami',
+      title: 'Hubungi kami',
       description:
-        'Still unsure? Start a live chat with the clinic from any page.',
+        'Masih memiliki pertanyaan? Anda dapat langsung menghubungi tim klinik melalui fitur chat dari halaman mana pun.',
       side: 'top',
-      align: 'end',
-    },
-  },
-  {
-    // Avatar in the header
-    element: '[data-tour="account-menu"]',
-    popover: {
-      title: 'Your account',
-      description: 'Sign out from here when you are done.',
-      side: 'bottom',
       align: 'end',
     },
   },

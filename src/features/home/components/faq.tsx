@@ -57,8 +57,8 @@ export function FaqGroups({ product }: FaqSectionProps) {
   if (groups.length === 0) return null
 
   return (
-    <Section data-tour="faq-groups">
-      <SectionTitle>
+    <Section>
+      <SectionTitle className="w-fit" data-tour="faq-groups">
         <IconBookOpenText className="h-4 w-4 shrink-0 text-primary-700" />
         FAQ Groups
       </SectionTitle>
