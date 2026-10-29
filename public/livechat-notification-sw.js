@@ -29,8 +29,11 @@ self.addEventListener('push', (event) => {
     if (enabled === false) return
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}
-    await self.registration.showNotification('Smile Hub', {
-      body: 'Ada balasan baru dari tim kami. Ketuk untuk membuka percakapan.',
+    await self.registration.showNotification(
+      typeof payload.title === 'string' && payload.title.trim()
+        ? payload.title.slice(0, 100) : 'Smile Hub', {
+      body: typeof payload.body === 'string' && payload.body.trim()
+        ? payload.body.slice(0, 240) : 'Anda menerima pesan baru.',
       icon: '/icons/icon-192.png', badge: '/icons/icon-192.png',
       tag: typeof payload.tag === 'string' ? payload.tag : 'livechat-reply',
       data: { url: '/livechat' },
@@ -44,8 +47,10 @@ self.addEventListener('notificationclick', (event) => {
     const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
     const client = clients.find((item) => new URL(item.url).origin === self.location.origin)
     if (client) {
+      // Focus first: iOS can reject focus after awaiting navigation.
+      await client.focus()
       if ('navigate' in client) await client.navigate(url)
-      return client.focus()
+      return
     }
     return self.clients.openWindow(url)
   })())
