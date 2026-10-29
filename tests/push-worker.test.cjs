@@ -48,10 +48,10 @@ function worker({ enabled = true } = {}) {
 
 test('shows the clinic and message while closed and ignores untrusted destination URLs', async () => {
   const workerInstance = worker()
-  await workerInstance.dispatch('push', { data: { json: () => ({ title: 'Klinik TANAM Pakubuwono', tag: 'livechat-message-1', body: 'Halo Jainal', url: 'https://attacker.example.com' }) } })
+  await workerInstance.dispatch('push', { data: { json: () => ({ title: 'Smile Hub', tag: 'livechat-message-1', body: 'Halo Jainal', url: 'https://attacker.example.com' }) } })
   assert.equal(workerInstance.notifications.length, 1)
   assert.equal(workerInstance.notifications[0][1].tag, 'livechat-message-1')
-  assert.equal(workerInstance.notifications[0][0], 'Klinik TANAM Pakubuwono')
+  assert.equal(workerInstance.notifications[0][0], 'Smile Hub')
   assert.equal(workerInstance.notifications[0][1].body, 'Halo Jainal')
   await workerInstance.dispatch('notificationclick', { notification: { close() {} } })
   assert.deepEqual(workerInstance.opened, ['https://smilehub.example.com/livechat'])
