@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
-import { getApiError, showApiErrorToast } from '@/api/shared/error'
+import { handleApiError } from '@/api/shared/error'
 import { showToast } from '@nui/ui/toast'
 import { formatDuration } from '@utils'
 
@@ -19,7 +19,7 @@ import {
   setRegisterEmailResendAt,
 } from '../register-session'
 
-// Seconds before Kirim Ulang is enabled, after the first email and each resend
+// Fallback when the backend doesn't send retryAfterSeconds
 export const RESEND_EMAIL_COOLDOWN = 60
 
 // Right after the register form: the email link leads to the WhatsApp OTP
@@ -47,26 +47,32 @@ export default function AuthEmailSent() {
     setIsResending(true)
 
     try {
-      await resendVerificationEmail(email)
+      const res = await resendVerificationEmail(email)
       showToast({
         type: 'success',
         title: 'Email Verifikasi Dikirim!',
         message: `Tautan verifikasi baru telah dikirim ke ${email}.`,
       })
-      setRegisterEmailResendAt(RESEND_EMAIL_COOLDOWN)
-      setCooldown(RESEND_EMAIL_COOLDOWN)
+      const retryAfterSeconds =
+        res.data?.retryAfterSeconds ?? RESEND_EMAIL_COOLDOWN
+      setRegisterEmailResendAt(retryAfterSeconds)
+      setCooldown(retryAfterSeconds)
     } catch (error) {
-      // Rate limited: wait the time the backend asks for
-      const retryAfterSeconds = getApiError<{ retryAfterSeconds?: number }>(
-        error
-      )?.retryAfterSeconds
-      if (retryAfterSeconds) {
-        setRegisterEmailResendAt(retryAfterSeconds)
-        setCooldown(retryAfterSeconds)
-      }
-
-      showApiErrorToast(error, {
+      handleApiError(error, {
         title: 'Email Verifikasi Gagal Dikirim!',
+        status: {
+          // Rate limited: continue the saved cooldown, or the default when
+          // nothing is left of it
+          429: () => {
+            setCooldown(getRegisterEmailCooldown() || RESEND_EMAIL_COOLDOWN)
+            showToast({
+              type: 'error',
+              title: 'Email Verifikasi Gagal Dikirim!',
+              message:
+                'Terlalu banyak permintaan. Silakan coba lagi setelah hitung mundur selesai.',
+            })
+          },
+        },
       })
     } finally {
       setIsResending(false)

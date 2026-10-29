@@ -3,48 +3,53 @@ import { isAxiosError } from 'axios'
 import { ApiResponse } from '@/model/shared/query'
 import { showToast } from '@nui/ui/toast'
 
-// Error bodies may carry a machine-readable code, e.g. OTP_SEND_FAILED
 type ApiErrorResponse = ApiResponse & { code?: string }
 
-// Shown by showApiErrorToast for any 5xx instead of the backend's message
+// Shown by handleApiError for any 5xx instead of the backend's message
 export const SERVER_ERROR_MESSAGE =
   'Terjadi kesalahan pada sistem, coba lagi beberapa saat kemudian.'
 
-// The error response body; T adds endpoint-specific fields,
-// e.g. getApiError<{ retryAfterSeconds?: number }>(error)
-export function getApiError<T = object>(error: unknown) {
-  if (isAxiosError<ApiErrorResponse & T>(error)) {
-    return error.response?.data
-  }
-
-  return undefined
+// The response of a failed API call: the body (data) and the HTTP status
+function getApiErrorResponse(error: unknown) {
+  return isAxiosError<ApiErrorResponse>(error) ? error.response : undefined
 }
 
 export function getApiErrorMessage(
   error: unknown,
   fallback = SERVER_ERROR_MESSAGE
 ) {
-  return getApiError(error)?.message || fallback
+  return getApiErrorResponse(error)?.data?.message || fallback
 }
 
-export function getApiErrorCode(error: unknown) {
-  return getApiError(error)?.code
+type ApiErrorHandlers<R> = {
+  title: string
+  fallback?: string
+  code?: Partial<Record<string, () => R>>
+  status?: Partial<Record<number, () => R>>
 }
 
-// Error toast for a failed API call: the backend's message, or a general
-// message for 5xx
-export function showApiErrorToast(
+// Handler by code first, then by status; otherwise an error toast with the
+// backend's message, or the general message for 5xx. Returns undefined
+// then, so the caller returns its default (e.g. `?? { success: false }`)
+export function handleApiError<R>(
   error: unknown,
-  { title, fallback }: { title: string; fallback?: string }
-) {
-  const isServerError =
-    isAxiosError(error) && (error.response?.status ?? 0) >= 500
+  { title, fallback, code, status }: ApiErrorHandlers<R>
+): R | undefined {
+  const response = getApiErrorResponse(error)
+
+  const byCode = code?.[response?.data?.code ?? '']
+  if (byCode) return byCode()
+
+  const byStatus = status?.[response?.status ?? 0]
+  if (byStatus) return byStatus()
 
   showToast({
     type: 'error',
     title,
-    message: isServerError
-      ? SERVER_ERROR_MESSAGE
-      : getApiErrorMessage(error, fallback),
+    message:
+      (response?.status ?? 0) >= 500
+        ? SERVER_ERROR_MESSAGE
+        : getApiErrorMessage(error, fallback),
   })
+  return undefined
 }

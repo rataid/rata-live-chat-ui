@@ -83,6 +83,11 @@ export type RegisterResponse = {
   retryAfterSeconds: number
 }
 
+export type ResendVerificationEmailResponse = {
+  // Seconds before the verification email can be resent again
+  retryAfterSeconds: number
+}
+
 export type ResetPasswordPayload = {
   token: string
   password: string

@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 
 import { verifyOtp } from '@/api/auth/otp'
-import { showApiErrorToast } from '@/api/shared/error'
+import { handleApiError } from '@/api/shared/error'
 import { verifyOtpSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
@@ -23,9 +23,6 @@ export type AuthVerifyOtpActionData = {
 export async function authVerifyOtpLoader() {
   const phone = getRegisterPhone()
 
-  // The phone comes from the register form in this browser.
-  // @todo: take it from the verify email response once the backend sends it,
-  // so the email link also works in another browser or device
   if (!phone) return redirect('/register')
 
   return { phone }
@@ -37,14 +34,7 @@ export async function authVerifyOtpAction({
   const formData = await request.formData()
   const data = verifyOtpSchema.safeParse(Object.fromEntries(formData))
 
-  if (!data.success) {
-    showToast({
-      type: 'error',
-      title: 'OTP Gagal Diverifikasi!',
-      message: 'OTP tidak valid. Silakan periksa kembali dan coba lagi.',
-    })
-    return { success: false }
-  }
+  if (!data.success) return { success: false }
 
   try {
     await verifyOtp({
@@ -54,10 +44,11 @@ export async function authVerifyOtpAction({
       code: data.data.otp,
     })
   } catch (error) {
-    showApiErrorToast(error, {
-      title: 'OTP Gagal Diverifikasi!',
-    })
-    return { success: false }
+    return (
+      handleApiError<AuthVerifyOtpActionData>(error, {
+        title: 'OTP Gagal Diverifikasi!',
+      }) ?? { success: false }
+    )
   }
 
   clearRegisterSession()
@@ -65,7 +56,8 @@ export async function authVerifyOtpAction({
   showToast({
     type: 'success',
     title: 'Akun Berhasil Diaktifkan!',
-    message: 'Akun Anda aktif. Masuk dengan kata sandi Anda.',
+    message:
+      'Akun Anda kini aktif. Silakan masuk menggunakan kata sandi yang telah Anda buat.',
   })
 
   return redirect('/login')

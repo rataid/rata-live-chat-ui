@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
+import { AuthErrorCode } from '@/constants/auth-error-code'
 import { PORTAL_NAME } from '@/constants/portal'
 import { registerSchema } from '@/model/user'
 import {
@@ -26,15 +27,12 @@ import {
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
-import {
-  AuthRegisterActionData,
-  REGISTER_ERROR_CUSTOMER_NOT_FOUND,
-} from '../pages/register.route'
+import { AuthRegisterActionData } from '../pages/register.route'
 
 export default function AuthFormRegister() {
   const actionData = useActionData() as AuthRegisterActionData | undefined
 
-  const isNotFound = actionData?.code === REGISTER_ERROR_CUSTOMER_NOT_FOUND
+  const isNotFound = actionData?.code === AuthErrorCode.CUSTOMER_NOT_FOUND
 
   const { openDialog } = useDialog()
 

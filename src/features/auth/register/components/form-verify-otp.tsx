@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 
 import { requestOtp } from '@/api/auth/otp'
-import { getApiErrorCode, showApiErrorToast } from '@/api/shared/error'
+import { handleApiError } from '@/api/shared/error'
 import { AuthErrorCode } from '@/constants/auth-error-code'
 import { verifyOtpSchema } from '@/model/user'
 import {
@@ -79,22 +79,20 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
       })
       setCooldown(RESEND_COOLDOWN)
     } catch (error) {
-      // The pending registration is gone (expired or email not verified):
-      // nothing to send an OTP for, so the patient registers again
-      if (getApiErrorCode(error) === AuthErrorCode.REGISTRATION_NOT_PENDING) {
-        clearRegisterSession()
-        showToast({
-          type: 'error',
-          title: 'Gagal Kirim OTP',
-          message:
-            'Aktivasi akun Anda sudah tidak berlaku. Silakan lakukan registrasi ulang.',
-        })
-        navigate('/register', { replace: true })
-        return
-      }
-
-      showApiErrorToast(error, {
+      handleApiError(error, {
         title: 'Gagal Kirim OTP',
+        code: {
+          [AuthErrorCode.REGISTRATION_NOT_PENDING]: () => {
+            clearRegisterSession()
+            showToast({
+              type: 'error',
+              title: 'Gagal Kirim OTP',
+              message:
+                'Aktivasi akun Anda sudah tidak berlaku. Silakan lakukan registrasi ulang.',
+            })
+            navigate('/register', { replace: true })
+          },
+        },
       })
     } finally {
       setIsResending(false)

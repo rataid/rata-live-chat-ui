@@ -1,5 +1,9 @@
 // `code` in the backend's error responses (livechat auth, OTP)
 export enum AuthErrorCode {
+  // Register: the phone number doesn't match any customer (404)
+  CUSTOMER_NOT_FOUND = 'CUSTOMER_NOT_FOUND',
+  // Register: the account is already active (409)
+  ALREADY_ACTIVATED = 'ALREADY_ACTIVATED',
   // /otp/request REGISTER: no pending registration, or its email isn't verified
   REGISTRATION_NOT_PENDING = 'REGISTRATION_NOT_PENDING',
   // OTP verified but the email isn't (shouldn't happen with the gate in place)
