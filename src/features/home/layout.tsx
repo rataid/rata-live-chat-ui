@@ -2,6 +2,7 @@ import { Outlet, useSearchParams } from 'react-router-dom'
 
 import { useAuth } from '@/components/auth'
 import { useTour } from '@/components/tour'
+import { PORTAL_NAME } from '@/constants'
 
 import { HomeBrandTabs } from './components/brand-tabs'
 import {
@@ -32,16 +33,18 @@ export function HomeLayout() {
     <HomeContainer>
       <HomeIntro>
         <div className="flex flex-col gap-2">
-          <HomeWelcome>Welcome{firstName ? `, ${firstName}` : ''}</HomeWelcome>
+          <HomeWelcome>
+            Halo{firstName ? `, ${firstName}` : ''}, selamat datang di
+          </HomeWelcome>
           <HomeIntroTop>
-            <HomeTitle>Patient Portal</HomeTitle>
+            <HomeTitle>{PORTAL_NAME}</HomeTitle>
           </HomeIntroTop>
           <HomeSubtitle>
-            Track your treatment progress and find answers for your dental
-            health needs.
+            Pantau perkembangan perawatan Anda dan temukan jawaban atas
+            kebutuhan kesehatan gigi Anda.
           </HomeSubtitle>
         </div>
-        <HomeBrandTabs />
+        {/* <HomeBrandTabs /> */}
       </HomeIntro>
       <Outlet />
       {previewAndroid ? (

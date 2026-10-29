@@ -78,11 +78,11 @@ function PortalShell() {
           <PortalNav aria-label="Main">
             <PortalNavLink to="/home" activePaths={['/faq']}>
               <Icon icon="lucide-home" size="xs" />
-              <PortalNavLabel>Home</PortalNavLabel>
+              <PortalNavLabel>Beranda</PortalNavLabel>
             </PortalNavLink>
             <PortalNavLink to="/livechat">
               <Icon icon="lucide-messages-square" size="xs" />
-              <PortalNavLabel>Live Chat</PortalNavLabel>
+              <PortalNavLabel>Hubungi Kami</PortalNavLabel>
             </PortalNavLink>
             <PortalNavDivider />
             <UserMenu name={userData?.fullname || userData?.username} />

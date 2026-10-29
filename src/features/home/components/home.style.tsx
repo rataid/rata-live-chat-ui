@@ -81,16 +81,22 @@ export const TrackerActions = styled.div.attrs({
   className: tw`flex gap-2`,
 })``
 
-export const StatusBadge = styled.span.attrs<{ $over: boolean }>(
-  ({ $over }) => ({
+export type StatusBadgeTone = 'success' | 'warning' | 'danger'
+
+const statusBadgeTones: Record<StatusBadgeTone, string> = {
+  success: tw`bg-success-50 text-success-600`,
+  warning: tw`bg-warning-50 text-warning-600`,
+  danger: tw`bg-danger-50 text-danger-600`,
+}
+
+export const StatusBadge = styled.span.attrs<{ $tone: StatusBadgeTone }>(
+  ({ $tone }) => ({
     className: [
       tw`rounded-full px-2 py-0.5 text-2xs font-medium`,
-      $over
-        ? tw`bg-danger-50 text-danger-600`
-        : tw`bg-success-50 text-success-600`,
+      statusBadgeTones[$tone],
     ].join(' '),
   })
-)<{ $over: boolean }>``
+)<{ $tone: StatusBadgeTone }>``
 
 export const EmptyContent = styled.div.attrs({
   className: tw`rounded-xl border border-dashed border-gray-200 px-4 py-8 text-center text-sm text-gray-500`,

@@ -49,7 +49,7 @@ export function MobileMenu({ name }: { name?: string }) {
     <MobileMenuWrapper ref={wrapperRef}>
       <MobileMenuButton
         type="button"
-        aria-label={open ? 'Close menu' : 'Open menu'}
+        aria-label={open ? 'Tutup menu' : 'Buka menu'}
         aria-expanded={open}
         aria-controls="portal-mobile-menu"
         onClick={() => setOpen((value) => !value)}
@@ -59,17 +59,17 @@ export function MobileMenu({ name }: { name?: string }) {
       <MobileMenuPanel id="portal-mobile-menu" $open={open} aria-hidden={!open}>
         <PortalNavLink to="/home" activePaths={['/faq']}>
           <Icon icon="lucide-home" size="xs" />
-          <PortalNavLabel $always>Home</PortalNavLabel>
+          <PortalNavLabel $always>Beranda</PortalNavLabel>
         </PortalNavLink>
         <PortalNavLink to="/livechat">
           <Icon icon="lucide-messages-square" size="xs" />
-          <PortalNavLabel $always>Live Chat</PortalNavLabel>
+          <PortalNavLabel $always>Hubungi Kami</PortalNavLabel>
         </PortalNavLink>
         <MobileMenuDivider />
         <Form method="post" action="/logout">
           <MobileMenuSignOut type="submit">
             <Icon icon="lucide-log-out" size="xs" />
-            Sign out
+            Keluar akun
           </MobileMenuSignOut>
         </Form>
       </MobileMenuPanel>
