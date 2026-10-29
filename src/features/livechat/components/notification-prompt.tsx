@@ -8,6 +8,8 @@ import {
   dismissIosInstallPrompt,
   dismissNotificationPrompt,
   isNotificationMuted,
+  isNotificationPromptDismissed,
+  notifyNotificationPromptSettled,
   readNotificationPermission,
   recordNotificationChoice,
   setLivechatNotifications,
@@ -26,11 +28,12 @@ import {
 } from './chat.style'
 
 type PromptMode = 'hidden' | 'enable' | 'ios-install' | 'settings'
+type PromptVariant = 'default' | 'home'
 
-function promptMode(): PromptMode {
+function promptMode(pageOnly: boolean): PromptMode {
   const permission = readNotificationPermission()
   if (permission === 'granted' && !isNotificationMuted()) return 'hidden'
-  // No dismissal persistence: ask on each visit while notifications are off.
+  if (isNotificationPromptDismissed(pageOnly)) return 'hidden'
   return permission === 'denied' || permission === 'unavailable'
     ? 'settings'
     : 'enable'
@@ -41,11 +44,13 @@ export function NotificationPrompt({
   onClose,
   pageOnly = false,
   desktopCorner = false,
+  variant = 'default',
 }: {
   open?: boolean
   onClose?: () => void
   pageOnly?: boolean
   desktopCorner?: boolean
+  variant?: PromptVariant
 } = {}) {
   const [mode, setMode] = useState<PromptMode>('hidden')
   const [permission, setPermission] = useState(readNotificationPermission)
@@ -59,14 +64,24 @@ export function NotificationPrompt({
   const close = () => {
     setMode('hidden')
     closeRef.current?.()
+    notifyNotificationPromptSettled()
   }
 
   useEffect(() => {
     setPermission(readNotificationPermission())
-    setMode(
-      open === false ? 'hidden' : open === true ? 'settings' : promptMode()
-    )
-  }, [open, pageOnly])
+    if (open === false) {
+      setMode('hidden')
+      return
+    }
+    if (open === true) {
+      setMode('settings')
+      return
+    }
+    const next = promptMode(pageOnly)
+    setMode(next)
+    // Let the home install sheet open when this page does not need a prompt.
+    if (next === 'hidden') notifyNotificationPromptSettled()
+  }, [open, pageOnly, muted])
 
   useEffect(() => {
     if (mode === 'hidden') return
@@ -133,8 +148,8 @@ export function NotificationPrompt({
   }
 
   const later = () => {
-    if (!open) recordNotificationChoice()
     if (!open) {
+      if (!pageOnly) recordNotificationChoice()
       if (mode === 'ios-install') dismissIosInstallPrompt()
       else dismissNotificationPrompt()
     }
@@ -142,6 +157,7 @@ export function NotificationPrompt({
   }
 
   const iosInstall = mode === 'ios-install'
+  const homeCopy = variant === 'home'
 
   if (iosInstall) {
     return <InstallHomeScreen forceOpen onDismiss={later} />
@@ -174,6 +190,8 @@ export function NotificationPrompt({
             ? 'Pasang Smile Hub di iPhone Anda'
             : mode === 'settings'
             ? 'Notifikasi'
+            : homeCopy
+            ? 'Jangan lewatkan balasan kami!'
             : 'Jangan lewatkan informasi terbaru!'}
         </NotificationPromptTitle>
         <NotificationPromptBody id="livechat-notification-prompt-description">
@@ -183,6 +201,8 @@ export function NotificationPrompt({
             ? 'Notifikasi diblokir oleh browser. Izinkan notifikasi melalui pengaturan situs di browser, lalu coba lagi.'
             : permission === 'unavailable'
             ? 'Browser ini belum mendukung notifikasi. Silakan gunakan browser yang mendukung notifikasi.'
+            : homeCopy
+            ? 'Aktifkan notifikasi agar Anda tahu setiap ada balasan dari kami, meskipun Anda sedang mengakses halaman lain.'
             : notificationsOn
             ? 'Notifikasi akan dikirimkan setiap kali ada balasan, meskipun Anda sedang mengakses halaman lain'
             : mode === 'settings'
@@ -223,7 +243,7 @@ export function NotificationPrompt({
             </NotificationPromptLater>
           ) : null}
         </NotificationPromptActions>
-        {iosInstall || mode === 'settings' ? null : (
+        {iosInstall || mode === 'settings' || homeCopy ? null : (
           <NotificationPromptNote>
             Anda dapat mengubah izin ini kapan saja melalui pengaturan browser
             Anda
