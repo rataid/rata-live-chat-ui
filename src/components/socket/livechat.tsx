@@ -1,3 +1,4 @@
+import { isWebPushSubscribed } from '@/features/livechat/push/push-client'
 import {
   PropsWithChildren,
   createContext,
@@ -77,7 +78,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
-    void showSystemNotification(body)
+    if (!isWebPushSubscribed()) void showSystemNotification(body, message.id)
   }
 
   if (systemNotificationStaysOpen()) return
@@ -88,12 +89,13 @@ function notifyClinicMessage(message: LivechatServerMessage) {
   )
 }
 
-async function showSystemNotification(body: string) {
+async function showSystemNotification(body: string, messageId: string) {
   try {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready
-      await registration.showNotification(LIVECHAT_CLINIC_NAME, {
+      await registration.showNotification('Smile Hub', {
         body,
+        tag: `livechat-${messageId}`,
         icon: '/icons/icon-192.png',
         requireInteraction: true,
       })
@@ -104,7 +106,7 @@ async function showSystemNotification(body: string) {
   }
 
   try {
-    const notification = new Notification(LIVECHAT_CLINIC_NAME, {
+    const notification = new Notification('Smile Hub', {
       body,
       requireInteraction: true,
     })

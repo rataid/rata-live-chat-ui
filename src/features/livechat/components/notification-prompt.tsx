@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+import { InstallHomeScreen } from '@/features/home/components/install-home-screen'
+import { showToast } from '@nui/ui/toast'
+
 import {
   dismissIosInstallPrompt,
   dismissNotificationPrompt,
-  isHomeScreenApp,
-  isIosDevice,
-  isIosInstallDismissed,
-  isNotificationPromptDismissed,
+  isNotificationMuted,
   readNotificationPermission,
+  recordNotificationChoice,
   setLivechatNotifications,
   useNotificationMuted,
 } from '../notification-preference'
@@ -26,37 +27,29 @@ import {
 
 type PromptMode = 'hidden' | 'enable' | 'ios-install' | 'settings'
 
-function canAskForNotificationPermission() {
-  return (
-    readNotificationPermission() === 'default' &&
-    !isNotificationPromptDismissed()
-  )
-}
-
 function promptMode(): PromptMode {
-  const installed = isHomeScreenApp()
-
-  if (isIosDevice() && !installed) {
-    return isIosInstallDismissed() ? 'hidden' : 'ios-install'
-  }
-
-  // iOS only exposes Notification inside a Home Screen app whose manifest
-  // it accepted. Keep the Enable card up until permission is granted.
-  if (isIosDevice() && installed) {
-    return readNotificationPermission() === 'granted' ? 'hidden' : 'enable'
-  }
-
-  return canAskForNotificationPermission() ? 'enable' : 'hidden'
+  const permission = readNotificationPermission()
+  if (permission === 'granted' && !isNotificationMuted()) return 'hidden'
+  // No dismissal persistence: ask on each visit while notifications are off.
+  return permission === 'denied' || permission === 'unavailable'
+    ? 'settings'
+    : 'enable'
 }
 
 export function NotificationPrompt({
   open,
   onClose,
+  pageOnly = false,
+  desktopCorner = false,
 }: {
   open?: boolean
   onClose?: () => void
+  pageOnly?: boolean
+  desktopCorner?: boolean
 } = {}) {
   const [mode, setMode] = useState<PromptMode>('hidden')
+  const [permission, setPermission] = useState(readNotificationPermission)
+  const [pending, setPending] = useState(false)
 
   const { muted } = useNotificationMuted()
   const cardRef = useRef<HTMLElement>(null)
@@ -69,26 +62,21 @@ export function NotificationPrompt({
   }
 
   useEffect(() => {
+    setPermission(readNotificationPermission())
     setMode(
-      open === false
-        ? 'hidden'
-        : open === true
-        ? isIosDevice() && !isHomeScreenApp()
-          ? 'ios-install'
-          : 'settings'
-        : promptMode()
+      open === false ? 'hidden' : open === true ? 'settings' : promptMode()
     )
-  }, [open])
+  }, [open, pageOnly])
 
   useEffect(() => {
-    if (!open || mode === 'hidden') return
+    if (mode === 'hidden') return
     const previous = document.activeElement as HTMLElement | null
     const card = cardRef.current
     card?.focus()
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setMode('hidden')
-        closeRef.current?.()
+        event.preventDefault()
+        event.stopPropagation()
       }
       if (event.key === 'Tab') {
         const buttons = card?.querySelectorAll<HTMLButtonElement>('button')
@@ -119,15 +107,33 @@ export function NotificationPrompt({
 
   if (mode === 'hidden') return null
 
-  const permission = readNotificationPermission()
   const notificationsOn = permission === 'granted' && !muted
   const canToggle = permission === 'default' || permission === 'granted'
 
   const enable = () => {
-    void setLivechatNotifications(!notificationsOn).then(close).catch(close)
+    if (pending) return
+    setPending(true)
+    recordNotificationChoice()
+    void setLivechatNotifications(!notificationsOn)
+      .then((result) => {
+        setPermission(result)
+        if (result === 'granted' || notificationsOn) close()
+        else setMode('settings')
+      })
+      .catch(() => {
+        setMode('settings')
+        showToast({
+          type: 'error',
+          title: 'Notifikasi belum aktif',
+          message:
+            'Pendaftaran notifikasi belum berhasil. Periksa koneksi atau konfigurasi Web Push server, lalu coba lagi.',
+        })
+      })
+      .finally(() => setPending(false))
   }
 
   const later = () => {
+    if (!open) recordNotificationChoice()
     if (!open) {
       if (mode === 'ios-install') dismissIosInstallPrompt()
       else dismissNotificationPrompt()
@@ -137,8 +143,13 @@ export function NotificationPrompt({
 
   const iosInstall = mode === 'ios-install'
 
+  if (iosInstall) {
+    return <InstallHomeScreen forceOpen onDismiss={later} />
+  }
+
   return createPortal(
     <NotificationPromptPosition
+      $desktopCorner={desktopCorner}
       style={
         open
           ? {
@@ -154,17 +165,18 @@ export function NotificationPrompt({
         ref={cardRef}
         tabIndex={-1}
         role="dialog"
-        aria-modal={open ? true : undefined}
+        aria-modal="true"
         aria-labelledby="livechat-notification-prompt-title"
+        aria-describedby="livechat-notification-prompt-description"
       >
         <NotificationPromptTitle id="livechat-notification-prompt-title">
           {iosInstall
-            ? 'Tambahkan ke Layar Utama'
-            : notificationsOn
-            ? 'Notifikasi chat aktif'
+            ? 'Pasang Smile Hub di iPhone Anda'
+            : mode === 'settings'
+            ? 'Notifikasi'
             : 'Jangan lewatkan informasi terbaru!'}
         </NotificationPromptTitle>
-        <NotificationPromptBody>
+        <NotificationPromptBody id="livechat-notification-prompt-description">
           {iosInstall
             ? 'Untuk menerima notifikasi di iPhone, tambahkan portal ini ke Layar Utama lalu buka melalui ikonnya.'
             : permission === 'denied'
@@ -172,7 +184,9 @@ export function NotificationPrompt({
             : permission === 'unavailable'
             ? 'Browser ini belum mendukung notifikasi. Silakan gunakan browser yang mendukung notifikasi.'
             : notificationsOn
-            ? 'Anda akan menerima notifikasi saat ada balasan chat, meskipun sedang membuka tab lain.'
+            ? 'Notifikasi akan dikirimkan setiap kali ada balasan, meskipun Anda sedang mengakses halaman lain'
+            : mode === 'settings'
+            ? 'Aktifkan notifikasi supaya Anda tahu saat ada balasan, meskipun tab ini sedang tidak dibuka.'
             : 'Notifikasi akan dikirimkan setiap kali ada balasan, meskipun Anda sedang mengakses halaman lain'}
         </NotificationPromptBody>
         {iosInstall ? (
@@ -187,17 +201,29 @@ export function NotificationPrompt({
         ) : null}
         <NotificationPromptActions>
           {iosInstall || !canToggle ? null : (
-            <NotificationPromptEnable type="button" onClick={enable}>
+            <NotificationPromptEnable
+              type="button"
+              disabled={pending}
+              onClick={enable}
+            >
               {notificationsOn
-                ? 'Nonaktifkan notifikasi'
+                ? 'Matikan'
+                : mode === 'settings'
+                ? 'Aktifkan'
                 : 'Aktifkan notifikasi'}
             </NotificationPromptEnable>
           )}
-          <NotificationPromptLater type="button" onClick={later}>
-            Mungkin nanti
-          </NotificationPromptLater>
+          {mode !== 'settings' || !canToggle ? (
+            <NotificationPromptLater type="button" onClick={later}>
+              {iosInstall
+                ? 'Mengerti'
+                : mode === 'settings'
+                ? 'Tutup'
+                : 'Mungkin nanti'}
+            </NotificationPromptLater>
+          ) : null}
         </NotificationPromptActions>
-        {iosInstall ? null : (
+        {iosInstall || mode === 'settings' ? null : (
           <NotificationPromptNote>
             Anda dapat mengubah izin ini kapan saja melalui pengaturan browser
             Anda
