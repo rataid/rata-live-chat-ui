@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 
 import { checkResetPasswordToken, resetPassword } from '@/api/auth/password'
-import { getApiErrorMessage } from '@/api/shared/error'
+import { handleApiError } from '@/api/shared/error'
 import { resetPasswordSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
@@ -23,16 +23,13 @@ export async function authResetPasswordLoader({ request }: LoaderFunctionArgs) {
   try {
     await checkResetPasswordToken(token)
   } catch (error) {
-    showToast({
-      type: 'error',
-      title: 'Link Expired',
-      message: getApiErrorMessage(
-        error,
-        'This password reset link is invalid or has expired.'
-      ),
-    })
-
-    return redirect('/forgot-password')
+    return (
+      handleApiError(error, {
+        title: 'Tautan Kedaluwarsa',
+        fallback:
+          'Tautan atur ulang kata sandi ini sudah tidak berlaku atau kedaluwarsa.',
+      }) ?? redirect('/forgot-password')
+    )
   }
 
   return { token }
@@ -42,9 +39,7 @@ export async function authResetPasswordAction({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const data = resetPasswordSchema.safeParse(Object.fromEntries(formData))
 
-  if (!data.success) {
-    return { success: false, message: 'Please check your input' }
-  }
+  if (!data.success) return { success: false }
 
   try {
     await resetPassword({
@@ -52,17 +47,18 @@ export async function authResetPasswordAction({ request }: ActionFunctionArgs) {
       password: data.data.password,
     })
   } catch (error) {
-    const message = getApiErrorMessage(error, 'Please try again in a moment.')
-    showToast({ type: 'error', title: 'Failed to Update Password', message })
-
-    return { success: false, message }
+    return (
+      handleApiError<AuthResetPasswordActionData>(error, {
+        title: 'Kata Sandi Gagal Diubah!',
+      }) ?? { success: false }
+    )
   }
 
   showToast({
     type: 'success',
-    title: 'Password Successfully Updated!',
+    title: 'Kata Sandi Berhasil Diubah!',
     message:
-      'Your password has been changed. Please log in using your new password.',
+      'Kata sandi Anda sudah diubah. Silakan masuk kembali dengan kata sandi Anda yang baru.',
   })
 
   return redirect('/login')
