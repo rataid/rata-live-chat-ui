@@ -44,7 +44,7 @@ export default function AuthFormRegister() {
 
     openDialog({
       title: 'Data tidak ditemukan',
-      message: `Data Anda tidak ditemukan. ${PORTAL_NAME} hanya untuk pasien terdaftar. Hubungi kami jika ini kesalahan.`,
+      message: `Kami tidak dapat menemukan data Anda di sistem kami. ${PORTAL_NAME} hanya tersedia untuk pasien yang terdaftar. Silakan hubungi kami jika ini merupakan kesalahan.`,
       closable: true,
     })
   }, [actionData, isNotFound, openDialog])

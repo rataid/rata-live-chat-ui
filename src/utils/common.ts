@@ -546,5 +546,6 @@ export const maskPhone = (phone?: string | null) => {
 
   if (digits.length < 8) return `+${digits}`
 
-  return `+${digits.slice(0, 4)}***${digits.slice(-3)}`
+  // 6281234567890 -> +628*****
+  return `+${digits.slice(0, 3)}*****`
 }

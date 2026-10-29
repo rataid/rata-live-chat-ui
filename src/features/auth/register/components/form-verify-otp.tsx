@@ -23,13 +23,14 @@ import useFormHelper from '@nui/hooks/use-form-helper'
 import Button from '@nui/ui/button'
 import Icon from '@nui/ui/icon'
 import { showToast } from '@nui/ui/toast'
-import { maskPhone } from '@utils'
+import { formatDuration, maskPhone } from '@utils'
 
 import {
   AuthBackLink,
   AuthCard,
-  AuthFooter,
   AuthHeading,
+  AuthResendButton,
+  AuthResendRow,
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
@@ -37,13 +38,6 @@ import { VERIFY_OTP_STATUS } from '../pages/verify-otp.route'
 import { clearRegisterSession } from '../register-session'
 
 const RESEND_COOLDOWN = 1 * 60
-
-function formatCooldown(totalSeconds: number) {
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-
-  return `${minutes}:${String(seconds).padStart(2, '0')}`
-}
 
 export default function AuthFormVerifyOtp() {
   const [searchParams] = useSearchParams()
@@ -122,13 +116,11 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
   return (
     <AuthCard>
       <AuthHeading>
-        <AuthTitle>Satu Langkah Lagi</AuthTitle>
+        <AuthTitle>Akun Anda Hampir Siap!</AuthTitle>
         <AuthSubtitle>
-          Kami telah mengirimkan kode OTP ke{' '}
-          <span className="font-semibold text-gray-900">
-            {maskPhone(phone)}.
-          </span>
-          Masukkan kode tersebut untuk menyelesaikan pendaftaran.{' '}
+          Kami telah mengirimkan kode OTP ke {maskPhone(phone)}. melalui
+          WhatsApp. Masukkan kode tersebut untuk menyelesaikan proses aktivasi
+          akun.{' '}
         </AuthSubtitle>
       </AuthHeading>
       <Form onSubmit={onSubmit}>
@@ -162,23 +154,20 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
           </Button>
         </FormAction>
       </Form>
-      <AuthFooter>
+      <AuthResendRow>
         Belum menerima OTP?{' '}
-        {cooldown > 0 ? (
-          <span className="font-medium text-gray-400">
-            Kirim Ulang OTP ({formatCooldown(cooldown)})
-          </span>
-        ) : (
-          <button
-            type="button"
-            className="font-medium text-primary-600 hover:text-primary-700 hover:underline disabled:cursor-wait disabled:text-gray-400 disabled:no-underline"
-            disabled={isResending}
-            onClick={handleResend}
-          >
-            {isResending ? 'Sending...' : 'Resend OTP'}
-          </button>
-        )}
-      </AuthFooter>
+        <AuthResendButton
+          type="button"
+          disabled={isResending || cooldown > 0}
+          onClick={handleResend}
+        >
+          {isResending
+            ? 'Mengirim...'
+            : cooldown > 0
+            ? `Kirim Ulang OTP (${formatDuration(cooldown)})`
+            : 'Kirim Ulang OTP'}
+        </AuthResendButton>
+      </AuthResendRow>
     </AuthCard>
   )
 }

@@ -6,8 +6,10 @@ import { getApiErrorMessage, showApiErrorToast } from '@/api/shared/error'
 import { registerSchema } from '@/model/user'
 import { showToast } from '@nui/ui/toast'
 
+import { RESEND_EMAIL_COOLDOWN } from '../components/email-sent'
 import {
   setRegisterEmail,
+  setRegisterEmailResendAt,
   setRegisterEmailSent,
   setRegisterPhone,
 } from '../register-session'
@@ -39,8 +41,11 @@ export async function authRegisterAction({
 
   const phone = `+${data.data.phone.replace(/^\+/, '')}`
 
+  let retryAfterSeconds: number | undefined
+
   try {
-    await register({ name, email, phone, password })
+    const res = await register({ name, email, phone, password })
+    retryAfterSeconds = res.data?.retryAfterSeconds
   } catch (error) {
     const status = isAxiosError(error) ? error.response?.status : undefined
 
@@ -69,6 +74,7 @@ export async function authRegisterAction({
   setRegisterPhone(phone)
   setRegisterEmail(email.trim().toLowerCase())
   setRegisterEmailSent()
+  setRegisterEmailResendAt(retryAfterSeconds ?? RESEND_EMAIL_COOLDOWN)
 
   return redirect('/register/email-sent')
 }

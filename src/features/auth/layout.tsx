@@ -30,7 +30,6 @@ export function Layout() {
           </AuthBrandSubtitle>
         </AuthBrand>
         <Outlet />
-        <RegistrationGuide />
       </AuthLayoutContainer>
     </AuthLayoutWrapper>
   )

@@ -10,23 +10,25 @@ type ApiErrorResponse = ApiResponse & { code?: string }
 export const SERVER_ERROR_MESSAGE =
   'Terjadi kesalahan pada sistem, coba lagi beberapa saat kemudian.'
 
+// The error response body; T adds endpoint-specific fields,
+// e.g. getApiError<{ retryAfterSeconds?: number }>(error)
+export function getApiError<T = object>(error: unknown) {
+  if (isAxiosError<ApiErrorResponse & T>(error)) {
+    return error.response?.data
+  }
+
+  return undefined
+}
+
 export function getApiErrorMessage(
   error: unknown,
   fallback = SERVER_ERROR_MESSAGE
 ) {
-  if (isAxiosError<ApiErrorResponse>(error)) {
-    return error.response?.data?.message || fallback
-  }
-
-  return fallback
+  return getApiError(error)?.message || fallback
 }
 
 export function getApiErrorCode(error: unknown) {
-  if (isAxiosError<ApiErrorResponse>(error)) {
-    return error.response?.data?.code
-  }
-
-  return undefined
+  return getApiError(error)?.code
 }
 
 // Error toast for a failed API call: the backend's message, or a general

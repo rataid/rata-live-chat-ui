@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
-import { getApiErrorMessage, showApiErrorToast } from '@/api/shared/error'
+import { getApiError, showApiErrorToast } from '@/api/shared/error'
 import { showToast } from '@nui/ui/toast'
+import { formatDuration } from '@utils'
 
 import {
   AuthCard,
@@ -12,7 +13,11 @@ import {
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
-import { getRegisterEmail } from '../register-session'
+import {
+  getRegisterEmail,
+  getRegisterEmailCooldown,
+  setRegisterEmailResendAt,
+} from '../register-session'
 
 // Seconds before Kirim Ulang is enabled, after the first email and each resend
 export const RESEND_EMAIL_COOLDOWN = 60
@@ -21,8 +26,11 @@ export const RESEND_EMAIL_COOLDOWN = 60
 export default function AuthEmailSent() {
   const email = getRegisterEmail()
 
-  // The email was just sent by the register step
-  const [cooldown, setCooldown] = useState(RESEND_EMAIL_COOLDOWN)
+  // Counted from the register response (retryAfterSeconds), so a refresh
+  // doesn't restart it
+  const [cooldown, setCooldown] = useState(
+    () => getRegisterEmailCooldown() ?? RESEND_EMAIL_COOLDOWN
+  )
   const [isResending, setIsResending] = useState(false)
 
   useEffect(() => {
@@ -45,8 +53,18 @@ export default function AuthEmailSent() {
         title: 'Email Verifikasi Dikirim!',
         message: `Tautan verifikasi baru telah dikirim ke ${email}.`,
       })
+      setRegisterEmailResendAt(RESEND_EMAIL_COOLDOWN)
       setCooldown(RESEND_EMAIL_COOLDOWN)
     } catch (error) {
+      // Rate limited: wait the time the backend asks for
+      const retryAfterSeconds = getApiError<{ retryAfterSeconds?: number }>(
+        error
+      )?.retryAfterSeconds
+      if (retryAfterSeconds) {
+        setRegisterEmailResendAt(retryAfterSeconds)
+        setCooldown(retryAfterSeconds)
+      }
+
       showApiErrorToast(error, {
         title: 'Email Verifikasi Gagal Dikirim!',
       })
@@ -66,7 +84,7 @@ export default function AuthEmailSent() {
           ) : (
             'email Anda'
           )}
-          . Klik tautan tersebut untuk lanjut ke verifikasi nomor WhatsApp.
+          . Klik tautan tersebut untuk lanjut ke verifikasi nomor handphone.
         </AuthSubtitle>
       </AuthHeading>
       <AuthResendRow>
@@ -79,7 +97,7 @@ export default function AuthEmailSent() {
           {isResending
             ? 'Mengirim...'
             : cooldown > 0
-            ? `Kirim Ulang (${cooldown}s)`
+            ? `Kirim Ulang (${formatDuration(cooldown)})`
             : 'Kirim Ulang'}
         </AuthResendButton>
       </AuthResendRow>
