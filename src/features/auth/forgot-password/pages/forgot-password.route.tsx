@@ -29,8 +29,8 @@ export async function authForgotPasswordAction({
     const body = isAxiosError(error) ? error.response?.data : undefined
 
     if (body?.code === EMAIL_NOT_REGISTERED) {
-      // Unknown emails leave the form unchanged, per the reset-password flow.
-      return { success: false }
+      // Show the same confirmation whether or not the email is registered.
+      return { success: true, email: data.data.email.trim().toLowerCase() }
     }
 
     const message =
