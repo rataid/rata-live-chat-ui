@@ -23,6 +23,7 @@ import homeRoutes from '@features/home/routes'
 import livechatRoutes from '@features/livechat/routes'
 import notFoundRoutes from '@features/not-found/routes'
 
+import { LaunchScreen } from './components/launch-screen'
 import { PortalLayout } from './components/portal-layout'
 import ErrorBoundary from './error-boundary'
 
@@ -79,7 +80,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="app bg-gray-50 font-sans xl:bg-none">
-        <RouterProvider router={router} />
+        <RouterProvider router={router} fallbackElement={<LaunchScreen />} />
         <LayoutUiNotif />
       </div>
     </QueryClientProvider>

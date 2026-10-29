@@ -1,6 +1,6 @@
 import { DriveStep, driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import './tour.css'
 
@@ -27,6 +27,9 @@ type UseTourOptions = {
 }
 
 export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
+  const [isTourActive, setIsTourActive] = useState(
+    () => autoStart && !isTourDone(id)
+  )
   const driverRef = useRef<ReturnType<typeof driver>>()
 
   const start = useCallback(() => {
@@ -38,10 +41,14 @@ export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
         !!document.querySelector(step.element)?.getClientRects().length
     )
 
-    if (available.length === 0) return
+    if (available.length === 0) {
+      setIsTourActive(false)
+      return
+    }
 
     driverRef.current?.destroy()
 
+    setIsTourActive(true)
     driverRef.current = driver({
       steps: available,
       popoverClass: 'app-tour',
@@ -54,7 +61,10 @@ export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
       overlayOpacity: 0.4,
       stagePadding: 6,
       stageRadius: 12,
-      onDestroyed: () => markTourDone(id),
+      onDestroyed: () => {
+        markTourDone(id)
+        setIsTourActive(false)
+      },
     })
 
     driverRef.current.drive()
@@ -70,5 +80,5 @@ export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
 
   useEffect(() => () => driverRef.current?.destroy(), [])
 
-  return { start }
+  return { start, isTourActive }
 }

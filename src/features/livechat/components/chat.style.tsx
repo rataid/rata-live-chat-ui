@@ -132,7 +132,7 @@ export const ChatEditorToolbar = styled.div.attrs({
 })``
 
 export const ChatEditorToolbarButton = styled.button.attrs({
-  className: tw`flex h-6 w-6 items-center justify-center rounded text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
+  className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
 })``
 
 export const ChatAttachMenu = styled.div.attrs({
@@ -148,11 +148,11 @@ export const ChatCameraOverlay = styled.div.attrs({
 })``
 
 export const ChatCameraDialog = styled.div.attrs({
-  className: tw`fixed left-1/2 top-1/2 z-50 w-[min(440px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl`,
+  className: tw`fixed inset-0 z-50 flex h-[100dvh] w-full flex-col bg-white p-4 shadow-xl sm:inset-auto sm:left-1/2 sm:top-1/2 sm:h-auto sm:w-[min(440px,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:p-6`,
 })``
 
 export const ChatCameraHeader = styled.div.attrs({
-  className: tw`mb-4 flex items-center justify-between`,
+  className: tw`mb-4 flex shrink-0 items-center justify-between`,
 })``
 
 export const ChatCameraTitle = styled.h2.attrs({
@@ -164,11 +164,11 @@ export const ChatCameraClose = styled.button.attrs({
 })``
 
 export const ChatCameraPreview = styled.div.attrs({
-  className: tw`flex min-h-[240px] items-center justify-center overflow-hidden rounded-lg bg-gray-100`,
+  className: tw`flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-black sm:min-h-[240px] sm:flex-none sm:rounded-lg sm:bg-gray-100`,
 })``
 
 export const ChatCameraFooter = styled.div.attrs({
-  className: tw`mt-8 flex items-center justify-center gap-4`,
+  className: tw`mt-4 flex shrink-0 items-center justify-center gap-4 pb-[env(safe-area-inset-bottom)] sm:mt-8`,
 })``
 
 export const ChatCameraButton = styled.button.attrs({
@@ -180,11 +180,11 @@ export const ChatCameraRetake = styled.button.attrs({
 })``
 
 export const ChatEditorBox = styled.div.attrs({
-  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 px-3 py-2 focus-within:border-primary-400`,
+  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 bg-white px-3 py-3 focus-within:border-primary-400`,
 })``
 
 export const ChatEditorTextarea = styled.textarea.attrs({
-  className: tw`max-h-28 min-h-[1.5rem] flex-1 resize-none border-none bg-transparent p-0 text-sm leading-6 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0`,
+  className: tw`max-h-28 min-h-[2rem] min-w-0 flex-1 resize-none border-none bg-transparent py-1 px-0 text-sm leading-6 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0`,
 })``
 
 export const ChatEditorSend = styled.button.attrs({
@@ -228,11 +228,19 @@ export const ChatNotifyMenuAction = styled.button.attrs({
 })``
 
 export const NotificationPromptPosition = styled.div.attrs({
-  className: tw`pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4 sm:items-end sm:justify-end sm:bg-transparent sm:p-6`,
-})``
+  className: tw`fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4`,
+})<{ $desktopCorner?: boolean }>`
+  @media (min-width: 1024px) {
+    ${({ $desktopCorner }) => $desktopCorner && `
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 24px;
+    `}
+  }
+`
 
 export const NotificationPromptCard = styled.aside.attrs({
-  className: tw`pointer-events-auto max-h-full w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-lg`,
+  className: tw`pointer-events-auto max-h-full w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-lg outline-none`,
 })``
 
 export const NotificationPromptTitle = styled.h2.attrs({
@@ -244,11 +252,11 @@ export const NotificationPromptBody = styled.p.attrs({
 })``
 
 export const NotificationPromptActions = styled.div.attrs({
-  className: tw`mt-4 flex flex-wrap items-center gap-2 [&>button]:flex-1 sm:[&>button]:flex-none`,
+  className: tw`mt-4 flex flex-wrap items-center gap-2 [&>button]:flex-1`,
 })``
 
 export const NotificationPromptEnable = styled.button.attrs({
-  className: tw`appearance-none rounded-lg border-0 bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700`,
+  className: tw`appearance-none rounded-lg border-0 bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700 disabled:opacity-60`,
 })``
 
 export const NotificationPromptLater = styled.button.attrs({

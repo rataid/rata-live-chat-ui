@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react'
+import { wearDay, msUntilNextWearDay } from './wear-day'
+
 import { useQuery } from '@tanstack/react-query'
 
 import { WearToday } from '@/model/aligner'
@@ -32,9 +35,29 @@ export const stopWearTimer = async () => {
   return toWearToday(res.data)
 }
 
-export const useWearToday = () =>
-  useQuery({
-    queryKey: wearTodayKey,
+export const useWearToday = () => {
+  const [dayKey, setDayKey] = useState(() => wearDay())
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+    const sync = () => {
+      setDayKey(wearDay())
+      clearTimeout(timer)
+      timer = setTimeout(sync, msUntilNextWearDay() + 50)
+    }
+    sync()
+    const onVisible = () => { if (document.visibilityState === 'visible') sync() }
+    document.addEventListener('visibilitychange', onVisible)
+    window.addEventListener('focus', sync)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('focus', sync)
+    }
+  }, [])
+  const query = useQuery({
+    queryKey: [...wearTodayKey, dayKey],
     queryFn: getWearToday,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
+  return { ...query, dayKey }
+}

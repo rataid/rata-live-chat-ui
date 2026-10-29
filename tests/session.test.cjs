@@ -130,6 +130,7 @@ test('foreground activity is throttled and no unattended heartbeat is scheduled'
     'src/components/portal-layout/session-activity.tsx',
     {
       axios: { isAxiosError: () => false },
+      '@nui/ui/toast': { showToast: () => {} },
       react: {
         useEffect: (fn) => {
           effect = fn

@@ -1,7 +1,7 @@
 {
-  "name": "Dental Patient Portal",
-  "short_name": "Patient Portal",
-  "start_url": "/",
+  "name": "Smile Hub",
+  "short_name": "Smile Hub",
+  "start_url": "/home",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",

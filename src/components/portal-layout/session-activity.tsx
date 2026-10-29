@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import axiosInstance from '@/api/axiosInstance'
 import { getToken, removeToken } from '@/components/auth/helpers'
+import { showToast } from '@nui/ui/toast'
 
 // Only real foreground interaction renews an otherwise idle session. There is
 // deliberately no interval or heartbeat that keeps an unattended tab logged in.
@@ -16,6 +17,12 @@ export function SessionActivity() {
     let disposed = false
     const expire = () => {
       if (disposed) return
+      disposed = true
+      showToast({
+        type: 'error',
+        title: 'Sesi Habis',
+        message: 'Silakan kembali masuk untuk lanjut menggunakan Smile Hub.',
+      })
       removeToken()
       navigate(`/login?from=${encodeURIComponent(window.location.pathname)}`, {
         replace: true,

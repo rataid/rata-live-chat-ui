@@ -51,6 +51,7 @@ export function RemovalTracker() {
 
   const {
     data: wear,
+    dayKey,
     dataUpdatedAt,
     isLoading,
     isError,
@@ -68,7 +69,7 @@ export function RemovalTracker() {
       (isActive ? Math.floor((Date.now() - dataUpdatedAt) / 1000) : 0)
     : 0
 
-  const allowanceSec = wear?.allowanceSec ?? 0
+  const allowanceSec = wear?.allowanceSec ?? 2 * 60 * 60
   const remainingSec = allowanceSec - shownSec
   const isOver = remainingSec < 0
 
@@ -86,7 +87,7 @@ export function RemovalTracker() {
         ? await stopWearTimer()
         : await startWearTimer()
 
-      queryClient.setQueryData(wearTodayKey, next)
+      queryClient.setQueryData([...wearTodayKey, dayKey], next)
     } catch (error) {
       // 400 "Removal timer is already running", 404 "Removal timer is not running"
       showToast({

@@ -30,7 +30,7 @@ function BackToLogin() {
   return (
     <AuthBackLink to="/login">
       <Icon icon="lucide-arrow-left" size="2xs" />
-      Back to Login
+      Kembali ke halaman masuk
     </AuthBackLink>
   )
 }
@@ -57,16 +57,15 @@ export default function AuthFormForgotPassword() {
       <AuthCard>
         <BackToLogin />
         <AuthHeading className="!mb-0">
-          <AuthTitle>Check Your Email</AuthTitle>
+          <AuthTitle>Cek Email Anda</AuthTitle>
           <AuthSubtitle>
-            If your email is registered, we&apos;ve sent password reset
-            instructions to{' '}
+            Tautan atur ulang kata sandi telah dikirim ke{' '}
             {actionData.email ? (
               <strong>{actionData.email}</strong>
             ) : (
-              'your inbox'
+              'email Anda'
             )}
-            . Please check your inbox and spam folders.
+            . Silakan periksa kotak masuk dan folder spam Anda.
           </AuthSubtitle>
         </AuthHeading>
       </AuthCard>
@@ -76,9 +75,10 @@ export default function AuthFormForgotPassword() {
   return (
     <AuthCard>
       <AuthHeading>
-        <AuthTitle>Forgot Password?</AuthTitle>
+        <AuthTitle>Atur Ulang Kata Sandi</AuthTitle>
         <AuthSubtitle>
-          Enter your primary email to receive a recovery link.
+          Masukkan email Anda yang terdaftar dan kami akan mengirimkan tautan
+          atur ulang kata sandi ke email Anda.
         </AuthSubtitle>
       </AuthHeading>
       {actionData?.success === false && actionData.message && (
@@ -111,12 +111,12 @@ export default function AuthFormForgotPassword() {
             fontWeight="medium"
             disabled={!isFilled || isSubmitting}
           >
-            {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+            {isSubmitting ? 'Mengirim...' : 'Kirim Tautan Atur Ulang'}
           </Button>
         </FormAction>
       </Form>
       <AuthFooter>
-        Changed your mind? <AuthLink to="/login">Log in</AuthLink>
+        Berubah pikiran? <AuthLink to="/login">Masuk</AuthLink>
       </AuthFooter>
     </AuthCard>
   )

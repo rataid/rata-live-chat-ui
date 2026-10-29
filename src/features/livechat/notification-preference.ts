@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 const MUTE_KEY = 'livechat.notification.muted'
 const DISMISS_KEY = 'livechat.notification.promptDismissed'
 const IOS_INSTALL_DISMISS_KEY = 'livechat.notification.iosInstallDismissed'
+const CHOICE_KEY = 'livechat.notification.choice'
 const MUTE_EVENT = 'livechat-notification-mute'
 
 export function isNotificationMuted() {
@@ -14,12 +15,29 @@ export function setNotificationMuted(muted: boolean) {
   window.dispatchEvent(new Event(MUTE_EVENT))
 }
 
-export function isNotificationPromptDismissed() {
-  return localStorage.getItem(DISMISS_KEY) === '1'
+// "Mungkin nanti" postpones this page's prompt for the current tab session.
+// Do not reuse the old permanent localStorage flag: dismissing on login must
+// not suppress the prompt on livechat or on future browsing sessions.
+function notificationPromptDismissKey() {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  return `${DISMISS_KEY}:${path}`
+}
+
+export function isNotificationPromptDismissed(pageOnly = false) {
+  try {
+    return (
+      (!pageOnly && sessionStorage.getItem(CHOICE_KEY) === '1') ||
+      sessionStorage.getItem(notificationPromptDismissKey()) === '1'
+    )
+  } catch {
+    return false
+  }
 }
 
 export function dismissNotificationPrompt() {
-  localStorage.setItem(DISMISS_KEY, '1')
+  try {
+    sessionStorage.setItem(notificationPromptDismissKey(), '1')
+  } catch {}
 }
 
 export function isIosDevice() {
@@ -48,7 +66,9 @@ export function dismissIosInstallPrompt() {
   localStorage.setItem(IOS_INSTALL_DISMISS_KEY, '1')
 }
 
-export function readNotificationPermission(): NotificationPermission | 'unavailable' {
+export function readNotificationPermission():
+  | NotificationPermission
+  | 'unavailable' {
   try {
     if (typeof Notification === 'undefined') return 'unavailable'
     return Notification.permission
@@ -62,25 +82,28 @@ export function readNotificationPermission(): NotificationPermission | 'unavaila
 export function setLivechatNotifications(enabled: boolean) {
   if (!enabled) {
     setNotificationMuted(true)
-    return Promise.resolve(readNotificationPermission())
+    return import('./push/push-client').then(async ({ disableWebPush }) => {
+      await disableWebPush()
+      return readNotificationPermission()
+    })
   }
-
+  // Keep this permission call synchronous with the user's click (iOS requirement).
   const current = readNotificationPermission()
-  if (current !== 'default') {
-    setNotificationMuted(current !== 'granted')
-    return Promise.resolve(current)
-  }
-
-  const request = Notification.requestPermission()
-
-  if ('serviceWorker' in navigator) {
-    void navigator.serviceWorker
-      .register('/livechat-notification-sw.js')
-      .catch(() => undefined)
-  }
-
-  return request.then((result) => {
+  const permission =
+    current === 'default'
+      ? Notification.requestPermission()
+      : Promise.resolve(current)
+  return permission.then(async (result) => {
     setNotificationMuted(result !== 'granted')
+    if (result === 'granted') {
+      const { syncWebPush } = await import('./push/push-client')
+      try {
+        await syncWebPush()
+      } catch (error) {
+        setNotificationMuted(true)
+        throw error
+      }
+    }
     return result
   })
 }
@@ -103,4 +126,10 @@ export function useNotificationMuted() {
     muted,
     toggle: () => setNotificationMuted(!muted),
   }
+}
+
+export function recordNotificationChoice() {
+  try {
+    sessionStorage.setItem(CHOICE_KEY, '1')
+  } catch {}
 }
