@@ -1,25 +1,32 @@
-import { isValid } from 'date-fns'
+import { format, isValid } from 'date-fns'
 import { z } from 'zod'
+
+// Number inputs: empty or non-numeric becomes NaN after coerce
+const wholeNumber = z.coerce
+  .number({ invalid_type_error: 'Wajib diisi dengan angka' })
+  .int('Harus berupa bilangan bulat')
 
 export const alignerTrackerSettingsSchema = z
   .object({
-    currentSet: z.coerce.number().int().min(0, 'Must be at least 0'),
-    totalSets: z.coerce.number().int().min(1, 'Must be at least 1'),
-    daysPerSet: z.coerce.number().int().min(1, 'Must be at least 1 day'),
+    currentSet: wholeNumber.min(0, 'Minimal 0'),
+    totalSets: wholeNumber.min(1, 'Minimal 1 set'),
+    daysPerSet: wholeNumber.min(1, 'Minimal 1 hari'),
     // yyyy-MM-dd from the date picker (shown as dd/mm/yyyy)
     startDate: z
       .string()
-      .min(1, 'Required')
+      .min(1, 'Tanggal mulai wajib diisi')
       .refine((value) => isValid(new Date(value)), {
-        message: 'Invalid date format (dd/mm/yyyy)',
+        message: 'Format tanggal tidak valid (dd/mm/yyyy)',
       })
-      .refine((value) => new Date(value) <= new Date(), {
-        message: 'Cannot be in the future',
+      // Compare calendar days: new Date('yyyy-MM-dd') is UTC midnight, which
+      // would turn today into the future before 07:00 WIB
+      .refine((value) => value <= format(new Date(), 'yyyy-MM-dd'), {
+        message: 'Tanggal tidak boleh melebihi hari ini',
       }),
   })
-  .refine((data) => data.currentSet <= data.totalSets, {
-    message: 'Cannot be more than the total sets',
-    path: ['currentSet'],
+  .refine((data) => data.totalSets >= data.currentSet, {
+    message: 'Tidak boleh kurang dari set Aligner sekarang',
+    path: ['totalSets'],
   })
 
 export type AlignerTrackerSettingsValues = z.infer<

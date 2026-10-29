@@ -18,6 +18,8 @@ import {
   ProgressFill,
   ProgressTrack,
   StatusBadge,
+  StatusBadgeTone,
+  StopTimerButton,
   TrackerMeta,
   TrackerPercent,
   TrackerValue,
@@ -32,6 +34,19 @@ function formatDuration(totalSeconds: number) {
   const s = seconds % 60
 
   return [h, m, s].map((n) => String(n).padStart(2, '0')).join(':')
+}
+
+// From this percent of the daily allowance, the badge warns
+const NEAR_LIMIT_PERCENT = 75
+
+const STATUS: Record<
+  'onTrack' | 'nearLimit' | 'limitReached' | 'overLimit',
+  { label: string; tone: StatusBadgeTone }
+> = {
+  onTrack: { label: 'Sesuai target', tone: 'success' },
+  nearLimit: { label: 'Hampir mencapai batas', tone: 'warning' },
+  limitReached: { label: 'Batas waktu tercapai', tone: 'danger' },
+  overLimit: { label: 'Melebihi batas', tone: 'danger' },
 }
 
 function useSecondTick(active: boolean) {
@@ -79,6 +94,16 @@ export function RemovalTracker() {
     ? Math.min(100, Math.round((shownSec / allowanceSec) * 100))
     : wear.removalPercent
 
+  const TimerButton = isActive ? StopTimerButton : Button
+
+  const status = isOver
+    ? STATUS.overLimit
+    : remainingSec === 0
+    ? STATUS.limitReached
+    : percent >= NEAR_LIMIT_PERCENT
+    ? STATUS.nearLimit
+    : STATUS.onTrack
+
   const toggleTimer = async () => {
     setIsSubmitting(true)
 
@@ -92,8 +117,8 @@ export function RemovalTracker() {
       // 400 "Removal timer is already running", 404 "Removal timer is not running"
       showToast({
         type: 'error',
-        title: isActive ? 'Failed to Stop Timer' : 'Failed to Start Timer',
-        message: getApiErrorMessage(error, 'Please try again in a moment.'),
+        title: isActive ? 'Gagal Menghentikan Timer' : 'Gagal Memulai Timer',
+        message: getApiErrorMessage(error),
       })
       // Bring the card back in line with the server
       await queryClient.invalidateQueries({ queryKey: wearTodayKey })
@@ -105,12 +130,12 @@ export function RemovalTracker() {
   if (isError) {
     return (
       <Card data-tour="removal-tracker">
-        <CardLabel>Aligner Removal Tracker</CardLabel>
+        <CardLabel>Pantau Waktu Lepas Aligner</CardLabel>
         <p className="text-sm text-gray-500">
-          Couldn&apos;t load today&apos;s removal time. Please try again.
+          Tidak dapat memuat waktu lepas hari ini. Silakan coba lagi.
         </p>
         <Button variant="secondaryGray" onClick={() => refetch()}>
-          Try again
+          Coba lagi
         </Button>
       </Card>
     )
@@ -118,7 +143,7 @@ export function RemovalTracker() {
 
   return (
     <Card aria-busy={isLoading} data-tour="removal-tracker">
-      <CardLabel>Aligner Removal Tracker</CardLabel>
+      <CardLabel>Pantau Waktu Lepas Aligner</CardLabel>
       <TrackerValueRow>
         <TrackerValue>{formatDuration(shownSec)}</TrackerValue>
         <TrackerPercent>{percent}%</TrackerPercent>
@@ -129,24 +154,21 @@ export function RemovalTracker() {
       <TrackerMeta>
         <span>
           {isOver
-            ? `${formatDuration(-remainingSec)} over the limit`
-            : `${formatDuration(remainingSec)} left today`}
+            ? `Lewat ${formatDuration(-remainingSec)}`
+            : `Sisa waktu hari ini ${formatDuration(remainingSec)}`}
         </span>
-        {wear && (
-          <StatusBadge $over={isOver}>
-            {isOver ? 'Over limit' : 'On track'}
-          </StatusBadge>
-        )}
+        {wear && <StatusBadge $tone={status.tone}>{status.label}</StatusBadge>}
       </TrackerMeta>
-      <Button
+      <TimerButton
         wider="full"
         fontWeight="medium"
+        variant={isActive ? 'secondaryGray' : 'primary'}
         icon={isActive ? 'lucide-square' : 'lucide-play'}
         disabled={isLoading || isSubmitting}
         onClick={toggleTimer}
       >
-        {isActive ? 'Stop removal timer' : 'Start removal timer'}
-      </Button>
+        {isActive ? 'Hentikan timer' : 'Mulai timer'}
+      </TimerButton>
     </Card>
   )
 }

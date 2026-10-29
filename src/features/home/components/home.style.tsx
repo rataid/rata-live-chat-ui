@@ -81,6 +81,24 @@ export const TrackerActions = styled.div.attrs({
   className: tw`flex gap-2`,
 })``
 
+// "Hentikan timer" (Figma). && and !important outrank the !bg-white / hover /
+// focus classes of the secondaryGray variant; box-shadow also replaces its
+// ring, so the border below is the only outline
+export const StopTimerButton = styled(Button)`
+  && {
+    height: 40px;
+    padding: 10px 16px;
+    border: 1px solid #e9ebef;
+    border-radius: 8px;
+    background-color: #f6f7f8 !important;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  &&:hover {
+    background-color: #e9ebef !important;
+  }
+`
+
 export type StatusBadgeTone = 'success' | 'warning' | 'danger'
 
 const statusBadgeTones: Record<StatusBadgeTone, string> = {

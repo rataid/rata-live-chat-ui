@@ -30,11 +30,16 @@ export function AlignerTrackerSettings({
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<AlignerTrackerSettingsValues>({
     resolver: zodResolver(alignerTrackerSettingsSchema),
     defaultValues,
+    mode: 'onBlur',
   })
+
+  // The total can't be lower than the set in use (and is at least 1)
+  const minTotalSets = Math.max(1, Number(watch('currentSet')) || 0)
 
   return (
     <form
@@ -47,33 +52,40 @@ export function AlignerTrackerSettings({
       })}
     >
       <DialogHeader>
-        Setup Tracker Aligner
+        Atur progres Aligner
         <DialogClose />
       </DialogHeader>
       <DialogBody>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           <FormControl required error={errors.currentSet}>
-            <FormLabel>Set currently in use</FormLabel>
+            <FormLabel>Set Aligner sekarang</FormLabel>
             <Controller
               name="currentSet"
               control={control}
+              // Its error shows on totalSets, so check that field too
+              rules={{ deps: 'totalSets' }}
               render={({ field }) => (
                 <Input type="number" min={0} inputMode="numeric" {...field} />
               )}
             />
           </FormControl>
           <FormControl required error={errors.totalSets}>
-            <FormLabel>Total sets</FormLabel>
+            <FormLabel>Jumlah set Aligner</FormLabel>
             <Controller
               name="totalSets"
               control={control}
               render={({ field }) => (
-                <Input type="number" min={1} inputMode="numeric" {...field} />
+                <Input
+                  type="number"
+                  min={minTotalSets}
+                  inputMode="numeric"
+                  {...field}
+                />
               )}
             />
           </FormControl>
           <FormControl required error={errors.daysPerSet}>
-            <FormLabel>Duration per set (days)</FormLabel>
+            <FormLabel>Durasi pemakaian Aligner (hari)</FormLabel>
             <Controller
               name="daysPerSet"
               control={control}
@@ -83,7 +95,7 @@ export function AlignerTrackerSettings({
             />
           </FormControl>
           <FormControl required error={errors.startDate}>
-            <FormLabel>Start using this set</FormLabel>
+            <FormLabel>Mulai pakai set Aligner</FormLabel>
             <Controller
               name="startDate"
               control={control}
@@ -106,10 +118,10 @@ export function AlignerTrackerSettings({
           disabled={isSubmitting}
           onClick={closeDialog}
         >
-          Close
+          Tutup
         </Button>
         <Button type="submit" fontWeight="medium" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : 'Save'}
+          {isSubmitting ? 'Menyimpan...' : 'Simpan'}
         </Button>
       </DialogFooter>
     </form>

@@ -1,5 +1,7 @@
+import { parseISO } from 'date-fns'
+
 import { AlignerHistoryItem } from '@/model/aligner'
-import { formatDayMonth } from '@utils'
+import { formatDate } from '@utils'
 
 import {
   HistoryList,
@@ -25,22 +27,24 @@ export function AlignerSetHistory({
 }: AlignerSetHistoryProps) {
   return (
     <HistoryWrapper id={id}>
-      <HistoryTitle>History</HistoryTitle>
-      {isLoading && <HistoryMessage>Loading history...</HistoryMessage>}
+      <HistoryTitle>Riwayat</HistoryTitle>
+      {isLoading && <HistoryMessage>Memuat Riwayat...</HistoryMessage>}
       {isError && (
         <HistoryMessage>
-          Couldn&apos;t load the history. Please try again.
+          Tidak dapat memuat riwayat. Silakan coba lagi.
         </HistoryMessage>
       )}
       {items && items.length === 0 && (
-        <HistoryMessage>No set changes yet.</HistoryMessage>
+        <HistoryMessage>Belum ada perubahan set.</HistoryMessage>
       )}
       {items && items.length > 0 && (
         <HistoryList>
           {items.map((item) => (
             <HistoryRow key={`${item.setNumber}-${item.changedOn}`}>
-              <span>Changed to Set {item.setNumber}</span>
-              <HistoryRowDate>{formatDayMonth(item.changedOn)}</HistoryRowDate>
+              <span>Ganti ke Set {item.setNumber}</span>
+              <HistoryRowDate>
+                {formatDate(parseISO(item.changedOn), 'dd/MM/yy')}
+              </HistoryRowDate>
             </HistoryRow>
           ))}
         </HistoryList>
