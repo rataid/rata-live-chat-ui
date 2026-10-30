@@ -19,15 +19,12 @@ import {
   setRegisterEmailResendAt,
 } from '../register-session'
 
-// Fallback when the backend doesn't send retryAfterSeconds
 export const RESEND_EMAIL_COOLDOWN = 60
 
 // Right after the register form: the email link leads to the WhatsApp OTP
 export default function AuthEmailSent() {
   const email = getRegisterEmail()
 
-  // Counted from the register response (retryAfterSeconds), so a refresh
-  // doesn't restart it
   const [cooldown, setCooldown] = useState(
     () => getRegisterEmailCooldown() ?? RESEND_EMAIL_COOLDOWN
   )
@@ -61,10 +58,8 @@ export default function AuthEmailSent() {
       handleApiError(error, {
         title: 'Email Verifikasi Gagal Dikirim!',
         status: {
-          // Rate limited: continue the saved cooldown, or the default when
-          // nothing is left of it
           429: () => {
-            setCooldown(getRegisterEmailCooldown() || RESEND_EMAIL_COOLDOWN)
+            setCooldown(getRegisterEmailCooldown() ?? RESEND_EMAIL_COOLDOWN)
             showToast({
               type: 'error',
               title: 'Email Verifikasi Gagal Dikirim!',

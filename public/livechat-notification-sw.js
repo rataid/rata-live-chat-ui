@@ -27,6 +27,9 @@ self.addEventListener('push', (event) => {
     // Local disable/logout also protects against already queued notifications.
     const enabled = await preferences((store) => store.get('enabled')).catch(() => undefined)
     if (enabled === false) return
+    // Always show push notifications. Socket-local alerts use the same
+    // message tag, so duplicates collapse instead of being suppressed here
+    // (OEM WebAPK visibility is unreliable and was hiding Android alerts).
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}
     await self.registration.showNotification(
@@ -34,9 +37,15 @@ self.addEventListener('push', (event) => {
         ? payload.title.slice(0, 100) : 'Smile Hub', {
       body: typeof payload.body === 'string' && payload.body.trim()
         ? payload.body.slice(0, 240) : 'Anda menerima pesan baru.',
-      icon: '/icons/icon-192.png', badge: '/icons/icon-192.png',
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
       tag: typeof payload.tag === 'string' ? payload.tag : 'livechat-reply',
       data: { url: '/livechat' },
+      // Xiaomi/MIUI often suppresses quiet web notifications; force an alert.
+      renotify: true,
+      requireInteraction: true,
+      silent: false,
+      vibrate: [200, 100, 200],
     })
   })())
 })

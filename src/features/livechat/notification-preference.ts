@@ -133,3 +133,17 @@ export function recordNotificationChoice() {
     sessionStorage.setItem(CHOICE_KEY, '1')
   } catch {}
 }
+
+export const NOTIFICATION_PROMPT_SETTLED_EVENT =
+  'smilehub-notification-prompt-settled'
+
+/** Home install sheet waits for this so both prompts do not stack. */
+export function isHomeNotificationPromptSettled() {
+  const permission = readNotificationPermission()
+  if (permission === 'granted' && !isNotificationMuted()) return true
+  return isNotificationPromptDismissed(true)
+}
+
+export function notifyNotificationPromptSettled() {
+  window.dispatchEvent(new Event(NOTIFICATION_PROMPT_SETTLED_EVENT))
+}

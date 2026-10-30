@@ -1,4 +1,3 @@
-import { isWebPushSubscribed } from '@/features/livechat/push/push-client'
 import {
   PropsWithChildren,
   createContext,
@@ -74,11 +73,14 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   const body = message.body || 'You have a new message.'
 
+  // Always show a local notification while this page/socket is alive.
+  // Web Push covers the fully-closed case; gating on subscription hid the
+  // working pre-PWA path and left MIUI/iOS waiting on delayed push only.
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
-    if (!isWebPushSubscribed()) void showSystemNotification(body, message.id)
+    void showSystemNotification(body, message.id)
   }
 
   if (systemNotificationStaysOpen()) return
@@ -93,12 +95,16 @@ async function showSystemNotification(body: string, messageId: string) {
   try {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready
+      // `renotify`/`vibrate` exist in browsers but are missing from our TS DOM lib.
       await registration.showNotification('Smile Hub', {
         body,
         tag: `livechat-${messageId}`,
         icon: '/icons/icon-192.png',
         requireInteraction: true,
-      })
+        silent: false,
+        vibrate: [200, 100, 200],
+        renotify: true,
+      } as NotificationOptions)
       return true
     }
   } catch {

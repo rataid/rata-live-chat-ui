@@ -35,9 +35,13 @@ import {
   AuthTitle,
 } from '../../components/auth.style'
 import { VERIFY_OTP_STATUS } from '../pages/verify-otp.route'
-import { clearRegisterSession } from '../register-session'
+import {
+  clearRegisterSession,
+  getRegisterOtpCooldown,
+  setRegisterOtpResendAt,
+} from '../register-session'
 
-const RESEND_COOLDOWN = 1 * 60
+export const RESEND_OTP_COOLDOWN = 1 * 60
 
 export default function AuthFormVerifyOtp() {
   const [searchParams] = useSearchParams()
@@ -53,9 +57,9 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
 
   const isSubmitting = useNavigation().state !== 'idle'
 
-  // The backend sent the OTP when the email link was opened. If that failed,
-  // Resend OTP is available right away.
-  const [cooldown, setCooldown] = useState(otpFailed ? 0 : RESEND_COOLDOWN)
+  const [cooldown, setCooldown] = useState(
+    () => getRegisterOtpCooldown() ?? (otpFailed ? 0 : RESEND_OTP_COOLDOWN)
+  )
 
   useEffect(() => {
     if (cooldown <= 0) return undefined
@@ -71,13 +75,20 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
     setIsResending(true)
 
     try {
-      await requestOtp({ target: phone, channel: 'WA', purpose: 'REGISTER' })
+      const res = await requestOtp({
+        target: phone,
+        channel: 'WA',
+        purpose: 'REGISTER',
+      })
       showToast({
         type: 'success',
         title: 'OTP Sent',
         message: `A new OTP code has been sent to ${maskPhone(phone)}.`,
       })
-      setCooldown(RESEND_COOLDOWN)
+      const retryAfterSeconds =
+        res.data?.retryAfterSeconds ?? RESEND_OTP_COOLDOWN
+      setRegisterOtpResendAt(retryAfterSeconds)
+      setCooldown(retryAfterSeconds)
     } catch (error) {
       handleApiError(error, {
         title: 'Gagal Kirim OTP',

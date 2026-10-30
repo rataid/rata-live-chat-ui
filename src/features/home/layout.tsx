@@ -4,6 +4,7 @@ import { Outlet, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/components/auth'
 import { TourIntro, useTour } from '@/components/tour'
 import { PORTAL_NAME } from '@/constants'
+import { NotificationPrompt } from '@/features/livechat/components/notification-prompt'
 
 import { HomeBrandTabs } from './components/brand-tabs'
 import {
@@ -35,6 +36,7 @@ export function HomeLayout() {
     ready: !isLoadingData,
   })
   const firstName = (userData?.fullname || '').trim().split(/\s+/)[0]
+  const showAfterTour = !previewAndroid && !isTourActive
 
   return (
     <HomeContainer>
@@ -57,9 +59,12 @@ export function HomeLayout() {
       <TourIntro {...HOME_TOUR_INTRO} {...intro} />
       {previewAndroid ? (
         <InstallHomeScreen previewAndroid />
-      ) : (
-        !isTourActive && <InstallHomeScreen placement="dashboard" />
-      )}
+      ) : showAfterTour ? (
+        <>
+          <NotificationPrompt pageOnly variant="home" />
+          <InstallHomeScreen placement="dashboard" />
+        </>
+      ) : null}
     </HomeContainer>
   )
 }
