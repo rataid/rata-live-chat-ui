@@ -95,15 +95,16 @@ async function showSystemNotification(body: string, messageId: string) {
   try {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready
+      // `renotify`/`vibrate` exist in browsers but are missing from our TS DOM lib.
       await registration.showNotification('Smile Hub', {
         body,
         tag: `livechat-${messageId}`,
         icon: '/icons/icon-192.png',
         requireInteraction: true,
-        renotify: true,
         silent: false,
         vibrate: [200, 100, 200],
-      })
+        renotify: true,
+      } as NotificationOptions)
       return true
     }
   } catch {
