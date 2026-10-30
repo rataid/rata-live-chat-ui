@@ -80,9 +80,12 @@ export function syncWebPush() {
         applicationServerKey: publicKeyBytes(data.publicKey),
       })
     const json = subscription.toJSON()
+    if (!json.endpoint || !json.keys?.p256dh || !json.keys?.auth) {
+      throw new Error('Subscription Web Push tidak lengkap.')
+    }
     if (sessionIdentity() !== identity) return
     await axiosInstance.post('/livechat/push/subscribe', {
-      endpoint: subscription.endpoint,
+      endpoint: json.endpoint,
       keys: json.keys,
     })
     if (sessionIdentity() === identity) {

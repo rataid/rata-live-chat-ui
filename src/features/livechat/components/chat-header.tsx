@@ -68,7 +68,9 @@ export function ChatHeader({
           aria-haspopup="dialog"
           aria-pressed={notificationsOn}
           aria-label="Pengaturan notifikasi"
-          onClick={() => setOpen(true)}
+          onClick={() =>
+            setOpen((current) => (current === true ? false : true))
+          }
         >
           <Icon
             icon={notificationsOn ? 'lucide-bell' : 'lucide-bell-off'}
