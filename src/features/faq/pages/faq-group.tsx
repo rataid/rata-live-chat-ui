@@ -1,12 +1,14 @@
 import { useLoaderData } from 'react-router-dom'
 
+import Icon from '@nui/ui/icon'
+
 import { AskMore, BackToHomepage } from '../components/faq-common'
 import {
   FaqAnswerEmpty,
   FaqGroupList,
   FaqGroupListItem,
+  FaqGroupNumber,
   FaqGroupQuestion,
-  FaqGroupShortAnswer,
   FaqPageContainer,
   FaqPageHeading,
   FaqPageSubtitle,
@@ -22,20 +24,21 @@ export function FaqGroupPage() {
       <BackToHomepage brand={product} />
       <FaqPageHeading>
         <FaqPageTitle>{group.groupName}</FaqPageTitle>
-        <FaqPageSubtitle>
-          {group.groupDescription} · {group.faqItems.length} pertanyaan
-        </FaqPageSubtitle>
+        <FaqPageSubtitle>{group.faqItems.length} pertanyaan</FaqPageSubtitle>
       </FaqPageHeading>
 
       {group.faqItems.length > 0 ? (
         <FaqGroupList>
-          {group.faqItems.map((faq) => (
-            <li key={faq.faqId} className="first:[&>a]:border-t-0">
+          {group.faqItems.map((faq, index) => (
+            <li key={faq.faqId}>
               <FaqGroupListItem to={`/faq/${product}/${faq.faqId}`}>
+                <FaqGroupNumber>{index + 1}</FaqGroupNumber>
                 <FaqGroupQuestion>{faq.question}</FaqGroupQuestion>
-                {faq.shortAnswer && (
-                  <FaqGroupShortAnswer>{faq.shortAnswer}</FaqGroupShortAnswer>
-                )}
+                <Icon
+                  icon="lucide-chevron-right"
+                  size="xs"
+                  className="shrink-0 text-primary-600"
+                />
               </FaqGroupListItem>
             </li>
           ))}

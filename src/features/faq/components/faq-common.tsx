@@ -8,7 +8,7 @@ export function BackToHomepage({ brand }: { brand: Brand }) {
   return (
     <FaqBackLink to={`/home/${brand}`}>
       <Icon icon="lucide-arrow-left" size="xs" />
-      Back to Homepage
+      Kembali ke Beranda
     </FaqBackLink>
   )
 }

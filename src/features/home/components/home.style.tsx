@@ -154,10 +154,6 @@ export const FaqGroupTitle = styled.div.attrs({
   className: tw`text-sm font-semibold text-gray-900`,
 })``
 
-export const FaqGroupDescription = styled.div.attrs({
-  className: tw`text-xs text-gray-500`,
-})``
-
 export const FaqGroupCount = styled.span.attrs({
   className: tw`mt-1 rounded-full bg-blue-50 px-2 py-0.5 text-2xs font-medium text-blue-600`,
 })``

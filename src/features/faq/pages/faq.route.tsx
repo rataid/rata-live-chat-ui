@@ -16,12 +16,12 @@ export async function faqDetailLoader({ params }: LoaderFunctionArgs) {
 
   if (!found) throw notFound()
 
-  // Up to 3 other questions from the same group
-  const related = found.group.faqItems
-    .filter((item) => item.faqId !== found.item.faqId)
-    .slice(0, 3)
+  // All other questions from the same group
+  const related = found.siblings.filter(
+    (item) => item.faqId !== found.item.faqId
+  )
 
-  return { product, ...found, related }
+  return { product, item: found.item, group: found.group, related }
 }
 
 export async function faqGroupLoader({ params }: LoaderFunctionArgs) {
