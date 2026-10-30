@@ -23,20 +23,20 @@ const homeRoutes: RouteObject[] = [
           return { Component: HomeRataPage }
         },
       },
-      {
-        path: 'tanam',
-        async lazy() {
-          const { HomeTanamPage } = await import('./pages/tanam')
-          return { Component: HomeTanamPage }
-        },
-      },
-      {
-        path: 'vinir',
-        async lazy() {
-          const { HomeVinirPage } = await import('./pages/vinir')
-          return { Component: HomeVinirPage }
-        },
-      },
+      // {
+      //   path: 'tanam',
+      //   async lazy() {
+      //     const { HomeTanamPage } = await import('./pages/tanam')
+      //     return { Component: HomeTanamPage }
+      //   },
+      // },
+      // {
+      //   path: 'vinir',
+      //   async lazy() {
+      //     const { HomeVinirPage } = await import('./pages/vinir')
+      //     return { Component: HomeVinirPage }
+      //   },
+      // },
     ],
   },
 ]

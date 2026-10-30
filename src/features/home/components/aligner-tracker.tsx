@@ -122,8 +122,8 @@ export function AlignerTracker() {
                 startDate: plan.startedOn,
               }
             : {
-                currentSet: 0,
-                totalSets: 0,
+                currentSet: 1,
+                totalSets: 1,
                 daysPerSet: 14,
                 startDate: format(new Date(), 'yyyy-MM-dd'),
               }
@@ -136,12 +136,12 @@ export function AlignerTracker() {
   if (isError) {
     return (
       <Card data-tour="aligner-tracker">
-        <CardLabel>Aligner Tracker</CardLabel>
+        <CardLabel>Pantau Progres Aligner</CardLabel>
         <p className="text-sm text-gray-500">
-          Couldn&apos;t load your tracker. Please try again.
+          Tidak dapat memuat progres Aligner. Silakan coba lagi.
         </p>
         <Button variant="secondaryGray" onClick={() => refetch()}>
-          Try again
+          Coba Lagi
         </Button>
       </Card>
     )
@@ -153,22 +153,25 @@ export function AlignerTracker() {
 
   return (
     <Card aria-busy={isLoading} data-tour="aligner-tracker">
-      <CardLabel>Aligner Tracker</CardLabel>
+      <CardLabel>Pantau Progres Aligner</CardLabel>
       <TrackerValueRow>
         <TrackerValue>
           Set {plan?.currentSet ?? '??'}
-          <TrackerValueSuffix>of {plan?.totalSets ?? '??'}</TrackerValueSuffix>
+          <TrackerValueSuffix>
+            dari {plan?.totalSets ?? '??'}
+          </TrackerValueSuffix>
         </TrackerValue>
-        <TrackerPercent>{hasPlan ? `${percent}%` : '???%'}</TrackerPercent>
+        <TrackerPercent>{hasPlan ? `${percent}%` : '??%'}</TrackerPercent>
       </TrackerValueRow>
       <ProgressTrack>
         <ProgressFill style={{ width: `${percent}%` }} />
       </ProgressTrack>
       <TrackerMeta>
-        <span>{plan?.daysLeft ?? '--'} days to go</span>
+        <span>{plan?.daysLeft ?? '??'} hari lagi</span>
         <span>
-          Day {plan?.dayIndex ?? '-'}/{plan?.durationDays ?? '-'}
-          {hasPlan && ` · ${plan.totalSets - plan.currentSet} left`}
+          Hari ke {plan?.dayIndex ? `-${plan.dayIndex}` : '?'}/
+          {plan?.durationDays ?? '?'} · tersisa{' '}
+          {hasPlan ? plan.totalSets - plan.currentSet : '?'} set
         </span>
       </TrackerMeta>
       <TrackerActions>
@@ -179,7 +182,7 @@ export function AlignerTracker() {
             disabled={isLoading}
             onClick={openSettings}
           >
-            Set up tracker
+            Atur progres Aligner
           </Button>
         )}
         {hasPlan && (
@@ -191,34 +194,34 @@ export function AlignerTracker() {
             onClick={changeToNextSet}
           >
             {isLastSet
-              ? 'All sets completed'
+              ? 'Semua Set Selesai'
               : isChangingSet
-              ? 'Changing set...'
-              : `Change to Set ${plan.currentSet + 1}`}
+              ? 'Ganti ke Set...'
+              : `Ganti ke Set ${plan.currentSet + 1}`}
           </Button>
         )}
-        {hasPlan && (
-          <>
-            <Tooltip content="Setup Tracker Aligner">
-              <Button
-                variant="secondaryGray"
-                icon="lucide-settings"
-                aria-label="Setup Tracker Aligner"
-                onClick={openSettings}
-              />
-            </Tooltip>
-            <Tooltip content="History Aligner Sets">
-              <Button
-                variant={isHistoryOpen ? 'primary' : 'secondaryGray'}
-                icon="lucide-history"
-                aria-label="History Aligner Sets"
-                aria-expanded={isHistoryOpen}
-                aria-controls="aligner-set-history"
-                onClick={() => setIsHistoryOpen((value) => !value)}
-              />
-            </Tooltip>
-          </>
-        )}
+        <>
+          <Tooltip content="Setup Tracker Aligner">
+            <Button
+              variant="secondaryGray"
+              icon="lucide-settings"
+              aria-label="Atur progres Aligner"
+              onClick={openSettings}
+              disabled={!hasPlan || isLoading}
+            />
+          </Tooltip>
+          <Tooltip content="History Aligner Sets">
+            <Button
+              variant={isHistoryOpen ? 'primary' : 'secondaryGray'}
+              icon="lucide-history"
+              aria-label="Riwayat"
+              aria-expanded={isHistoryOpen}
+              aria-controls="aligner-set-history"
+              onClick={() => setIsHistoryOpen((value) => !value)}
+              disabled={!hasPlan || isLoading}
+            />
+          </Tooltip>
+        </>
       </TrackerActions>
       {hasPlan && (
         <HistoryCollapse $open={isHistoryOpen} aria-hidden={!isHistoryOpen}>

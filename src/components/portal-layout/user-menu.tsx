@@ -57,7 +57,7 @@ export function UserMenu({ name }: { name?: string }) {
           <Form method="post" action="/logout">
             <UserMenuItem type="submit">
               <Icon icon="lucide-log-out" size="xs" />
-              Sign out
+              Keluar akun
             </UserMenuItem>
           </Form>
         </UserMenuPanel>

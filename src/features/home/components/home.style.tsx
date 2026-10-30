@@ -81,16 +81,40 @@ export const TrackerActions = styled.div.attrs({
   className: tw`flex gap-2`,
 })``
 
-export const StatusBadge = styled.span.attrs<{ $over: boolean }>(
-  ({ $over }) => ({
+// "Hentikan timer" (Figma). && and !important outrank the !bg-white / hover /
+// focus classes of the secondaryGray variant; box-shadow also replaces its
+// ring, so the border below is the only outline
+export const StopTimerButton = styled(Button)`
+  && {
+    height: 40px;
+    padding: 10px 16px;
+    border: 1px solid #e9ebef;
+    border-radius: 8px;
+    background-color: #f6f7f8 !important;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  &&:hover {
+    background-color: #e9ebef !important;
+  }
+`
+
+export type StatusBadgeTone = 'success' | 'warning' | 'danger'
+
+const statusBadgeTones: Record<StatusBadgeTone, string> = {
+  success: tw`bg-success-50 text-success-600`,
+  warning: tw`bg-warning-50 text-warning-600`,
+  danger: tw`bg-danger-50 text-danger-600`,
+}
+
+export const StatusBadge = styled.span.attrs<{ $tone: StatusBadgeTone }>(
+  ({ $tone }) => ({
     className: [
       tw`rounded-full px-2 py-0.5 text-2xs font-medium`,
-      $over
-        ? tw`bg-danger-50 text-danger-600`
-        : tw`bg-success-50 text-success-600`,
+      statusBadgeTones[$tone],
     ].join(' '),
   })
-)<{ $over: boolean }>``
+)<{ $tone: StatusBadgeTone }>``
 
 export const EmptyContent = styled.div.attrs({
   className: tw`rounded-xl border border-dashed border-gray-200 px-4 py-8 text-center text-sm text-gray-500`,
@@ -128,10 +152,6 @@ export const FaqGroupCard = styled.button.attrs({
 
 export const FaqGroupTitle = styled.div.attrs({
   className: tw`text-sm font-semibold text-gray-900`,
-})``
-
-export const FaqGroupDescription = styled.div.attrs({
-  className: tw`text-xs text-gray-500`,
 })``
 
 export const FaqGroupCount = styled.span.attrs({

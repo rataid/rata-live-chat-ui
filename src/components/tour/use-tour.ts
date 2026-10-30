@@ -4,11 +4,20 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import './tour.css'
 
-const storageKey = (id: string) => `tour.${id}.done`
+// Kept per device (localStorage) and not cleared on logout
+// Completed: never auto-starts again on this device
+const doneKey = (id: string) => `tour.${id}.done`
+// Closed before the last step: auto-starts again from the next day
+const skippedOnKey = (id: string) => `tour.${id}.skippedOn`
 
-function isTourDone(id: string) {
+// Local calendar day, e.g. 2026-10-29
+const today = () => new Date().toLocaleDateString('en-CA')
+
+function shouldAutoStart(id: string) {
   try {
-    return localStorage.getItem(storageKey(id)) === '1'
+    if (localStorage.getItem(doneKey(id)) === '1') return false
+
+    return localStorage.getItem(skippedOnKey(id)) !== today()
   } catch {
     return false
   }
@@ -16,21 +25,42 @@ function isTourDone(id: string) {
 
 function markTourDone(id: string) {
   try {
-    localStorage.setItem(storageKey(id), '1')
+    localStorage.setItem(doneKey(id), '1')
+    localStorage.removeItem(skippedOnKey(id))
+  } catch {}
+}
+
+function markTourSkipped(id: string) {
+  try {
+    localStorage.setItem(skippedOnKey(id), today())
   } catch {}
 }
 
 type UseTourOptions = {
   id: string
   steps: DriveStep[]
+  // Auto start opens the welcome (TourIntro) first instead of the steps
+  withIntro?: boolean
   autoStart?: boolean
+  // Auto start waits for this, e.g. until the page's data has loaded
+  ready?: boolean
 }
 
-export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
+export function useTour({
+  id,
+  steps,
+  withIntro = false,
+  autoStart = false,
+  ready = true,
+}: UseTourOptions) {
+  // Also true while waiting to start, so other modals stay hidden until the
+  // tour is finished or skipped
   const [isTourActive, setIsTourActive] = useState(
-    () => autoStart && !isTourDone(id)
+    () => autoStart && shouldAutoStart(id)
   )
+  const [isIntroOpen, setIsIntroOpen] = useState(false)
   const driverRef = useRef<ReturnType<typeof driver>>()
+  const hasAutoStarted = useRef(false)
 
   const start = useCallback(() => {
     const available = steps.filter(
@@ -48,37 +78,79 @@ export function useTour({ id, steps, autoStart = false }: UseTourOptions) {
 
     driverRef.current?.destroy()
 
+    // e.g. the first step is "1 dari 7"
+    const numbered = available.map((step, index) => ({
+      ...step,
+      popover: {
+        ...step.popover,
+        progressText: `${index + 1} dari ${available.length}`,
+      },
+    }))
+
     setIsTourActive(true)
     driverRef.current = driver({
-      steps: available,
+      steps: numbered,
       popoverClass: 'app-tour',
       showProgress: available.length > 1,
-      progressText: '{{current}} of {{total}}',
-      nextBtnText: 'Next',
-      prevBtnText: 'Back',
-      doneBtnText: 'Done',
+      nextBtnText: 'Lanjut',
+      prevBtnText: 'Kembali',
+      doneBtnText: 'Selesai',
       allowClose: true,
+      // Only the tour popover is clickable: not the overlay, not the
+      // highlighted element
+      overlayClickBehavior: 'none',
+      disableActiveInteraction: true,
+      // The page can't be scrolled during the tour; the tour itself still
+      // scrolls each step into view
+      allowScroll: false,
       overlayOpacity: 0.4,
       stagePadding: 6,
       stageRadius: 12,
-      onDestroyed: () => {
-        markTourDone(id)
-        setIsTourActive(false)
+      // Done on the last step completes the tour; closing earlier is a skip.
+      // destroy() from here doesn't run this hook again.
+      onDestroyStarted: (_element, _step, { driver: tour }) => {
+        if (tour.isLastStep()) markTourDone(id)
+        else markTourSkipped(id)
+
+        tour.destroy()
       },
+      onDestroyed: () => setIsTourActive(false),
     })
 
     driverRef.current.drive()
   }, [id, steps])
 
   useEffect(() => {
-    if (!autoStart || isTourDone(id)) return undefined
+    if (!autoStart || !ready || hasAutoStarted.current) return undefined
+    if (!shouldAutoStart(id)) return undefined
 
-    const timer = setTimeout(start, 500)
+    // Restarted while loading goes on (ready flips back), so the tour starts
+    // after the page has settled
+    const timer = setTimeout(() => {
+      hasAutoStarted.current = true
+      if (withIntro) setIsIntroOpen(true)
+      else start()
+    }, 500)
 
     return () => clearTimeout(timer)
-  }, [autoStart, id, start])
+  }, [autoStart, ready, id, withIntro, start])
 
   useEffect(() => () => driverRef.current?.destroy(), [])
 
-  return { start, isTourActive }
+  // Props for <TourIntro />
+  const intro = {
+    open: isIntroOpen,
+    onStart: () => {
+      setIsIntroOpen(false)
+      start()
+    },
+    // Same as skipping the tour: back the next day
+    onLater: () => {
+      setIsIntroOpen(false)
+      markTourSkipped(id)
+      setIsTourActive(false)
+    },
+  }
+
+  return { start, isTourActive, intro }
 }

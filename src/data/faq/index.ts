@@ -1,27 +1,23 @@
 import { Brand } from '@/constants/brand'
 
 import rataId from './rata/id.json'
-import tanamId from './tanam/id.json'
-import vinirId from './vinir/id.json'
 
 export type FaqItem = {
   faqId: number
   question: string
-  shortAnswer: string
   // HTML, rendered through FaqAnswer
   answer: string
-  // Shown in "Frequently Asked Questions" on the homepage
-  isFeatured: boolean
 }
 
 export type FaqGroup = {
   groupId: number
   groupName: string
-  groupDescription: string
   faqItems: FaqItem[]
 }
 
 export type FaqData = {
+  // "Frequently Asked Questions" on the homepage, separate from the groups
+  faqs: FaqItem[]
   groups: FaqGroup[]
 }
 
@@ -32,23 +28,27 @@ export type FaqLocale = 'id'
 
 export const DEFAULT_FAQ_LOCALE: FaqLocale = 'id'
 
+const EMPTY_FAQ: FaqData = { faqs: [], groups: [] }
+
 // One JSON file per product per language: src/data/faq/{product}/{locale}.json
-// To add English: create en.json next to id.json and register it here
-const faqData: Record<FaqProduct, Partial<Record<FaqLocale, FaqData>>> = {
+// To add English: create en.json next to id.json and register it here.
+// Tanam and Vinir aren't used yet: their JSON files exist but aren't registered.
+const faqData: Partial<
+  Record<FaqProduct, Partial<Record<FaqLocale, FaqData>>>
+> = {
   rata: { id: rataId },
-  tanam: { id: tanamId as FaqData },
-  vinir: { id: vinirId as FaqData },
 }
 
-// Falls back to the default language when a translation doesn't exist yet
+// Falls back to the default language when a translation doesn't exist yet,
+// and to an empty FAQ for products without data
 export function getFaq(product: FaqProduct, locale = DEFAULT_FAQ_LOCALE) {
-  return faqData[product][locale] ?? faqData[product][DEFAULT_FAQ_LOCALE]!
+  const data = faqData[product]
+
+  return data?.[locale] ?? data?.[DEFAULT_FAQ_LOCALE] ?? EMPTY_FAQ
 }
 
 export function getFeaturedFaqs(product: FaqProduct, locale?: FaqLocale) {
-  return getFaq(product, locale).groups.flatMap((group) =>
-    group.faqItems.filter((item) => item.isFeatured)
-  )
+  return getFaq(product, locale).faqs
 }
 
 export function findFaqGroup(
@@ -66,10 +66,16 @@ export function findFaqItem(
   faqId: number,
   locale?: FaqLocale
 ) {
-  for (const group of getFaq(product, locale).groups) {
+  const { faqs, groups } = getFaq(product, locale)
+
+  for (const group of groups) {
     const item = group.faqItems.find((faq) => faq.faqId === faqId)
-    if (item) return { item, group }
+    if (item) return { item, group, siblings: group.faqItems }
   }
+
+  // From the separate FAQ list: no group, no related questions
+  const item = faqs.find((faq) => faq.faqId === faqId)
+  if (item) return { item, group: undefined, siblings: [] }
 
   return undefined
 }

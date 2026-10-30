@@ -1,7 +1,9 @@
+import { useIsFetching } from '@tanstack/react-query'
 import { Outlet, useSearchParams } from 'react-router-dom'
 
 import { useAuth } from '@/components/auth'
-import { useTour } from '@/components/tour'
+import { TourIntro, useTour } from '@/components/tour'
+import { PORTAL_NAME } from '@/constants'
 import { NotificationPrompt } from '@/features/livechat/components/notification-prompt'
 
 import { HomeBrandTabs } from './components/brand-tabs'
@@ -14,7 +16,7 @@ import {
   HomeWelcome,
 } from './components/home.style'
 import { InstallHomeScreen } from './components/install-home-screen'
-import { HOME_TOUR_ID, HOME_TOUR_STEPS } from './tour'
+import { HOME_TOUR_ID, HOME_TOUR_INTRO, HOME_TOUR_STEPS } from './tour'
 
 export function HomeLayout() {
   const { userData } = useAuth()
@@ -22,10 +24,16 @@ export function HomeLayout() {
   const previewAndroid =
     import.meta.env.DEV && searchParams.get('previewInstall') === 'android'
 
-  const { isTourActive } = useTour({
+  // The tour starts once every dashboard request (plan, removal time, ...)
+  // has finished, so each step points at loaded content
+  const isLoadingData = useIsFetching() > 0
+
+  const { isTourActive, intro } = useTour({
     id: HOME_TOUR_ID,
     steps: HOME_TOUR_STEPS,
+    withIntro: true,
     autoStart: !previewAndroid,
+    ready: !isLoadingData,
   })
   const firstName = (userData?.fullname || '').trim().split(/\s+/)[0]
   const showAfterTour = !previewAndroid && !isTourActive
@@ -34,18 +42,21 @@ export function HomeLayout() {
     <HomeContainer>
       <HomeIntro>
         <div className="flex flex-col gap-2">
-          <HomeWelcome>Welcome{firstName ? `, ${firstName}` : ''}</HomeWelcome>
+          <HomeWelcome>
+            Halo{firstName ? `, ${firstName}` : ''}, selamat datang di
+          </HomeWelcome>
           <HomeIntroTop>
-            <HomeTitle>Patient Portal</HomeTitle>
+            <HomeTitle>{PORTAL_NAME}</HomeTitle>
           </HomeIntroTop>
           <HomeSubtitle>
-            Track your treatment progress and find answers for your dental
-            health needs.
+            Pantau perkembangan perawatan Anda dan temukan jawaban atas
+            kebutuhan kesehatan gigi Anda.
           </HomeSubtitle>
         </div>
-        <HomeBrandTabs />
+        {/* <HomeBrandTabs /> */}
       </HomeIntro>
       <Outlet />
+      <TourIntro {...HOME_TOUR_INTRO} {...intro} />
       {previewAndroid ? (
         <InstallHomeScreen previewAndroid />
       ) : showAfterTour ? (

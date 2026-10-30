@@ -7,7 +7,6 @@ import Icon from '@nui/ui/icon'
 import {
   FaqGroupCard,
   FaqGroupCount,
-  FaqGroupDescription,
   FaqGroupGrid,
   FaqGroupTitle,
   FaqItem,
@@ -30,7 +29,7 @@ export function FrequentlyAskedQuestions({ product }: FaqSectionProps) {
     <Section>
       <SectionTitle className="w-fit" data-tour="faq-title">
         <IconHistory className="h-4 w-4 shrink-0 text-primary-700" />
-        Frequently Asked Questions
+        Pertanyaan yang Sering Diajukan (FAQ)
       </SectionTitle>
       <FaqList>
         {faqs.map((faq, index) => (
@@ -57,20 +56,24 @@ export function FaqGroups({ product }: FaqSectionProps) {
   if (groups.length === 0) return null
 
   return (
-    <Section data-tour="faq-groups">
-      <SectionTitle>
+    <Section>
+      <SectionTitle className="w-fit" data-tour="faq-groups">
         <IconBookOpenText className="h-4 w-4 shrink-0 text-primary-700" />
-        FAQ Groups
+        Kategori Pertanyaan Umum
       </SectionTitle>
       <FaqGroupGrid>
         {groups.map((group) => (
           <FaqGroupCard
             key={group.groupId}
             as={Link}
-            to={`/faq/${product}/group/${group.groupId}`}
+            // A group with one question opens that question directly
+            to={
+              group.faqItems.length === 1
+                ? `/faq/${product}/${group.faqItems[0].faqId}`
+                : `/faq/${product}/group/${group.groupId}`
+            }
           >
             <FaqGroupTitle>{group.groupName}</FaqGroupTitle>
-            <FaqGroupDescription>{group.groupDescription}</FaqGroupDescription>
             <FaqGroupCount>{group.faqItems.length} pertanyaan</FaqGroupCount>
           </FaqGroupCard>
         ))}
