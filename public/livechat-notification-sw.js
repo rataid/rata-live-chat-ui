@@ -63,7 +63,8 @@ self.addEventListener('push', (event) => {
       tag: typeof payload.tag === 'string' ? payload.tag : 'livechat-reply',
       data: { url: '/livechat' },
       renotify: true,
-      requireInteraction: false,
+      // Stay in the Android/iOS shade until the user taps or dismisses.
+      requireInteraction: true,
       silent: false,
     })
   })())
