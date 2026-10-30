@@ -212,7 +212,7 @@ export const ChatHeaderMute = styled.button.attrs({
 })``
 
 export const ChatNotifyMenu = styled.div.attrs({
-  className: tw`absolute right-0 top-full z-20 mt-2 w-64 rounded-xl border border-gray-200 bg-white p-3 shadow-lg`,
+  className: tw`absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-3 shadow-lg outline-none`,
 })``
 
 export const ChatNotifyMenuTitle = styled.p.attrs({

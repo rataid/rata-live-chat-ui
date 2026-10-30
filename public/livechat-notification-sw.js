@@ -27,9 +27,30 @@ self.addEventListener('push', (event) => {
     // Local disable/logout also protects against already queued notifications.
     const enabled = await preferences((store) => store.get('enabled')).catch(() => undefined)
     if (enabled === false) return
-    // Always show push notifications. Socket-local alerts use the same
-    // message tag, so duplicates collapse instead of being suppressed here
-    // (OEM WebAPK visibility is unreliable and was hiding Android alerts).
+
+    const clients = await self.clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+    const ours = clients.filter(
+      (client) => new URL(client.url).origin === self.location.origin
+    )
+    // Live chat is open and visible: never show a push (socket/UI handles it).
+    const liveChatOpen = ours.some((client) => {
+      const path = new URL(client.url).pathname
+      return (
+        path.startsWith('/livechat') &&
+        (client.visibilityState === 'visible' || client.focused)
+      )
+    })
+    if (liveChatOpen) return
+    // Another Smile Hub tab/window is visible: socket-local path already alerts.
+    // Skipping here avoids double notifications (esp. iOS PWA).
+    const hasVisibleClient = ours.some(
+      (client) => client.visibilityState === 'visible' || client.focused
+    )
+    if (hasVisibleClient) return
+
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}
     await self.registration.showNotification(
@@ -41,11 +62,9 @@ self.addEventListener('push', (event) => {
       badge: '/icons/icon-192.png',
       tag: typeof payload.tag === 'string' ? payload.tag : 'livechat-reply',
       data: { url: '/livechat' },
-      // Xiaomi/MIUI often suppresses quiet web notifications; force an alert.
       renotify: true,
-      requireInteraction: true,
+      requireInteraction: false,
       silent: false,
-      vibrate: [200, 100, 200],
     })
   })())
 })
