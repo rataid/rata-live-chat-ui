@@ -66,9 +66,6 @@ function systemNotificationStaysOpen() {
   )
 }
 
-// In-page toast only (not the OS notification shade).
-const IN_APP_TOAST_MS = 5000
-
 function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
@@ -76,9 +73,9 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   const body = message.body || 'You have a new message.'
 
-  // Keep the pre-PM path: show a local system notification whenever the socket
-  // is alive and the user is not reading Live Chat. Same message tag collapses
-  // socket+push duplicates; different messageIds still stack in the shade.
+  // Always show a local notification while this page/socket is alive.
+  // Web Push covers the fully-closed case; gating on subscription hid the
+  // working pre-PWA path and left MIUI/iOS waiting on delayed push only.
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
@@ -90,23 +87,22 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   showToast(
     { type: 'info', title: LIVECHAT_CLINIC_NAME, message: body },
-    { autoClose: IN_APP_TOAST_MS, closeButton: true }
+    { autoClose: false, closeButton: true }
   )
 }
 
 async function showSystemNotification(body: string, messageId: string) {
-  const tag = `livechat-${messageId}`
   try {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready
-      // Keep OS shade notifications until the user dismisses/clicks them.
-      // `renotify` exists in browsers but is missing from our TS DOM lib.
+      // `renotify`/`vibrate` exist in browsers but are missing from our TS DOM lib.
       await registration.showNotification('Smile Hub', {
         body,
-        tag,
+        tag: `livechat-${messageId}`,
         icon: '/icons/icon-192.png',
         requireInteraction: true,
         silent: false,
+        vibrate: [200, 100, 200],
         renotify: true,
       } as NotificationOptions)
       return true
@@ -118,7 +114,6 @@ async function showSystemNotification(body: string, messageId: string) {
   try {
     const notification = new Notification('Smile Hub', {
       body,
-      tag,
       requireInteraction: true,
     })
     notification.onclick = () => {
