@@ -4,10 +4,12 @@ import { LoaderFunctionArgs, redirect } from 'react-router-dom'
 import { verifyEmail } from '@/api/auth/verify-email'
 import { handleApiError } from '@/api/shared/error'
 import { AuthErrorCode } from '@/constants/auth-error-code'
+import { RESEND_OTP_COOLDOWN } from '@/features/auth/register/components/form-verify-otp'
 import {
   VERIFY_OTP_STATUS,
   VerifyOtpStatus,
 } from '@/features/auth/register/pages/verify-otp.route'
+import { setRegisterOtpResendAt } from '@/features/auth/register/register-session'
 import { showToast } from '@nui/ui/toast'
 
 const otpPage = (status?: VerifyOtpStatus) =>
@@ -41,8 +43,11 @@ const VERIFY_EMAIL_ERRORS: Record<
 // Email link (/v/:token). Verified → OTP page (the backend sends the
 // WhatsApp OTP). Not verified → back to the register form.
 export async function authVerifyEmailLoader({ params }: LoaderFunctionArgs) {
+  let retryAfterSeconds: number | undefined
+
   try {
-    await verifyEmail(params.token ?? '')
+    const res = await verifyEmail(params.token ?? '')
+    retryAfterSeconds = res.data?.retryAfterSeconds
   } catch (error) {
     return (
       handleApiError(error, {
@@ -54,6 +59,8 @@ export async function authVerifyEmailLoader({ params }: LoaderFunctionArgs) {
       }) ?? redirect('/register')
     )
   }
+
+  setRegisterOtpResendAt(retryAfterSeconds ?? RESEND_OTP_COOLDOWN)
 
   showToast({
     type: 'success',

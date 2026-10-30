@@ -4,8 +4,8 @@
 const REGISTER_PHONE_KEY = 'register.phone'
 const REGISTER_EMAIL_KEY = 'register.email'
 const REGISTER_EMAIL_SENT_KEY = 'register.emailSent'
-// Timestamp (ms) when the email can be resent, so a refresh keeps the cooldown
 const REGISTER_EMAIL_RESEND_AT_KEY = 'register.emailResendAt'
+const REGISTER_OTP_RESEND_AT_KEY = 'register.otpResendAt'
 
 function setItem(key: string, value: string) {
   try {
@@ -52,9 +52,23 @@ export function setRegisterEmailResendAt(retryAfterSeconds: number) {
   )
 }
 
-// Seconds left before the email can be resent, null when not stored
 export function getRegisterEmailCooldown() {
   const resendAt = Number(getItem(REGISTER_EMAIL_RESEND_AT_KEY))
+
+  if (!resendAt) return null
+
+  return Math.max(0, Math.ceil((resendAt - Date.now()) / 1000))
+}
+
+export function setRegisterOtpResendAt(retryAfterSeconds: number) {
+  setItem(
+    REGISTER_OTP_RESEND_AT_KEY,
+    String(Date.now() + retryAfterSeconds * 1000)
+  )
+}
+
+export function getRegisterOtpCooldown() {
+  const resendAt = Number(getItem(REGISTER_OTP_RESEND_AT_KEY))
 
   if (!resendAt) return null
 
@@ -69,6 +83,7 @@ export function clearRegisterSession() {
       REGISTER_EMAIL_KEY,
       REGISTER_EMAIL_SENT_KEY,
       REGISTER_EMAIL_RESEND_AT_KEY,
+      REGISTER_OTP_RESEND_AT_KEY,
     ].forEach((key) => localStorage.removeItem(key))
   } catch {}
 }

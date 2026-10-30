@@ -79,12 +79,18 @@ export type RegisterPayload = {
 }
 
 export type RegisterResponse = {
-  // Seconds before the verification email can be resent
   retryAfterSeconds: number
 }
 
 export type ResendVerificationEmailResponse = {
-  // Seconds before the verification email can be resent again
+  retryAfterSeconds: number
+}
+
+export type VerifyEmailResponse = {
+  retryAfterSeconds: number
+}
+
+export type RequestOtpResponse = {
   retryAfterSeconds: number
 }
 
