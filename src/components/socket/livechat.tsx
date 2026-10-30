@@ -66,7 +66,8 @@ function systemNotificationStaysOpen() {
   )
 }
 
-const IN_APP_NOTIFICATION_MS = 5000
+// In-page toast only (not the OS notification shade).
+const IN_APP_TOAST_MS = 5000
 
 function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
@@ -90,7 +91,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   showToast(
     { type: 'info', title: LIVECHAT_CLINIC_NAME, message: body },
-    { autoClose: IN_APP_NOTIFICATION_MS, closeButton: true }
+    { autoClose: IN_APP_TOAST_MS, closeButton: true }
   )
 }
 
@@ -99,22 +100,16 @@ async function showSystemNotification(body: string, messageId: string) {
   try {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready
+      // Keep OS shade notifications until the user dismisses/clicks them.
       // `renotify` exists in browsers but is missing from our TS DOM lib.
       await registration.showNotification('Smile Hub', {
         body,
         tag,
         icon: '/icons/icon-192.png',
-        requireInteraction: false,
+        requireInteraction: true,
         silent: false,
         renotify: true,
       } as NotificationOptions)
-      window.setTimeout(() => {
-        void registration
-          .getNotifications({ tag })
-          .then((notifications) =>
-            notifications.forEach((notification) => notification.close())
-          )
-      }, IN_APP_NOTIFICATION_MS)
       return true
     }
   } catch {
@@ -125,13 +120,12 @@ async function showSystemNotification(body: string, messageId: string) {
     const notification = new Notification('Smile Hub', {
       body,
       tag,
-      requireInteraction: false,
+      requireInteraction: true,
     })
     notification.onclick = () => {
       window.focus()
       notification.close()
     }
-    window.setTimeout(() => notification.close(), IN_APP_NOTIFICATION_MS)
     return true
   } catch {
     return false
