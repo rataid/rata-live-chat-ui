@@ -35,7 +35,9 @@ self.addEventListener('push', (event) => {
     const ours = clients.filter(
       (client) => new URL(client.url).origin === self.location.origin
     )
-    // Live chat is open and visible: never show a push (socket/UI handles it).
+    // Only suppress push while the patient is actively viewing Live Chat.
+    // Do not skip for Home/other pages: that hid most Android shade alerts and
+    // left a single leftover notification instead of one-per-message.
     const liveChatOpen = ours.some((client) => {
       const path = new URL(client.url).pathname
       return (
@@ -44,12 +46,6 @@ self.addEventListener('push', (event) => {
       )
     })
     if (liveChatOpen) return
-    // Another Smile Hub tab/window is visible: socket-local path already alerts.
-    // Skipping here avoids double notifications (esp. iOS PWA).
-    const hasVisibleClient = ours.some(
-      (client) => client.visibilityState === 'visible' || client.focused
-    )
-    if (hasVisibleClient) return
 
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}

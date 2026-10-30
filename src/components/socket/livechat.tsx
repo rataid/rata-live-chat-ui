@@ -73,13 +73,12 @@ function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
   if (isReadingLiveChat()) return
-  // Backgrounded / closed tab: Web Push handles delivery. Showing a local
-  // notification here doubles with the push on iOS PWA.
-  if (document.hidden) return
 
   const body = message.body || 'You have a new message.'
 
-  // Visible non-livechat page: local system notification while socket is alive.
+  // Keep the pre-PM path: show a local system notification whenever the socket
+  // is alive and the user is not reading Live Chat. Same message tag collapses
+  // socket+push duplicates; different messageIds still stack in the shade.
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
