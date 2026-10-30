@@ -8,7 +8,7 @@ const wholeNumber = z.coerce
 
 export const alignerTrackerSettingsSchema = z
   .object({
-    currentSet: wholeNumber.min(0, 'Minimal 0'),
+    currentSet: wholeNumber.min(1, 'Minimal set 1'),
     totalSets: wholeNumber.min(1, 'Minimal 1 set'),
     daysPerSet: wholeNumber.min(1, 'Minimal 1 hari'),
     // yyyy-MM-dd from the date picker (shown as dd/mm/yyyy)

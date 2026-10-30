@@ -62,10 +62,9 @@ export function AlignerTrackerSettings({
             <Controller
               name="currentSet"
               control={control}
-              // Its error shows on totalSets, so check that field too
               rules={{ deps: 'totalSets' }}
               render={({ field }) => (
-                <Input type="number" min={0} inputMode="numeric" {...field} />
+                <Input type="number" min={1} inputMode="numeric" {...field} />
               )}
             />
           </FormControl>

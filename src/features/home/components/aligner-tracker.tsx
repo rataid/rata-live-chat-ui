@@ -122,8 +122,8 @@ export function AlignerTracker() {
                 startDate: plan.startedOn,
               }
             : {
-                currentSet: 0,
-                totalSets: 0,
+                currentSet: 1,
+                totalSets: 1,
                 daysPerSet: 14,
                 startDate: format(new Date(), 'yyyy-MM-dd'),
               }
