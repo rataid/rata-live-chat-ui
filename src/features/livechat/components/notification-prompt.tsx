@@ -27,6 +27,7 @@ import {
   NotificationPromptLater,
   NotificationPromptNote,
   NotificationPromptPosition,
+  NotificationPromptSteps,
   NotificationPromptTitle,
 } from './chat.style'
 
@@ -232,12 +233,18 @@ export function NotificationPrompt({
         aria-describedby="livechat-notification-prompt-description"
       >
         <NotificationPromptTitle id="livechat-notification-prompt-title">
-          {homeCopy
+          {iosInstall
+            ? 'Pasang Smile Hub di iPhone Anda'
+            : mode === 'settings'
+            ? 'Notifikasi'
+            : homeCopy
             ? 'Jangan lewatkan balasan kami!'
             : 'Jangan lewatkan informasi terbaru!'}
         </NotificationPromptTitle>
         <NotificationPromptBody id="livechat-notification-prompt-description">
-          {permission === 'denied'
+          {iosInstall
+            ? 'Untuk menerima notifikasi di iPhone, tambahkan portal ini ke Layar Utama lalu buka melalui ikonnya.'
+            : permission === 'denied'
             ? 'Notifikasi diblokir oleh browser. Izinkan notifikasi melalui pengaturan situs di browser, lalu coba lagi.'
             : permission === 'unavailable'
             ? 'Browser ini belum mendukung notifikasi. Silakan gunakan browser yang mendukung notifikasi.'
@@ -249,8 +256,18 @@ export function NotificationPrompt({
             ? 'Aktifkan notifikasi supaya Anda tahu saat ada balasan, meskipun tab ini sedang tidak dibuka.'
             : 'Notifikasi akan dikirimkan setiap kali ada balasan, meskipun Anda sedang mengakses halaman lain'}
         </NotificationPromptBody>
+        {iosInstall ? (
+          <NotificationPromptSteps>
+            <li>Ketuk tombol Bagikan di Safari.</li>
+            <li>Pilih Tambahkan ke Layar Utama, lalu ketuk Tambah.</li>
+            <li>
+              Buka ikon portal di Layar Utama, lalu ketuk Aktifkan notifikasi di
+              halaman login atau livechat.
+            </li>
+          </NotificationPromptSteps>
+        ) : null}
         <NotificationPromptActions>
-          {!canToggle ? null : (
+          {iosInstall || !canToggle ? null : (
             <NotificationPromptEnable
               type="button"
               disabled={pending}
@@ -265,11 +282,15 @@ export function NotificationPrompt({
           )}
           {mode !== 'settings' || !canToggle ? (
             <NotificationPromptLater type="button" onClick={later}>
-              {mode === 'settings' ? 'Tutup' : 'Mungkin nanti'}
+              {iosInstall
+                ? 'Mengerti'
+                : mode === 'settings'
+                ? 'Tutup'
+                : 'Mungkin nanti'}
             </NotificationPromptLater>
           ) : null}
         </NotificationPromptActions>
-        {mode === 'settings' || homeCopy ? null : (
+        {iosInstall || mode === 'settings' || homeCopy ? null : (
           <NotificationPromptNote>
             Anda dapat mengubah izin ini kapan saja melalui pengaturan browser
             Anda
