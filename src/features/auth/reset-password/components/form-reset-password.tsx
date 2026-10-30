@@ -50,19 +50,14 @@ export default function AuthFormResetPassword() {
 
   return (
     <AuthCard>
-      <AuthBackLink to="/login">
-        <Icon icon="lucide-arrow-left" size="2xs" />
-        Back to Login
-      </AuthBackLink>
       <AuthHeading>
-        <AuthTitle>Reset Password</AuthTitle>
+        <AuthTitle>Atur Ulang Kata Sandi</AuthTitle>
         <AuthSubtitle>
-          Create a new strong password for your account.
+          Buat kata sandi yang baru dengan minimum 8 karakter.
         </AuthSubtitle>
       </AuthHeading>
-      {actionData?.success === false && (
-        <AuthError>{actionData.message}</AuthError>
-      )}
+      {/* Validation errors only; API errors are shown as a toast */}
+      {actionData?.message && <AuthError>{actionData.message}</AuthError>}
       <Form onSubmit={onSubmit}>
         <Controller
           name="token"
@@ -72,7 +67,7 @@ export default function AuthFormResetPassword() {
         />
         <FormMain gap="sm">
           <FormControl required error={errors.password}>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Kata Sandi Baru</FormLabel>
             <Controller
               name="password"
               defaultValue=""
@@ -88,7 +83,7 @@ export default function AuthFormResetPassword() {
             />
           </FormControl>
           <FormControl required error={errors.password_confirmation}>
-            <FormLabel>Confirm Password</FormLabel>
+            <FormLabel>Konfirmasi Kata Sandi Baru</FormLabel>
             <Controller
               name="password_confirmation"
               defaultValue=""
@@ -111,7 +106,7 @@ export default function AuthFormResetPassword() {
             fontWeight="medium"
             disabled={!isFilled || isSubmitting}
           >
-            {isSubmitting ? 'Saving...' : 'Save New Password'}
+            {isSubmitting ? 'Menyimpan...' : 'Ubah Kata Sandi'}
           </Button>
         </FormAction>
       </Form>

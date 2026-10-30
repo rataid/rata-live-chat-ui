@@ -1,9 +1,12 @@
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import { z } from 'zod'
 
-const PHONE_REGEX = /^(\+62|62|0)8\d{7,11}$/
+// Any country: "+1415…" / "6281…" (country code), or "0812…" (Indonesia)
+const isPhone = (value: string) =>
+  isValidPhoneNumber(value, 'ID') || isValidPhoneNumber(`+${value}`)
 
 const isEmailOrPhone = (value: string) =>
-  z.string().email().safeParse(value).success || PHONE_REGEX.test(value)
+  z.string().email().safeParse(value).success || isPhone(value)
 
 export const loginSchema = z.object({
   email: z
@@ -44,7 +47,14 @@ export const registerSchema = z
   .object({
     name: z.string().trim().min(1, { message: 'Nama Lengkap wajib diisi' }),
     email: z.string().email({ message: 'Email tidak valid' }),
-    phone: z.string().min(8, { message: 'Nomor telepon tidak valid' }),
+    // Same library as the backend; InputPhone gives digits with the country
+    // code (6281…), so "+" is added before checking
+    phone: z
+      .string()
+      .min(1, { message: 'Nomor telepon wajib diisi' })
+      .refine((value) => isValidPhoneNumber(`+${value}`), {
+        message: 'Nomor telepon tidak valid',
+      }),
     ...newPasswordFields,
   })
   .refine(passwordsMatch, passwordsMatchError)
@@ -66,6 +76,22 @@ export type RegisterPayload = {
   email: string
   phone: string
   password: string
+}
+
+export type RegisterResponse = {
+  retryAfterSeconds: number
+}
+
+export type ResendVerificationEmailResponse = {
+  retryAfterSeconds: number
+}
+
+export type VerifyEmailResponse = {
+  retryAfterSeconds: number
+}
+
+export type RequestOtpResponse = {
+  retryAfterSeconds: number
 }
 
 export type ResetPasswordPayload = {

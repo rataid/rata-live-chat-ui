@@ -1,10 +1,10 @@
 import { ApiResponse } from '@/model/shared/query'
-import { RegisterPayload } from '@/model/user'
+import { RegisterPayload, RegisterResponse } from '@/model/user'
 
 import axiosInstance from '../axiosInstance'
 
 export const register = async (payload: RegisterPayload) => {
-  const res = await axiosInstance.post<ApiResponse>(
+  const res = await axiosInstance.post<ApiResponse<RegisterResponse>>(
     '/livechat/register',
     payload
   )

@@ -59,13 +59,15 @@ export default function AuthFormForgotPassword() {
         <AuthHeading className="!mb-0">
           <AuthTitle>Cek Email Anda</AuthTitle>
           <AuthSubtitle>
-            Tautan atur ulang kata sandi telah dikirim ke{' '}
+            Jika email Anda sudah terdaftar, kami akan mengirimkan tautan atur
+            ulang kata sandi ke{' '}
             {actionData.email ? (
               <strong>{actionData.email}</strong>
             ) : (
               'email Anda'
             )}
-            . Silakan periksa kotak masuk dan folder spam Anda.
+            . Silakan cek inbox Anda dan klik tautan untuk mengatur ulang kata
+            sandi.
           </AuthSubtitle>
         </AuthHeading>
       </AuthCard>

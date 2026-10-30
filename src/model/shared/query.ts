@@ -6,11 +6,12 @@ export type getParams = {
   status?: string
 }
 
+// Same as the backend BaseResponseDto
 export type ApiResponse<T = any> = {
+  success: boolean
   statusCode?: number
-  status: string
-  message: string
-  data: T
+  data?: T
+  message?: string
   meta?: {
     currentPage: number
     itemsPerPage: number

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
+import { AuthErrorCode } from '@/constants/auth-error-code'
 import { PORTAL_NAME } from '@/constants/portal'
 import { registerSchema } from '@/model/user'
 import {
@@ -26,15 +27,12 @@ import {
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
-import {
-  AuthRegisterActionData,
-  REGISTER_ERROR_CUSTOMER_NOT_FOUND,
-} from '../pages/register.route'
+import { AuthRegisterActionData } from '../pages/register.route'
 
 export default function AuthFormRegister() {
   const actionData = useActionData() as AuthRegisterActionData | undefined
 
-  const isNotFound = actionData?.code === REGISTER_ERROR_CUSTOMER_NOT_FOUND
+  const isNotFound = actionData?.code === AuthErrorCode.CUSTOMER_NOT_FOUND
 
   const { openDialog } = useDialog()
 
@@ -44,7 +42,7 @@ export default function AuthFormRegister() {
 
     openDialog({
       title: 'Data tidak ditemukan',
-      message: `Data Anda tidak ditemukan. ${PORTAL_NAME} hanya untuk pasien terdaftar. Hubungi kami jika ini kesalahan.`,
+      message: `Kami tidak dapat menemukan data Anda di sistem kami. ${PORTAL_NAME} hanya tersedia untuk pasien yang terdaftar. Silakan hubungi kami jika ini merupakan kesalahan.`,
       closable: true,
     })
   }, [actionData, isNotFound, openDialog])

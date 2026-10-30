@@ -234,6 +234,16 @@ export const halfHourToTime = (halfHour: number) => {
   return `${hour.toString().padStart(2, '0')}.${minute}`
 }
 
+// Seconds to mm:ss
+// 59 -> 00:59
+// 300 -> 05:00
+export const formatDuration = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
+
 export const prettierDays = (days: number): string => {
   if (days < 0) return ''
 

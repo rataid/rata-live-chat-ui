@@ -16,7 +16,7 @@ export function getLoginErrorMessage(error: unknown): string {
   const { status } = error.response
 
   if (status === 401) {
-    return 'Data email, nomor telepon, atau kata sandi Anda ada yang salah. Silakan periksa dan coba lagi.'
+    return 'Salah satu data email, nomor telepon, atau kata sandi yang Anda masukkan salah. Silakan periksa kembali dan coba lagi.'
   }
 
   if (status >= 500) {

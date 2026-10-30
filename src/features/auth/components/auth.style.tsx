@@ -68,16 +68,16 @@ export const AuthLink = styled(Link).attrs({
 
 // "Belum menerima email? Kirim Ulang"
 export const AuthResendRow = styled.p.attrs({
-  className: tw`mt-4 text-center text-sm text-gray-500`,
+  className: tw`mt-3 text-center text-sm text-gray-500`,
 })``
 
 export const AuthResendButton = styled.button.attrs({
-  className: tw`font-medium text-primary-600 hover:text-primary-700 hover:underline disabled:cursor-not-allowed disabled:text-gray-400 disabled:no-underline`,
+  className: tw`font-medium text-primary-600 hover:text-primary-700 hover:underline disabled:cursor-not-allowed disabled:text-primary-300 disabled:no-underline`,
 })``
 
 // Registration & activation guide, collapsible (under every auth page)
 export const AuthGuide = styled.section.attrs({
-  className: tw`w-full rounded-2xl bg-primary-50 px-4 py-3.5`,
+  className: tw`w-full rounded-2xl bg-primary-50 px-4 py-3.5 sm:-mt-3 -mt-1`,
 })``
 
 export const AuthGuideToggle = styled.button.attrs({
@@ -117,7 +117,7 @@ export const AuthGuideBody = styled.div.attrs({
 })``
 
 export const AuthGuideSteps = styled.ol.attrs({
-  className: tw`mt-4 flex flex-col gap-4`,
+  className: tw`my-3 flex flex-col gap-3`,
 })``
 
 export const AuthGuideStep = styled.li.attrs({

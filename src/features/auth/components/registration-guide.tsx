@@ -23,12 +23,43 @@ import {
 
 const GUIDE_ID = 'registration-guide'
 
-const accountFields = [
-  'Nama lengkap',
-  'Kata sandi',
-  'Nomor handphone',
-  'Konfirmasi kata sandi',
-  'Alamat email',
+type GuideStep = {
+  title: string
+  descriptions: string[]
+  fields?: string[]
+  note?: string
+  emailSubject?: string
+}
+
+const GUIDE_STEPS: GuideStep[] = [
+  {
+    title: 'Lengkapi Data Akun',
+    descriptions: ['Isi data berikut:'],
+    fields: [
+      'Nama lengkap',
+      'Kata sandi',
+      'Nomor handphone',
+      'Konfirmasi kata sandi',
+      'Alamat email',
+    ],
+    note: 'Pastikan data sudah benar, lalu lanjutkan registrasi.',
+  },
+  {
+    title: 'Verifikasi Alamat Email',
+    descriptions: [
+      'Silakan mengecek inbox email yang telah didaftarkan.',
+      'Cari dan buka email dengan subjek “Aktivasi Akun Smile Hub Anda”, lalu klik tautan aktivasi yang tersedia.',
+      'Setelah verifikasi email berhasil, Anda akan diarahkan kembali ke halaman Smile Hub.',
+    ],
+    emailSubject: `Aktivasi Akun ${PORTAL_NAME} Anda`,
+  },
+  {
+    title: 'Verifikasi Nomor Handphone',
+    descriptions: [
+      'Kode OTP akan dikirimkan melalui WhatsApp ke nomor handphone yang telah didaftarkan.',
+      'Masukkan kode OTP tersebut pada kolom verifikasi untuk menyelesaikan proses registrasi.',
+    ],
+  },
 ]
 
 // Shown under every auth page (auth layout)
@@ -49,7 +80,7 @@ export function RegistrationGuide() {
         <span className="min-w-0 flex-1">
           <AuthGuideTitle>Panduan Registrasi &amp; Aktivasi</AuthGuideTitle>
           <AuthGuideCaption>
-            Belum punya akun? Lihat langkah aktivasi.
+            Ikuti langkah berikut untuk mengaktifkan akun Smile Hub Anda.
           </AuthGuideCaption>
         </span>
         <Icon
@@ -65,73 +96,53 @@ export function RegistrationGuide() {
       <AuthGuideCollapse id={GUIDE_ID} $open={open} aria-hidden={!open}>
         <AuthGuideCollapseInner>
           <AuthGuideBody>
-            <p>Ikuti langkah membuat dan aktifkan akun {PORTAL_NAME}.</p>
+            <p>
+              Ikuti langkah berikut untuk mengaktifkan akun {PORTAL_NAME} Anda.
+            </p>
             <AuthGuideSteps>
-              <AuthGuideStep>
-                <AuthGuideStepNumber>1</AuthGuideStepNumber>
-                <div className="min-w-0 flex-1">
-                  <AuthGuideStepTitle>Lengkapi Data Akun</AuthGuideStepTitle>
-                  <AuthGuideStepText>
-                    <p>Isi data berikut:</p>
-                    <AuthGuideFields>
-                      {accountFields.map((field) => (
-                        <li key={field}>- {field}</li>
+              {GUIDE_STEPS.map((step, index) => (
+                <AuthGuideStep key={step.title}>
+                  <AuthGuideStepNumber>{index + 1}</AuthGuideStepNumber>
+                  <div className="min-w-0 flex-1">
+                    <AuthGuideStepTitle>{step.title}</AuthGuideStepTitle>
+                    <AuthGuideStepText>
+                      {step.descriptions.map((text) => (
+                        <p key={text}>{text}</p>
                       ))}
-                    </AuthGuideFields>
-                    <p>Pastikan data sudah benar, lalu lanjutkan registrasi.</p>
-                  </AuthGuideStepText>
-                </div>
-              </AuthGuideStep>
-
-              <AuthGuideStep>
-                <AuthGuideStepNumber>2</AuthGuideStepNumber>
-                <div className="min-w-0 flex-1">
-                  <AuthGuideStepTitle>
-                    Verifikasi Nomor Handphone
-                  </AuthGuideStepTitle>
-                  <AuthGuideStepText>
-                    <p>
-                      Kode OTP dikirim ke nomor handphone terdaftar lewat
-                      WhatsApp.
-                    </p>
-                    <p>
-                      Masukkan kode OTP di kolom verifikasi portal untuk
-                      melanjutkan registrasi.
-                    </p>
-                  </AuthGuideStepText>
-                </div>
-              </AuthGuideStep>
-
-              <AuthGuideStep>
-                <AuthGuideStepNumber>3</AuthGuideStepNumber>
-                <div className="min-w-0 flex-1">
-                  <AuthGuideStepTitle>
-                    Verifikasi Alamat Email
-                  </AuthGuideStepTitle>
-                  <AuthGuideStepText>
-                    <p>
-                      Setelah verifikasi OTP, buka inbox email terdaftar. Cari
-                      email dengan subjek, buka, dan klik tautan aktivasi.
-                    </p>
-                    <AuthGuideEmailSubject>
-                      <Icon
-                        icon="lucide-mail"
-                        size="xs"
-                        className="shrink-0 text-primary-600"
-                      />
-                      <div className="min-w-0">
-                        <div className="text-xs text-gray-500">
-                          Subjek email
-                        </div>
-                        <div className="font-semibold text-gray-900">
-                          Aktivasi Akun {PORTAL_NAME}
-                        </div>
-                      </div>
-                    </AuthGuideEmailSubject>
-                  </AuthGuideStepText>
-                </div>
-              </AuthGuideStep>
+                      {step.fields && (
+                        <AuthGuideFields>
+                          {step.fields.map((field) => (
+                            <li key={field}>- {field}</li>
+                          ))}
+                        </AuthGuideFields>
+                      )}
+                      {step.note && <p>{step.note}</p>}
+                      {step.emailSubject && (
+                        <AuthGuideEmailSubject>
+                          <Icon
+                            icon="lucide-mail"
+                            size="xs"
+                            className="shrink-0 text-primary-600"
+                          />
+                          <div className="min-w-0">
+                            <div className="text-xs text-gray-500">
+                              Subjek email
+                            </div>
+                            <div className="font-semibold text-gray-900">
+                              {step.emailSubject}
+                            </div>
+                          </div>
+                        </AuthGuideEmailSubject>
+                      )}
+                    </AuthGuideStepText>
+                  </div>
+                </AuthGuideStep>
+              ))}
             </AuthGuideSteps>
+            <p>
+              Setelah semua proses verifikasi berhasil, akun Anda siap digunakan
+              untuk mengakses {PORTAL_NAME}.
+            </p>
           </AuthGuideBody>
         </AuthGuideCollapseInner>
       </AuthGuideCollapse>

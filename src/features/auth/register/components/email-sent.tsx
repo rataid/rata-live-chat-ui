@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
-import { getApiErrorMessage, showApiErrorToast } from '@/api/shared/error'
+import { handleApiError } from '@/api/shared/error'
 import { showToast } from '@nui/ui/toast'
+import { formatDuration } from '@utils'
 
 import {
   AuthCard,
@@ -12,17 +13,21 @@ import {
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
-import { getRegisterEmail } from '../register-session'
+import {
+  getRegisterEmail,
+  getRegisterEmailCooldown,
+  setRegisterEmailResendAt,
+} from '../register-session'
 
-// Seconds before Kirim Ulang is enabled, after the first email and each resend
 export const RESEND_EMAIL_COOLDOWN = 60
 
 // Right after the register form: the email link leads to the WhatsApp OTP
 export default function AuthEmailSent() {
   const email = getRegisterEmail()
 
-  // The email was just sent by the register step
-  const [cooldown, setCooldown] = useState(RESEND_EMAIL_COOLDOWN)
+  const [cooldown, setCooldown] = useState(
+    () => getRegisterEmailCooldown() ?? RESEND_EMAIL_COOLDOWN
+  )
   const [isResending, setIsResending] = useState(false)
 
   useEffect(() => {
@@ -39,16 +44,30 @@ export default function AuthEmailSent() {
     setIsResending(true)
 
     try {
-      await resendVerificationEmail(email)
+      const res = await resendVerificationEmail(email)
       showToast({
         type: 'success',
         title: 'Email Verifikasi Dikirim!',
         message: `Tautan verifikasi baru telah dikirim ke ${email}.`,
       })
-      setCooldown(RESEND_EMAIL_COOLDOWN)
+      const retryAfterSeconds =
+        res.data?.retryAfterSeconds ?? RESEND_EMAIL_COOLDOWN
+      setRegisterEmailResendAt(retryAfterSeconds)
+      setCooldown(retryAfterSeconds)
     } catch (error) {
-      showApiErrorToast(error, {
+      handleApiError(error, {
         title: 'Email Verifikasi Gagal Dikirim!',
+        status: {
+          429: () => {
+            setCooldown(getRegisterEmailCooldown() ?? RESEND_EMAIL_COOLDOWN)
+            showToast({
+              type: 'error',
+              title: 'Email Verifikasi Gagal Dikirim!',
+              message:
+                'Terlalu banyak permintaan. Silakan coba lagi setelah hitung mundur selesai.',
+            })
+          },
+        },
       })
     } finally {
       setIsResending(false)
@@ -66,7 +85,7 @@ export default function AuthEmailSent() {
           ) : (
             'email Anda'
           )}
-          . Klik tautan tersebut untuk lanjut ke verifikasi nomor WhatsApp.
+          . Klik tautan tersebut untuk lanjut ke verifikasi nomor handphone.
         </AuthSubtitle>
       </AuthHeading>
       <AuthResendRow>
@@ -79,7 +98,7 @@ export default function AuthEmailSent() {
           {isResending
             ? 'Mengirim...'
             : cooldown > 0
-            ? `Kirim Ulang (${cooldown}s)`
+            ? `Kirim Ulang (${formatDuration(cooldown)})`
             : 'Kirim Ulang'}
         </AuthResendButton>
       </AuthResendRow>

@@ -72,6 +72,11 @@ export const InputOtp = forwardRef<HTMLInputElement, InputOtpProps>(
         <input ref={forwardedRef} name={name} value={value} readOnly hidden />
         <InputOtpWrapper
           style={{ gridTemplateColumns: `repeat(${length}, 1fr)` }}
+          // Blur only when focus leaves all boxes, not when moving to the next
+          // box, so validation runs like a single input
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) onBlur?.()
+          }}
         >
           {digits.map((digit, index) => (
             <InputOtpBox
@@ -95,7 +100,6 @@ export const InputOtp = forwardRef<HTMLInputElement, InputOtpProps>(
                 e.preventDefault()
                 fill(index, e.clipboardData.getData('text'))
               }}
-              onBlur={onBlur}
             />
           ))}
         </InputOtpWrapper>
