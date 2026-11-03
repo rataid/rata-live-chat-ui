@@ -36,6 +36,8 @@ export function HomeLayout() {
     ready: !isLoadingData,
   })
   const firstName = (userData?.fullname || '').trim().split(/\s+/)[0]
+  // After login on Android: home tour (Mulai / Nanti saja) → notification
+  // prompt (any choice) → add-to-home-screen sheet. Tour must finish first.
   const showAfterTour = !previewAndroid && !isTourActive
 
   return (

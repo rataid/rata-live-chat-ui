@@ -15,8 +15,35 @@ import { clearInstallPrompt, getInstallPrompt, isInstallReminderDue } from '../i
 
 const lastShownKey = (placement: 'dashboard' | 'login') =>
   `smilehub.install.lastShownAt:${placement}`
+
+// Survives React StrictMode remounts so the sheet is not lost after tour → notif.
+const openedThisSession = new Set<string>()
+const dismissedThisSession = new Set<string>()
+
 const buttonClass =
   'w-full rounded-lg bg-[#6941c6] px-4 py-3 text-sm font-medium text-white hover:bg-[#53389e] disabled:opacity-50'
+
+function readLastShown(placement: 'dashboard' | 'login') {
+  const storageKey = lastShownKey(placement)
+  try {
+    let lastShown = Number(localStorage.getItem(storageKey)) || 0
+    // Migrate the old shared key so Android tests do not suppress iOS login.
+    if (!lastShown && placement === 'dashboard') {
+      lastShown = Number(localStorage.getItem('smilehub.install.lastShownAt')) || 0
+    }
+    return lastShown
+  } catch {
+    return 0
+  }
+}
+
+function markShown(placement: 'dashboard' | 'login') {
+  const storageKey = lastShownKey(placement)
+  openedThisSession.add(storageKey)
+  try {
+    localStorage.setItem(storageKey, String(Date.now()))
+  } catch {}
+}
 
 export function InstallHomeScreen({
   forceOpen,
@@ -29,16 +56,20 @@ export function InstallHomeScreen({
   placement?: 'dashboard' | 'login'
   previewAndroid?: boolean
 } = {}) {
-  const [open, setOpen] = useState(previewAndroid)
+  const storageKey = lastShownKey(placement)
+  const [open, setOpen] = useState(
+    () =>
+      previewAndroid ||
+      (openedThisSession.has(storageKey) && !dismissedThisSession.has(storageKey))
+  )
   const [installing, setInstalling] = useState(false)
   const [error, setError] = useState('')
   const ios = !previewAndroid && isIosDevice()
 
   useEffect(() => {
     if (previewAndroid) return
-    let shownThisMount = false
     const sync = () => {
-      if (isHomeScreenApp()) {
+      if (isHomeScreenApp() || dismissedThisSession.has(storageKey)) {
         setOpen(false)
         return
       }
@@ -46,30 +77,25 @@ export function InstallHomeScreen({
         ? placement === 'login'
         : placement === 'dashboard'
       const mobile = ios || /Android/i.test(navigator.userAgent)
-      if (!correctPage || !mobile || (!ios && !getInstallPrompt())) {
+      if (!correctPage || !mobile) {
         setOpen(false)
         return
       }
-      // Home: wait until the post-tour notification prompt is done.
+      // Home: wait until the post-tour notification prompt is done
+      // (Aktifkan / Mungkin nanti / Tutup — any choice).
       if (placement === 'dashboard' && !isHomeNotificationPromptSettled()) {
         setOpen(false)
         return
       }
-      if (shownThisMount) return
-      const storageKey = lastShownKey(placement)
-      let lastShown = 0
-      try {
-        lastShown = Number(localStorage.getItem(storageKey)) || 0
-        // Migrate the old shared key so Android tests do not suppress iOS login.
-        if (!lastShown && placement === 'dashboard') {
-          lastShown = Number(localStorage.getItem('smilehub.install.lastShownAt')) || 0
-        }
-      } catch {}
-      if (!isInstallReminderDue(lastShown)) return
-      shownThisMount = true
-      try {
-        localStorage.setItem(storageKey, String(Date.now()))
-      } catch {}
+      // Restore after StrictMode remount once we already decided to show.
+      if (openedThisSession.has(storageKey)) {
+        setOpen(true)
+        return
+      }
+      if (!isInstallReminderDue(readLastShown(placement))) return
+      // Show the sheet after notif even if beforeinstallprompt is late;
+      // Pasang still uses the deferred prompt when it arrives.
+      markShown(placement)
       setOpen(true)
     }
     sync()
@@ -79,9 +105,10 @@ export function InstallHomeScreen({
       window.removeEventListener('smilehub-install-ready', sync)
       window.removeEventListener(NOTIFICATION_PROMPT_SETTLED_EVENT, sync)
     }
-  }, [ios, previewAndroid, placement])
+  }, [ios, previewAndroid, placement, storageKey])
 
   const dismiss = () => {
+    dismissedThisSession.add(storageKey)
     setOpen(false)
     onDismiss?.()
   }
@@ -92,7 +119,12 @@ export function InstallHomeScreen({
       return
     }
     const prompt = getInstallPrompt()
-    if (!prompt) return
+    if (!prompt) {
+      setError(
+        'Belum dapat memasang Smile Hub. Coba lagi atau gunakan menu Pasang aplikasi di browser Anda.'
+      )
+      return
+    }
     setInstalling(true)
     setError('')
     try {
