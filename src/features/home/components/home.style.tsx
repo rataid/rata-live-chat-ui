@@ -268,3 +268,7 @@ export const HistoryCollapseInner = styled.div.attrs({
 export const ContactUsButtonWrapper = styled(Button).attrs({
   className: tw`!h-auto !px-5 !py-[6px] !h-14`,
 })``
+
+export const ContactUsUnreadBadge = styled.span.attrs({
+  className: tw`ml-1 inline-flex min-w-[1.375rem] items-center justify-center rounded-full bg-[#F97066] px-1.5 py-0.5 text-xs font-semibold leading-none text-white`,
+})``

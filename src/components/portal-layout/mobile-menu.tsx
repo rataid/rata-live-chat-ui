@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Form, useLocation } from 'react-router-dom'
 
+import { useLiveChat } from '@/components/socket'
 import Icon from '@nui/ui/icon'
 
 import {
@@ -11,10 +12,16 @@ import {
   MobileMenuWrapper,
   PortalNavLabel,
   PortalNavLink,
+  PortalNavUnreadBadge,
 } from './portal-layout.style'
+
+function unreadLabel(count: number) {
+  return count > 99 ? '99+' : String(count)
+}
 
 export function MobileMenu({ name }: { name?: string }) {
   const [open, setOpen] = useState(false)
+  const { unreadCount } = useLiveChat()
 
   const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -64,6 +71,13 @@ export function MobileMenu({ name }: { name?: string }) {
         <PortalNavLink to="/livechat">
           <Icon icon="lucide-messages-square" size="xs" />
           <PortalNavLabel $always>Hubungi Kami</PortalNavLabel>
+          {unreadCount > 0 ? (
+            <PortalNavUnreadBadge
+              aria-label={`${unreadCount} pesan belum dibaca`}
+            >
+              {unreadLabel(unreadCount)}
+            </PortalNavUnreadBadge>
+          ) : null}
         </PortalNavLink>
         <MobileMenuDivider />
         <Form method="post" action="/logout">
