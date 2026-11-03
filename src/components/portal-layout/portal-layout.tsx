@@ -4,7 +4,7 @@ import { Outlet, useLoaderData } from 'react-router-dom'
 import { LogoSmiledental } from '@/assets'
 import { AuthenticatedUser, useAuth } from '@/components/auth'
 import { AuthProvider } from '@/components/auth/provider'
-import { LiveChatProvider } from '@/components/socket'
+import { LiveChatProvider, useLiveChat } from '@/components/socket'
 import { PORTAL_NAME } from '@/constants/portal'
 import { syncWebPush } from '@/features/livechat/push/push-client'
 import Icon from '@nui/ui/icon'
@@ -23,10 +23,15 @@ import {
   PortalNavDivider,
   PortalNavLabel,
   PortalNavLink,
+  PortalNavUnreadBadge,
   PortalWrapper,
 } from './portal-layout.style'
 import { SessionActivity } from './session-activity'
 import { UserMenu } from './user-menu'
+
+function unreadLabel(count: number) {
+  return count > 99 ? '99+' : String(count)
+}
 
 // Layout for the patient pages after login. Provides the auth store from the
 // portal route loader ({ userData } from the login token) and the live chat
@@ -61,6 +66,7 @@ function PortalShell() {
     }
   }, [])
   const { userData } = useAuth()
+  const { unreadCount } = useLiveChat()
 
   return (
     <PortalWrapper>
@@ -83,6 +89,13 @@ function PortalShell() {
             <PortalNavLink to="/livechat">
               <Icon icon="lucide-messages-square" size="xs" />
               <PortalNavLabel>Hubungi Kami</PortalNavLabel>
+              {unreadCount > 0 ? (
+                <PortalNavUnreadBadge
+                  aria-label={`${unreadCount} pesan belum dibaca`}
+                >
+                  {unreadLabel(unreadCount)}
+                </PortalNavUnreadBadge>
+              ) : null}
             </PortalNavLink>
             <PortalNavDivider />
             <UserMenu name={userData?.fullname || userData?.username} />

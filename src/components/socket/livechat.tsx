@@ -52,6 +52,21 @@ const statusMap: Partial<Record<MessageStatus, ChatMessageStatus>> = {
 
 const isLocalId = (id: string) => id.startsWith('local-')
 
+// Matches BE readMessagesByCustomerLivechat: clinic → patient, delivered, not system rows.
+const NON_CHAT_MESSAGE_TYPES = new Set([
+  21, // EVENT
+  22, // SYSTEM
+  23, // NOTES
+])
+
+function isUnreadClinicMessage(message: LivechatServerMessage) {
+  return (
+    message.direction === MessageDirection.OUTGOING &&
+    message.status === MessageStatus.DELIVERED &&
+    !NON_CHAT_MESSAGE_TYPES.has(message.type)
+  )
+}
+
 function isReadingLiveChat() {
   return window.location.pathname.startsWith('/livechat') && !document.hidden
 }
@@ -200,6 +215,8 @@ type LiveChatContextValue = {
   loadOlder: () => void
   // Marks the clinic's messages as read (chatRoom.readMessages)
   readMessages: () => void
+  // Clinic replies not yet read by the patient (for Hubungi Kami badge)
+  unreadCount: number
 }
 
 const LiveChatContext = createContext<LiveChatContextValue | null>(null)
@@ -214,12 +231,27 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [status, setStatus] = useState<LiveChatStatus>('connecting')
+  const [unreadIds, setUnreadIds] = useState<Set<string>>(() => new Set())
 
   // History (GET /livechat/messages, newest first, cursor = oldest id)
   const [isLoadingHistory, setIsLoadingHistory] = useState(true)
   const [isLoadingOlder, setIsLoadingOlder] = useState(false)
   const [hasOlder, setHasOlder] = useState(false)
   const [historyError, setHistoryError] = useState(false)
+
+  const mergeUnreadIds = useCallback(
+    (items: LivechatServerMessage[], mode: 'replace' | 'merge') => {
+      setUnreadIds((prev) => {
+        const next = mode === 'replace' ? new Set<string>() : new Set(prev)
+        for (const item of items) {
+          if (isUnreadClinicMessage(item)) next.add(item.id)
+          else next.delete(item.id)
+        }
+        return next
+      })
+    },
+    []
+  )
 
   const addFromServer = useCallback((items: LivechatServerMessage[]) => {
     if (items[0]?.chatRoomId) chatRoomIdRef.current = items[0].chatRoomId
@@ -233,13 +265,14 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     try {
       const items = await getLiveChatMessages()
       addFromServer(items)
+      mergeUnreadIds(items, 'replace')
       setHasOlder(items.length === LIVECHAT_MESSAGES_PAGE_SIZE)
     } catch {
       setHistoryError(true)
     } finally {
       setIsLoadingHistory(false)
     }
-  }, [addFromServer])
+  }, [addFromServer, mergeUnreadIds])
 
   const loadOlder = useCallback(async () => {
     const oldest = messages.find((message) => !isLocalId(message.id))
@@ -250,6 +283,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     try {
       const items = await getLiveChatMessages({ cursor: oldest.id })
       addFromServer(items)
+      mergeUnreadIds(items, 'merge')
       setHasOlder(items.length === LIVECHAT_MESSAGES_PAGE_SIZE)
     } catch {
       showToast({
@@ -260,7 +294,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     } finally {
       setIsLoadingOlder(false)
     }
-  }, [addFromServer, hasOlder, isLoadingOlder, messages])
+  }, [addFromServer, hasOlder, isLoadingOlder, mergeUnreadIds, messages])
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
@@ -346,6 +380,14 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       chatRoomIdRef.current = chatRoom.id
       addFromServer([message])
       notifyClinicMessage(message)
+      if (isUnreadClinicMessage(message) && !isReadingLiveChat()) {
+        setUnreadIds((prev) => {
+          if (prev.has(message.id)) return prev
+          const next = new Set(prev)
+          next.add(message.id)
+          return next
+        })
+      }
     }
 
     // Status of the patient's own messages (sent → delivered → read)
@@ -430,6 +472,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     if (!id || !livechatSocket.connected) return
 
     readLivechatMessages({ id })
+    setUnreadIds((prev) => (prev.size === 0 ? prev : new Set()))
   }, [])
 
   const sendFile = useCallback(async (file: File) => {
@@ -473,6 +516,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
+  const unreadCount = unreadIds.size
+
   const value = useMemo(
     () => ({
       messages,
@@ -487,6 +532,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       isLoadingOlder,
       loadOlder,
       readMessages,
+      unreadCount,
     }),
     [
       messages,
@@ -501,6 +547,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       isLoadingOlder,
       loadOlder,
       readMessages,
+      unreadCount,
     ]
   )
 
