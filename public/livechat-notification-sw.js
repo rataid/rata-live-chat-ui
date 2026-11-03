@@ -48,9 +48,23 @@ self.addEventListener('push', (event) => {
     // Local disable/logout also protects against already queued notifications.
     const enabled = await preferences((store) => store.get('enabled')).catch(() => undefined)
     if (enabled === false) return
-    // Always show push notifications. Socket-local alerts use the same
-    // message tag, so duplicates collapse instead of being suppressed here
-    // (OEM WebAPK visibility is unreliable and was hiding Android alerts).
+
+    // If Smile Hub already has an open page, the livechat socket shows one
+    // local notification. Showing push as well duplicates on iOS (same tag
+    // + renotify does not collapse the way Chromium does).
+    const openClients = await self.clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+    const appOpen = openClients.some((client) => {
+      try {
+        return new URL(client.url).origin === self.location.origin
+      } catch {
+        return false
+      }
+    })
+    if (appOpen) return
+
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}
     await self.registration.showNotification(
