@@ -72,8 +72,8 @@ self.addEventListener('push', (event) => {
         ? payload.title.slice(0, 100) : 'Smile Hub', {
       body: typeof payload.body === 'string' && payload.body.trim()
         ? payload.body.slice(0, 240) : 'Anda menerima pesan baru.',
-      icon: '/icons/icon-round-192.png',
-      badge: '/icons/icon-round-192.png',
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
       tag: typeof payload.tag === 'string' ? payload.tag : 'livechat-reply',
       data: { url: '/livechat' },
       // Xiaomi/MIUI often suppresses quiet web notifications; force an alert.
