@@ -23,6 +23,7 @@ import {
   MessageType,
 } from '@/constants/message'
 import { isNotificationMuted } from '@/features/livechat/notification-preference'
+import { clearLiveChatAppBadge, setLiveChatAppBadge } from '@/libs/app-badge'
 import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import {
   ChatMessage,
@@ -308,6 +309,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
     const signInAgain = () => {
       removeToken()
+      void clearLiveChatAppBadge()
       showToast({
         type: 'error',
         title: 'Session Expired',
@@ -517,6 +519,12 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   }, [])
 
   const unreadCount = unreadIds.size
+
+  // iOS home-screen PWAs do not badge from notifications alone; keep the
+  // Badging API in sync with clinic replies the patient has not opened yet.
+  useEffect(() => {
+    void setLiveChatAppBadge(unreadCount)
+  }, [unreadCount])
 
   const value = useMemo(
     () => ({
