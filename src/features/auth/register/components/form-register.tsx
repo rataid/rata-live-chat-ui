@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { useActionData, useNavigation } from 'react-router-dom'
 
+import Recaptcha from '@/components/recaptcha'
 import { AuthErrorCode } from '@/constants/auth-error-code'
 import { PORTAL_NAME } from '@/constants/portal'
 import { registerSchema } from '@/model/user'
@@ -65,6 +66,7 @@ export default function AuthFormRegister() {
     'phone',
     'password',
     'password_confirmation',
+    'recaptchaToken',
   ])
 
   const isFilled = values.every(Boolean)
@@ -154,6 +156,19 @@ export default function AuthFormRegister() {
               )}
             />
           </FormControl>
+          <Controller
+            name="recaptchaToken"
+            defaultValue=""
+            control={control}
+            render={({ field }) => (
+              <>
+                {/* The form is submitted from the DOM */}
+                <input type="hidden" name={field.name} value={field.value} />
+                {/* A token works once: cleared after every failed submit */}
+                <Recaptcha onChange={field.onChange} resetKey={actionData} />
+              </>
+            )}
+          />
         </FormMain>
         <FormAction className="!pt-3">
           <Button

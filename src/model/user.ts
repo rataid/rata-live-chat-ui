@@ -56,6 +56,10 @@ export const registerSchema = z
         message: 'Nomor telepon tidak valid',
       }),
     ...newPasswordFields,
+    // reCAPTCHA v2 checkbox token, verified by the backend
+    recaptchaToken: z
+      .string()
+      .min(1, { message: 'Centang verifikasi reCAPTCHA' }),
   })
   .refine(passwordsMatch, passwordsMatchError)
 
@@ -76,6 +80,7 @@ export type RegisterPayload = {
   email: string
   phone: string
   password: string
+  recaptchaToken: string
 }
 
 export type RegisterResponse = {
