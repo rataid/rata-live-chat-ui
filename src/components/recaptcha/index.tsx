@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { RECAPTCHA_SITE_KEY } from '@/constants/recaptcha'
+
 import { RecaptchaError, RecaptchaWrapper } from './recaptcha.style'
 
 type Grecaptcha = {
@@ -22,7 +24,7 @@ declare global {
   }
 }
 
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+const SITE_KEY = RECAPTCHA_SITE_KEY
 
 const SCRIPT_URL =
   'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit&hl=id'

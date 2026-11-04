@@ -5,6 +5,7 @@ import { useActionData, useNavigation } from 'react-router-dom'
 import Recaptcha from '@/components/recaptcha'
 import { AuthErrorCode } from '@/constants/auth-error-code'
 import { PORTAL_NAME } from '@/constants/portal'
+import { RECAPTCHA_ENABLED } from '@/constants/recaptcha'
 import { registerSchema } from '@/model/user'
 import {
   Form,
@@ -66,7 +67,7 @@ export default function AuthFormRegister() {
     'phone',
     'password',
     'password_confirmation',
-    'recaptchaToken',
+    ...(RECAPTCHA_ENABLED ? ['recaptchaToken'] : []),
   ])
 
   const isFilled = values.every(Boolean)
@@ -156,21 +157,21 @@ export default function AuthFormRegister() {
               )}
             />
           </FormControl>
-          <Controller
-            name="recaptchaToken"
-            defaultValue=""
-            control={control}
-            render={({ field }) => (
-              <>
-                {/* The form is submitted from the DOM */}
-                <input type="hidden" name={field.name} value={field.value} />
-                {/* A token works once: cleared after every failed submit */}
-                <Recaptcha onChange={field.onChange} resetKey={actionData} />
-              </>
-            )}
-          />
+          {RECAPTCHA_ENABLED && (
+            <Controller
+              name="recaptchaToken"
+              defaultValue=""
+              control={control}
+              render={({ field }) => (
+                <>
+                  <input type="hidden" name={field.name} value={field.value} />
+                  <Recaptcha onChange={field.onChange} resetKey={actionData} />
+                </>
+              )}
+            />
+          )}
         </FormMain>
-        <FormAction className="!pt-3">
+        <FormAction className="!pt-6">
           <Button
             type="submit"
             wider="full"

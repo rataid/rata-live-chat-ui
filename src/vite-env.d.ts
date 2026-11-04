@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
   readonly VITE_API_ENDPOINT: string
   readonly VITE_RECAPTCHA_SITE_KEY: string
+  readonly VITE_RECAPTCHA_ENABLED: string
   // more env variables...
 }
 
