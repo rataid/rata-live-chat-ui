@@ -76,7 +76,7 @@ export const PortalNavDivider = styled.span.attrs({
 // Pushed below the fixed header
 export const PortalMain = styled.main.attrs({
   // pb: room so the floating chat button never covers the last content
-  className: tw`px-4 pb-24 pt-16`,
+  className: tw`px-4 pb-24 md:pb-4 pt-16`,
 })``
 
 // Every page after login shares this 910px content width
