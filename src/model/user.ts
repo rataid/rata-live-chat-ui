@@ -1,6 +1,8 @@
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import { z } from 'zod'
 
+import { RECAPTCHA_ENABLED } from '@/constants/recaptcha'
+
 // Any country: "+1415…" / "6281…" (country code), or "0812…" (Indonesia)
 const isPhone = (value: string) =>
   isValidPhoneNumber(value, 'ID') || isValidPhoneNumber(`+${value}`)
@@ -56,6 +58,10 @@ export const registerSchema = z
         message: 'Nomor telepon tidak valid',
       }),
     ...newPasswordFields,
+    // reCAPTCHA v2 checkbox token, verified by the backend; only when enabled
+    recaptchaToken: RECAPTCHA_ENABLED
+      ? z.string().min(1, { message: 'Centang verifikasi reCAPTCHA' })
+      : z.string().optional(),
   })
   .refine(passwordsMatch, passwordsMatchError)
 
@@ -76,6 +82,7 @@ export type RegisterPayload = {
   email: string
   phone: string
   password: string
+  recaptchaToken?: string
 }
 
 export type RegisterResponse = {

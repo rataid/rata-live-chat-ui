@@ -27,14 +27,20 @@ export async function authRegisterAction({
 
   if (!data.success) return { success: false }
 
-  const { name, email, password } = data.data
+  const { name, email, password, recaptchaToken } = data.data
 
   const phone = `+${data.data.phone.replace(/^\+/, '')}`
 
   let retryAfterSeconds: number | undefined
 
   try {
-    const res = await register({ name, email, phone, password })
+    const res = await register({
+      name,
+      email,
+      phone,
+      password,
+      recaptchaToken,
+    })
     retryAfterSeconds = res.data?.retryAfterSeconds
   } catch (error) {
     return (
