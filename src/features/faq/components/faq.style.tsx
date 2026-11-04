@@ -34,7 +34,7 @@ export const FaqDetailMain = styled.div.attrs({
 })``
 
 export const FaqAnswerBody = styled.div.attrs({
-  className: tw`prose prose-sm max-w-none text-gray-700 sm:prose-base prose-p:my-0 sm:prose-p:my-0 prose-img:my-0 sm:prose-img:my-0 [&_picture]:my-0 prose-img:w-full
+  className: tw`prose prose-sm max-w-none text-gray-700 sm:prose-base prose-p:my-0 sm:prose-p:my-0 prose-img:my-0 sm:prose-img:my-0 [&_picture]:my-0 prose-img:w-full prose-img:opacity-0 prose-img:transition-opacity prose-img:duration-500 [&_img[data-loaded]]:opacity-100
 `,
 })``
 

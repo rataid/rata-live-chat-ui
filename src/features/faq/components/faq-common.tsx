@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 import { Brand } from '@/constants/brand'
 import { ContactUsButton } from '@/features/home/components/contact-us-button'
 import Icon from '@nui/ui/icon'
@@ -23,6 +25,17 @@ export function AskMore() {
 }
 
 export function FaqAnswer({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    ref.current?.querySelectorAll('img').forEach((img) => {
+      const show = () => img.setAttribute('data-loaded', '')
+      if (img.complete) return show()
+      img.addEventListener('load', show, { once: true })
+      img.addEventListener('error', show, { once: true })
+    })
+  }, [html])
+
   // eslint-disable-next-line react/no-danger
-  return <div dangerouslySetInnerHTML={{ __html: html }} />
+  return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />
 }
