@@ -23,9 +23,10 @@ export const FaqPageSubtitle = styled.p.attrs({
   className: tw`text-sm text-gray-500`,
 })``
 
-// Detail page: answer + related questions side by side on desktop
+// Detail page: answer + related questions side by side on desktop,
+// full width when there's no related card
 export const FaqDetailGrid = styled.div.attrs({
-  className: tw`grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_19.5rem] lg:gap-10`,
+  className: tw`grid items-start gap-6 lg:gap-10 lg:[&:has(aside)]:grid-cols-[minmax(0,1fr)_19.5rem]`,
 })``
 
 export const FaqDetailMain = styled.div.attrs({
@@ -33,7 +34,8 @@ export const FaqDetailMain = styled.div.attrs({
 })``
 
 export const FaqAnswerBody = styled.div.attrs({
-  className: tw`prose prose-sm max-w-none text-gray-700 sm:prose-base prose-p:my-0 sm:prose-p:my-0 lg:prose-img:my-0 lg:prose-img:max-h-[calc(100vh-13.5rem)] lg:prose-img:w-auto`,
+  className: tw`prose prose-sm max-w-none text-gray-700 sm:prose-base prose-p:my-0 sm:prose-p:my-0 prose-img:my-0 sm:prose-img:my-0 [&_picture]:my-0 prose-img:w-full prose-img:opacity-0 prose-img:transition-opacity prose-img:duration-500 [&_img[data-loaded]]:opacity-100
+`,
 })``
 
 export const FaqAnswerEmpty = styled.p.attrs({

@@ -174,7 +174,7 @@
         {
           "faqId": 23,
           "question": "Apa itu Jaminan Rata?",
-          "answer": "<img src=\"/assets/img/faq/jaminan-rata.png\" alt=\"Jaminan Rata adalah tambahan aligner untuk mendapatkan hasil sempurna seperti 3D video simulasi yang telah disepakati di awal. Jaminan Rata diberikan saat pasien telah menyelesaikan pemakaian aligner tahap pertama, ditujukan bagi pasien untuk mencapai tahap akhir penyempurnaan dari hasil pemakaian aligner, tidak dikenakan biaya untuk klaim 1x Jaminan Rata, dan tidak berlaku pada beberapa produk.\" loading=\"lazy\" />"
+          "answer": "<picture><source media=\"(min-width: 1024px)\" srcset=\"/assets/img/faq/jaminan_rata_landscape.webp\" /><img src=\"/assets/img/faq/jaminan_rata_portrait.webp\" alt=\"Jaminan Rata\" loading=\"lazy\" /></picture>"
         }
       ]
     },
@@ -185,7 +185,7 @@
         {
           "faqId": 24,
           "question": "Dimana saja lokasi Klinik Rata?",
-          "answer": "<img src=\"/assets/img/faq/lokasi-klinik-rata.png\" alt=\"Lokasi Klinik Rata: klinik utama di Pakubuwono, Menteng, Puri, Kelapa Gading, PIK, Gading Serpong, Bandung, Surabaya, dan Bali, serta klinik mitra di Jawa, Sumatera, Kalimantan, Sulawesi, dan NTT\" loading=\"lazy\" />"
+          "answer": "<picture><source media=\"(min-width: 1024px)\" srcset=\"/assets/img/faq/lokasi_klinik_landscape.webp\" /><img src=\"/assets/img/faq/lokasi_klinik_portrait.webp\" alt=\"Lokasi Klinik Rata\" loading=\"lazy\" /></picture>"
         }
       ]
     }
