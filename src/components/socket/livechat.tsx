@@ -98,7 +98,7 @@ async function showSystemNotification(body: string, messageId: string) {
       await registration.showNotification('Smile Hub', {
         body,
         tag: `livechat-${messageId}`,
-        icon: '/icons/icon-round-192.png',
+        icon: '/icons/icon-192.png',
         requireInteraction: true,
         silent: false,
         vibrate: [200, 100, 200],
