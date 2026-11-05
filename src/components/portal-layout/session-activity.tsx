@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import axiosInstance from '@/api/axiosInstance'
 import { getToken, removeToken } from '@/components/auth/helpers'
+import { clearLiveChatAppBadge } from '@/libs/app-badge'
 import { showToast } from '@nui/ui/toast'
 
 // Only real foreground interaction renews an otherwise idle session. There is
@@ -24,6 +25,7 @@ export function SessionActivity() {
         message: 'Silakan kembali masuk untuk lanjut menggunakan Smile Hub.',
       })
       removeToken()
+      void clearLiveChatAppBadge()
       navigate(`/login?from=${encodeURIComponent(window.location.pathname)}`, {
         replace: true,
       })

@@ -21,15 +21,50 @@ self.addEventListener('message', (event) => {
   if (event.data?.type === 'PUSH_ENABLED') {
     event.waitUntil(preferences((store) => store.put(event.data.enabled, 'enabled')))
   }
+  if (event.data?.type === 'SET_APP_BADGE') {
+    event.waitUntil(syncAppBadge(event.data.count))
+  }
 })
+
+// iOS home-screen PWAs need Badging API; Android launchers often badge from
+// notifications alone. Keep both paths roughly aligned on livechat tags.
+async function syncAppBadge(explicitCount) {
+  try {
+    if (typeof self.registration.setAppBadge !== 'function') return
+    let count = explicitCount
+    if (typeof count !== 'number' || !Number.isFinite(count)) {
+      const list = await self.registration.getNotifications()
+      count = list.filter((item) => String(item.tag || '').startsWith('livechat-')).length
+    }
+    if (count > 0) await self.registration.setAppBadge(count)
+    else if (typeof self.registration.clearAppBadge === 'function') {
+      await self.registration.clearAppBadge()
+    }
+  } catch {}
+}
+
 self.addEventListener('push', (event) => {
   event.waitUntil((async () => {
     // Local disable/logout also protects against already queued notifications.
     const enabled = await preferences((store) => store.get('enabled')).catch(() => undefined)
     if (enabled === false) return
-    // Always show push notifications. Socket-local alerts use the same
-    // message tag, so duplicates collapse instead of being suppressed here
-    // (OEM WebAPK visibility is unreliable and was hiding Android alerts).
+
+    // If Smile Hub already has an open page, the livechat socket shows one
+    // local notification. Showing push as well duplicates on iOS (same tag
+    // + renotify does not collapse the way Chromium does).
+    const openClients = await self.clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+    const appOpen = openClients.some((client) => {
+      try {
+        return new URL(client.url).origin === self.location.origin
+      } catch {
+        return false
+      }
+    })
+    if (appOpen) return
+
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}
     await self.registration.showNotification(
@@ -47,11 +82,13 @@ self.addEventListener('push', (event) => {
       silent: false,
       vibrate: [200, 100, 200],
     })
+    await syncAppBadge()
   })())
 })
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
   event.waitUntil((async () => {
+    await syncAppBadge()
     const url = new URL('/livechat', self.location.origin).href
     const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
     const client = clients.find((item) => new URL(item.url).origin === self.location.origin)

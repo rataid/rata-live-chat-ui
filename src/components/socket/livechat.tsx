@@ -23,6 +23,7 @@ import {
   MessageType,
 } from '@/constants/message'
 import { isNotificationMuted } from '@/features/livechat/notification-preference'
+import { clearLiveChatAppBadge, setLiveChatAppBadge } from '@/libs/app-badge'
 import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import {
   ChatMessage,
@@ -71,16 +72,6 @@ function isReadingLiveChat() {
   return window.location.pathname.startsWith('/livechat') && !document.hidden
 }
 
-// Chrome keeps requireInteraction notifications open. Firefox and Safari
-// close that popup on their own, so those browsers also get an in-page notice.
-function systemNotificationStaysOpen() {
-  const ua = navigator.userAgent
-  return (
-    /Chrome|Chromium|Edg|OPR|SamsungBrowser/.test(ua) &&
-    !/Firefox|FxiOS/.test(ua)
-  )
-}
-
 function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
@@ -88,22 +79,15 @@ function notifyClinicMessage(message: LivechatServerMessage) {
 
   const body = message.body || 'You have a new message.'
 
-  // Always show a local notification while this page/socket is alive.
-  // Web Push covers the fully-closed case; gating on subscription hid the
-  // working pre-PWA path and left MIUI/iOS waiting on delayed push only.
+  // System notification only — no in-app snackbar. While the app is open the
+  // socket owns this alert; Web Push covers the fully-closed case (and the SW
+  // skips push when a Smile Hub window is already open, to avoid iOS doubles).
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
   ) {
     void showSystemNotification(body, message.id)
   }
-
-  if (systemNotificationStaysOpen()) return
-
-  showToast(
-    { type: 'info', title: LIVECHAT_CLINIC_NAME, message: body },
-    { autoClose: false, closeButton: true }
-  )
 }
 
 async function showSystemNotification(body: string, messageId: string) {
@@ -308,6 +292,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
     const signInAgain = () => {
       removeToken()
+      void clearLiveChatAppBadge()
       showToast({
         type: 'error',
         title: 'Session Expired',
@@ -517,6 +502,12 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   }, [])
 
   const unreadCount = unreadIds.size
+
+  // iOS home-screen PWAs do not badge from notifications alone; keep the
+  // Badging API in sync with clinic replies the patient has not opened yet.
+  useEffect(() => {
+    void setLiveChatAppBadge(unreadCount)
+  }, [unreadCount])
 
   const value = useMemo(
     () => ({
