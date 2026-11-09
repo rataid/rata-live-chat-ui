@@ -98,7 +98,7 @@ export const ChatBubbleWrapper = styled.div.attrs({
 export const ChatBubbleMain = styled.div.attrs<DirectionProps>(
   ({ $direction }) => ({
     className: [
-      tw`overflow-hidden rounded-lg`,
+      tw`overflow-hidden rounded-lg [&:has(img)]:w-min`,
       $direction === 'outgoing'
         ? tw`rounded-tr-none bg-primary-600 text-white`
         : tw`rounded-tl-none border border-gray-100 bg-white text-gray-900`,
@@ -231,7 +231,9 @@ export const NotificationPromptPosition = styled.div.attrs({
   className: tw`fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4`,
 })<{ $desktopCorner?: boolean }>`
   @media (min-width: 1024px) {
-    ${({ $desktopCorner }) => $desktopCorner && `
+    ${({ $desktopCorner }) =>
+      $desktopCorner &&
+      `
       align-items: flex-end;
       justify-content: flex-end;
       padding: 24px;
@@ -274,3 +276,57 @@ export const NotificationPromptNote = styled.p.attrs({
 export const ChatNewMessagesButton = styled.button.attrs({
   className: tw`sticky bottom-3 z-10 mx-auto mt-3 flex shrink-0 items-center gap-1 rounded-full bg-primary-600 px-3 py-1.5 text-xs font-medium text-white shadow-md hover:bg-primary-700`,
 })``
+
+export const ChatImageViewerOverlay = styled.div.attrs({
+  className: tw`fixed inset-0 z-50 bg-black/60 backdrop-blur-sm`,
+})``
+
+export const ChatImageViewerPanel = styled.div.attrs({
+  className: tw`fixed inset-0 z-50 flex h-[100dvh] w-full flex-col outline-none`,
+})``
+
+export const ChatImageViewerCounter = styled.h2.attrs({
+  className: tw`absolute left-4 top-4 z-10 flex h-11 min-w-[40px] items-center justify-center rounded-sm bg-black/[.46] p-2 text-sm font-semibold tabular-nums text-white`,
+})``
+
+type ViewerButtonProps = { $position: 'close' | 'prev' | 'next' }
+
+const viewerButtonPosition = {
+  close: tw`right-4 top-4`,
+  prev: tw`left-4 top-1/2 -translate-y-1/2`,
+  next: tw`right-4 top-1/2 -translate-y-1/2`,
+}
+
+export const ChatImageViewerButton = styled.button.attrs<ViewerButtonProps>(
+  ({ $position }) => ({
+    className: [
+      tw`absolute z-10 flex size-11 items-center justify-center rounded-sm bg-black/[.46] p-2 text-white hover:bg-black/60 disabled:cursor-not-allowed disabled:opacity-40`,
+      viewerButtonPosition[$position],
+    ].join(' '),
+  })
+)<ViewerButtonProps>``
+
+export const ChatImageViewerTrack = styled.div.attrs({
+  className: tw`flex min-h-0 w-full flex-1 snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`,
+})``
+
+export const ChatImageViewerSlide = styled.div.attrs({
+  className: tw`flex h-full w-full shrink-0 snap-center items-center justify-center px-4 pb-4 pt-20 sm:px-20`,
+})``
+
+export const ChatImageViewerImage = styled.img.attrs({
+  className: tw`max-h-[min(700px,100%)] max-w-full object-contain sm:max-w-[960px]`,
+})``
+
+export const ChatImageViewerIndicators = styled.div.attrs({
+  className: tw`flex shrink-0 justify-center gap-2 pb-6`,
+})``
+
+export const ChatImageViewerIndicator = styled.button.attrs<{
+  $active: boolean
+}>(({ $active }) => ({
+  className: [
+    tw`cursor-pointer text-2xs`,
+    $active ? tw`text-gray-500` : tw`text-gray-300`,
+  ].join(' '),
+}))<{ $active: boolean }>``

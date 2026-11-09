@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { useState } from 'react'
 
 import { MessageType } from '@/constants/message'
 import {
@@ -34,27 +35,47 @@ type ChatBubbleProps = {
   message: ChatMessage
   quickRepliesDisabled?: boolean
   onQuickReply?: (reply: ChatQuickReply) => void
+  onImageClick?: () => void
 }
 
 export function ChatBubble({
   message,
   quickRepliesDisabled = false,
   onQuickReply,
+  onImageClick,
 }: ChatBubbleProps) {
-  const { direction, body, createdAt, status, quickReplies, type, mediaUrl, filename } =
-    message
+  const {
+    direction,
+    body,
+    createdAt,
+    status,
+    quickReplies,
+    type,
+    mediaUrl,
+    filename,
+  } = message
   const isImage = type === MessageType.IMAGE && !!mediaUrl
+  const [portrait, setPortrait] = useState(false)
 
   return (
     <ChatBubbleMain $direction={direction}>
       {isImage && (
-        <a href={mediaUrl} target="_blank" rel="noreferrer">
+        <button type="button" className="block w-full" onClick={onImageClick}>
           <img
             src={mediaUrl}
             alt={filename || 'Image'}
-            className="max-h-60 w-full object-cover"
+            onLoad={({ currentTarget }) =>
+              setPortrait(
+                currentTarget.naturalHeight > currentTarget.naturalWidth
+              )
+            }
+            className={
+              portrait
+                ? 'mx-auto block h-60 w-auto min-w-[12rem] max-w-full object-cover'
+                : 'block max-h-60 w-full min-w-[15rem] object-cover'
+            }
           />
-        </a>
+        </button>
       )}
       {mediaUrl && !isImage && (
         <a

@@ -7,6 +7,7 @@ import Icon from '@nui/ui/icon'
 
 import { ChatBubble } from './chat-bubble'
 import { ChatDateSeparator } from './chat-date-separator'
+import { ChatImage, ChatImageViewer } from './chat-image-viewer'
 import {
   ChatBubbleWrapper,
   ChatEmpty,
@@ -99,6 +100,15 @@ export function ChatMessageList({
   const isAtBottomRef = useRef(true)
 
   const [newCount, setNewCount] = useState(0)
+
+  const images: ChatImage[] = messages
+    .filter(({ type, mediaUrl }) => type === MessageType.IMAGE && !!mediaUrl)
+    .map(({ id, mediaUrl, filename }) => ({
+      id,
+      src: mediaUrl!,
+      alt: filename || 'Image',
+    }))
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null)
 
   const knownIdsRef = useRef(new Set<string>())
   const animatedIdsRef = useRef(new Set<string>())
@@ -218,6 +228,11 @@ export function ChatMessageList({
                       quickRepliesDisabled || isAnswered(message.id)
                     }
                     onQuickReply={onQuickReply}
+                    onImageClick={() =>
+                      setViewerIndex(
+                        images.findIndex(({ id }) => id === message.id)
+                      )
+                    }
                   />
                 </ChatBubbleWrapper>
               ))}
@@ -237,6 +252,11 @@ export function ChatMessageList({
           <Icon icon="lucide-arrow-down" size="2xs" />
         </ChatNewMessagesButton>
       )}
+      <ChatImageViewer
+        images={images}
+        startIndex={viewerIndex}
+        onClose={() => setViewerIndex(null)}
+      />
     </ChatMessageListWrapper>
   )
 }
