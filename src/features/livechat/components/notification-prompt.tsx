@@ -70,7 +70,9 @@ export function NotificationPrompt({
   const close = () => {
     setMode('hidden')
     closeRef.current?.()
-    notifyNotificationPromptSettled()
+    // Defer so InstallHomeScreen (mounted beside this prompt) has its
+    // settled listener attached before the home install sheet opens.
+    queueMicrotask(() => notifyNotificationPromptSettled())
   }
 
   useEffect(() => {
