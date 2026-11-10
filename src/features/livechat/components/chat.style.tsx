@@ -212,9 +212,17 @@ export const ChatHeaderMute = styled.button.attrs({
   className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
 })``
 
-export const ChatNotifyMenu = styled.div.attrs({
-  className: tw`absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-3 shadow-lg outline-none`,
-})``
+// Stays mounted so it can fade/scale both in and out
+export const ChatNotifyMenu = styled.div.attrs<{ $open: boolean }>(
+  ({ $open }) => ({
+    className: [
+      tw`absolute right-0 top-full z-20 mt-2 w-72 origin-top-right rounded-xl border border-gray-200 bg-white p-3 shadow-lg outline-none transition-all duration-150 ease-out motion-reduce:transition-none`,
+      $open
+        ? tw`visible translate-y-0 scale-100 opacity-100`
+        : tw`pointer-events-none invisible -translate-y-1 scale-95 opacity-0`,
+    ].join(' '),
+  })
+)<{ $open: boolean }>``
 
 export const ChatNotifyMenuTitle = styled.p.attrs({
   className: tw`text-sm font-semibold text-gray-900`,
