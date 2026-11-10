@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { useLiveChat } from '@/components/socket'
-import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
+import { PORTAL_NAME } from '@/constants'
 
 import { ChatEditor } from '../components/chat-editor'
 import { ChatHeader } from '../components/chat-header'
@@ -45,9 +45,8 @@ export function LiveChatPage() {
     <ChatPageWrapper>
       <ChatPageContainer>
         <ChatHeader
-          title="Tanam Live Chat"
-          subtitle="Klinik Tanam"
-          mobileTitle={LIVECHAT_CLINIC_NAME}
+          title={PORTAL_NAME}
+          mobileTitle={PORTAL_NAME}
           mobileSubtitle="Live Chat Platform"
         />
         {status !== 'connected' && (

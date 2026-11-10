@@ -215,7 +215,7 @@ export function ChatMessageList({
             {group.showDate && <ChatDateSeparator date={createdAt} />}
             <ChatMessageGroup $direction={direction}>
               <ChatMessageSender>
-                {direction === 'outgoing' ? 'You' : senderName}
+                {direction === 'outgoing' ? 'Anda' : senderName}
               </ChatMessageSender>
               {group.messages.map((message) => (
                 <ChatBubbleWrapper

@@ -16,7 +16,7 @@ import {
 } from '@/api/livechat/messages'
 import { uploadLivechatFile } from '@/api/livechat/upload'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
-import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
+import { PORTAL_NAME } from '@/constants'
 import {
   MessageDirection,
   MessageStatus,
@@ -77,7 +77,7 @@ function notifyClinicMessage(message: LivechatServerMessage) {
   if (isNotificationMuted()) return
   if (isReadingLiveChat()) return
 
-  const body = message.body || 'You have a new message.'
+  const body = message.body || 'Anda memiliki pesan baru.'
 
   // System notification only — no in-app snackbar. While the app is open the
   // socket owns this alert; Web Push covers the fully-closed case (and the SW
@@ -155,7 +155,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
     return {
       id: message.id,
       direction: fromClinic ? 'incoming' : 'outgoing',
-      senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
+      senderName: fromClinic ? PORTAL_NAME : undefined,
       body: button.body ?? message.body ?? '',
       createdAt: message.createdAt,
       quickReplies: button.buttons.map(({ id, text }) => ({
@@ -168,7 +168,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
   return {
     id: message.id,
     direction: fromClinic ? 'incoming' : 'outgoing',
-    senderName: fromClinic ? LIVECHAT_CLINIC_NAME : undefined,
+    senderName: fromClinic ? PORTAL_NAME : undefined,
     type: message.type,
     mediaUrl,
     filename,
