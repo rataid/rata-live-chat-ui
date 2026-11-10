@@ -23,7 +23,7 @@ const VERIFY_EMAIL_ERRORS: Record<
   [AuthErrorCode.OTP_SEND_FAILED]: {
     title: 'Kode OTP Gagal Dikirim',
     message:
-      'Email Anda sudah terverifikasi, tapi kode OTP gagal dikirim ke WhatsApp. Tekan Resend OTP untuk mengirim ulang.',
+      'Email Anda sudah terverifikasi, tapi kode OTP gagal dikirim ke WhatsApp. Tekan Kirim Ulang OTP untuk mengirim ulang.',
     to: otpPage(VERIFY_OTP_STATUS.otpFailed),
   },
   [AuthErrorCode.VERIFY_TOKEN_INVALID]: {

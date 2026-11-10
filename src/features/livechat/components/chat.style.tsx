@@ -7,7 +7,7 @@ import { tw } from '@nui/utils/tw'
 type DirectionProps = { $direction: ChatMessageDirection }
 
 export const ChatPageWrapper = styled.div.attrs({
-  className: tw`fixed inset-x-0 bottom-0 top-16 flex justify-center bg-[#E9EBEF] sm:p-4`,
+  className: tw`fixed inset-x-0 bottom-0 top-0 flex sm:top-16 justify-center bg-[#E9EBEF] sm:p-4`,
 })``
 
 export const ChatPageContainer = styled.div.attrs({
@@ -124,7 +124,8 @@ export const ChatQuickReplyButton = styled.button.attrs({
 })``
 
 export const ChatEditorWrapper = styled.footer.attrs({
-  className: tw`shrink-0 border-t border-gray-200 bg-white px-4 pb-4 pt-2`,
+  // Mobile: extra room above the home indicator / browser bar
+  className: tw`shrink-0 border-t border-gray-200 bg-white px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:pb-4`,
 })``
 
 export const ChatEditorToolbar = styled.div.attrs({
@@ -180,15 +181,15 @@ export const ChatCameraRetake = styled.button.attrs({
 })``
 
 export const ChatEditorBox = styled.div.attrs({
-  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 bg-white px-3 py-3 focus-within:border-primary-400`,
+  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 focus-within:border-primary-400`,
 })``
 
 export const ChatEditorTextarea = styled.textarea.attrs({
-  className: tw`max-h-28 min-h-[2rem] min-w-0 flex-1 resize-none border-none bg-transparent py-1 px-0 text-sm leading-6 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0`,
+  className: tw`max-h-28 min-h-[2rem] min-w-0 flex-1 resize-none self-start border-none bg-transparent py-1 px-0 text-sm leading-6 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0`,
 })``
 
 export const ChatEditorSend = styled.button.attrs({
-  className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-primary-200`,
+  className: tw`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-primary-200`,
 })``
 
 export const ChatEmpty = styled.p.attrs({

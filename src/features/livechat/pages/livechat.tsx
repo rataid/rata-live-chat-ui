@@ -13,8 +13,8 @@ import {
 } from '../components/chat.style'
 
 const statusText = {
-  connecting: 'Connecting to the clinic...',
-  reconnecting: 'Connection lost. Reconnecting...',
+  connecting: 'Menghubungkan...',
+  reconnecting: 'Koneksi terputus. Menghubungkan kembali...',
 }
 
 export function LiveChatPage() {
@@ -44,11 +44,7 @@ export function LiveChatPage() {
   return (
     <ChatPageWrapper>
       <ChatPageContainer>
-        <ChatHeader
-          title={PORTAL_NAME}
-          mobileTitle={PORTAL_NAME}
-          mobileSubtitle="Live Chat Platform"
-        />
+        <ChatHeader title={PORTAL_NAME} mobileTitle={PORTAL_NAME} />
         {status !== 'connected' && (
           <ChatStatusBar role="status">{statusText[status]}</ChatStatusBar>
         )}

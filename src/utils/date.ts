@@ -241,7 +241,10 @@ export const formatDuration = (totalSeconds: number) => {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = totalSeconds % 60
 
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
+    2,
+    '0'
+  )}`
 }
 
 export const prettierDays = (days: number): string => {
@@ -356,11 +359,11 @@ export function formatChatDate(date?: string | Date | null, separator = false) {
   const parsedDate = new Date(date)
 
   if (isToday(parsedDate)) {
-    return separator ? 'Today' : format(parsedDate, 'HH:mm')
+    return separator ? 'Hari ini' : format(parsedDate, 'HH:mm')
   }
 
   if (isYesterday(parsedDate)) {
-    return 'Yesterday'
+    return 'Kemarin'
   }
 
   if (isThisWeek(parsedDate, { weekStartsOn: 1 })) {

@@ -15,6 +15,7 @@ import {
   getLiveChatMessages,
 } from '@/api/livechat/messages'
 import { uploadLivechatFile } from '@/api/livechat/upload'
+import { handleApiError } from '@/api/shared/error'
 import { getToken, isTokenValid, removeToken } from '@/components/auth'
 import { PORTAL_NAME } from '@/constants'
 import {
@@ -175,8 +176,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
     body:
       message.type === MessageType.TEXT
         ? message.body ?? ''
-        : message.body ||
-          (mediaUrl ? '' : 'This message type is not supported yet.'),
+        : message.body || (mediaUrl ? '' : 'Jenis pesan ini belum didukung.'),
     createdAt: message.createdAt,
     status: fromClinic
       ? undefined
@@ -269,12 +269,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       addFromServer(items)
       mergeUnreadIds(items, 'merge')
       setHasOlder(items.length === LIVECHAT_MESSAGES_PAGE_SIZE)
-    } catch {
-      showToast({
-        type: 'error',
-        title: 'Failed to Load Messages',
-        message: 'Please try again in a moment.',
-      })
+    } catch (error) {
+      handleApiError(error, { title: 'Gagal Memuat Pesan' })
     } finally {
       setIsLoadingOlder(false)
     }
@@ -490,13 +486,12 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
         mediaKey: asset.id,
         filename: asset.name || file.name,
       })
-    } catch {
+    } catch (error) {
       setMessages((prev) => prev.filter((message) => message.id !== tempId))
       URL.revokeObjectURL(localUrl)
-      showToast({
-        type: 'error',
-        title: 'Upload Failed',
-        message: 'The file could not be sent. Please try again.',
+      handleApiError(error, {
+        title: 'Gagal Mengirim File',
+        fallback: 'File tidak dapat dikirim. Silakan coba lagi.',
       })
     }
   }, [])

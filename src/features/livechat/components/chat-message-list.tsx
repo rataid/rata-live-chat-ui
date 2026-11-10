@@ -184,27 +184,27 @@ export function ChatMessageList({
   return (
     <ChatMessageListWrapper ref={listRef} onScroll={handleScroll}>
       {isLoadingOlder && (
-        <ChatListNote>Loading earlier messages...</ChatListNote>
+        <ChatListNote>Memuat pesan sebelumnya...</ChatListNote>
       )}
       {messages.length === 0 && isLoading && (
-        <ChatEmpty>Loading messages...</ChatEmpty>
+        <ChatEmpty>Memuat pesan...</ChatEmpty>
       )}
       {messages.length === 0 && !isLoading && error && (
         <ChatEmpty>
-          Couldn&apos;t load your messages.{' '}
+          Pesan gagal dimuat.{' '}
           <button
             type="button"
             className="font-medium text-primary-600 hover:underline"
             onClick={onRetry}
           >
-            Try again
+            Coba lagi
           </button>
         </ChatEmpty>
       )}
       {messages.length === 0 && !isLoading && !error && (
         <ChatEmpty>
-          Send a message to start chatting with the clinic. Our team will reply
-          here.
+          Kirim pesan untuk mulai chat dengan klinik. Tim kami akan membalas di
+          sini.
         </ChatEmpty>
       )}
       {groupMessages(messages).map((group) => {
@@ -248,7 +248,7 @@ export function ChatMessageList({
             setNewCount(0)
           }}
         >
-          {newCount === 1 ? '1 new message' : `${newCount} new messages`}
+          {newCount === 1 ? '1 pesan baru' : `${newCount} pesan baru`}
           <Icon icon="lucide-arrow-down" size="2xs" />
         </ChatNewMessagesButton>
       )}

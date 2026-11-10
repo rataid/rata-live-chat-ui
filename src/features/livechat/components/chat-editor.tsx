@@ -175,8 +175,8 @@ export function ChatEditor({
           if (file.size > maxMb * MB) {
             showToast({
               type: 'error',
-              title: 'File too large',
-              message: `Max allowed size is ${maxMb}MB.`,
+              title: 'File terlalu besar',
+              message: `Ukuran maksimum yang diizinkan adalah ${maxMb}MB.`,
             })
             return
           }

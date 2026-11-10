@@ -9,10 +9,18 @@ export const PortalWrapper = styled.div.attrs({
   className: tw`min-h-screen bg-white`,
 })``
 
-// Fixed to the top; the page content is pushed down by PortalMain's padding
-export const PortalHeader = styled.header.attrs({
-  className: tw`fixed inset-x-0 top-0 z-50 h-16 border-b border-gray-200 bg-white`,
-})``
+type PortalHeaderProps = { $hideOnMobile?: boolean }
+
+// Fixed to the top; the page content is pushed down by PortalMain's padding.
+// Hidden on mobile for pages with their own header (live chat)
+export const PortalHeader = styled.header.attrs<PortalHeaderProps>(
+  ({ $hideOnMobile }) => ({
+    className: [
+      tw`fixed inset-x-0 top-0 z-50 h-16 border-b border-gray-200 bg-white`,
+      $hideOnMobile ? tw`hidden sm:block` : '',
+    ].join(' '),
+  })
+)<PortalHeaderProps>``
 
 export const PortalHeaderInner = styled.div.attrs({
   className: tw`mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-12`,
