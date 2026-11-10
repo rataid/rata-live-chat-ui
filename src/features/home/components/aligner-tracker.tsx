@@ -9,11 +9,10 @@ import {
   saveAlignerPlan,
   useAlignerPlan,
 } from '@/api/aligner/plan'
-import { getApiErrorMessage } from '@/api/shared/error'
+import { handleApiError } from '@/api/shared/error'
 import { AlignerPlan, AlignerTrackerSettingsValues } from '@/model/aligner'
 import Button from '@nui/ui/button'
 import { useDialog } from '@nui/ui/dialog'
-import { showToast } from '@nui/ui/toast'
 import Tooltip from '@nui/ui/tooltip'
 
 import { AlignerSetHistory } from './aligner-set-history'
@@ -65,11 +64,7 @@ export function AlignerTracker() {
         startedOn: format(new Date(values.startDate), 'yyyy-MM-dd'),
       })
     } catch (error) {
-      showToast({
-        type: 'error',
-        title: 'Failed to Save Tracker',
-        message: getApiErrorMessage(error, 'Please try again in a moment.'),
-      })
+      handleApiError(error, { title: 'Gagal Menyimpan Progres' })
       throw error
     }
 
@@ -99,11 +94,7 @@ export function AlignerTracker() {
         await queryClient.invalidateQueries({ queryKey: alignerPlanKey })
       }
     } catch (error) {
-      showToast({
-        type: 'error',
-        title: 'Failed to Change Set',
-        message: getApiErrorMessage(error, 'Please try again in a moment.'),
-      })
+      handleApiError(error, { title: 'Gagal Mengganti Set' })
       await queryClient.invalidateQueries({ queryKey: alignerPlanKey })
     } finally {
       setIsChangingSet(false)
@@ -201,7 +192,7 @@ export function AlignerTracker() {
           </Button>
         )}
         <>
-          <Tooltip content="Setup Tracker Aligner">
+          <Tooltip content="Atur progres Aligner">
             <Button
               variant="secondaryGray"
               icon="lucide-settings"
@@ -210,7 +201,7 @@ export function AlignerTracker() {
               disabled={!hasPlan || isLoading}
             />
           </Tooltip>
-          <Tooltip content="History Aligner Sets">
+          <Tooltip content="Riwayat">
             <Button
               variant={isHistoryOpen ? 'primary' : 'secondaryGray'}
               icon="lucide-history"

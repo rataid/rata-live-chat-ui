@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { useLiveChat } from '@/components/socket'
-import { LIVECHAT_CLINIC_NAME } from '@/constants/livechat'
+import { PORTAL_NAME } from '@/constants'
 
 import { ChatEditor } from '../components/chat-editor'
 import { ChatHeader } from '../components/chat-header'
@@ -13,8 +13,8 @@ import {
 } from '../components/chat.style'
 
 const statusText = {
-  connecting: 'Connecting to the clinic...',
-  reconnecting: 'Connection lost. Reconnecting...',
+  connecting: 'Menghubungkan...',
+  reconnecting: 'Koneksi terputus. Menghubungkan kembali...',
 }
 
 export function LiveChatPage() {
@@ -44,12 +44,7 @@ export function LiveChatPage() {
   return (
     <ChatPageWrapper>
       <ChatPageContainer>
-        <ChatHeader
-          title="Tanam Live Chat"
-          subtitle="Klinik Tanam"
-          mobileTitle={LIVECHAT_CLINIC_NAME}
-          mobileSubtitle="Live Chat Platform"
-        />
+        <ChatHeader title={PORTAL_NAME} mobileTitle={PORTAL_NAME} />
         {status !== 'connected' && (
           <ChatStatusBar role="status">{statusText[status]}</ChatStatusBar>
         )}

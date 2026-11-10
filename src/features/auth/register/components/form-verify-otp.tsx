@@ -82,8 +82,8 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
       })
       showToast({
         type: 'success',
-        title: 'OTP Sent',
-        message: `A new OTP code has been sent to ${maskPhone(phone)}.`,
+        title: 'OTP Terkirim!',
+        message: `Kode OTP telah dikirim ke ${maskPhone(phone)}.`,
       })
       const retryAfterSeconds =
         res.data?.retryAfterSeconds ?? RESEND_OTP_COOLDOWN

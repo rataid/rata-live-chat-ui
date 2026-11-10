@@ -175,8 +175,8 @@ export function ChatEditor({
           if (file.size > maxMb * MB) {
             showToast({
               type: 'error',
-              title: 'File too large',
-              message: `Max allowed size is ${maxMb}MB.`,
+              title: 'File terlalu besar',
+              message: `Ukuran maksimum yang diizinkan adalah ${maxMb}MB.`,
             })
             return
           }
@@ -191,9 +191,9 @@ export function ChatEditor({
           <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <Dialog.Trigger asChild>{attachmentTrigger}</Dialog.Trigger>
             <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/20" />
+              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/20 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
               <Dialog.Content
-                className="fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-3xl bg-white px-5 pb-6 pt-3 shadow-xl outline-none"
+                className="fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-3xl bg-white px-5 pb-6 pt-3 shadow-xl outline-none duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
                 style={{
                   paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))',
                 }}
@@ -223,7 +223,7 @@ export function ChatEditor({
           <Popover.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <Popover.Trigger asChild>{attachmentTrigger}</Popover.Trigger>
             <Popover.Portal>
-              <Popover.Content side="top" align="end" sideOffset={8}>
+              <Popover.Content asChild side="top" align="end" sideOffset={8}>
                 <ChatAttachMenu>{attachmentOptions}</ChatAttachMenu>
               </Popover.Content>
             </Popover.Portal>

@@ -94,7 +94,9 @@ export function NotificationPrompt({
   useEffect(() => {
     if (mode === 'hidden') return
     const previous = document.activeElement as HTMLElement | null
-    const card = (bellMenu ? menuRef.current : cardRef.current) as HTMLElement | null
+    const card = (
+      bellMenu ? menuRef.current : cardRef.current
+    ) as HTMLElement | null
     card?.focus()
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -141,7 +143,8 @@ export function NotificationPrompt({
     }
   }, [open, mode, bellMenu])
 
-  if (mode === 'hidden') return null
+  const bellControlled = open !== undefined
+  if (mode === 'hidden' && !bellControlled) return null
 
   const notificationsOn = permission === 'granted' && !muted
   const canToggle = permission === 'default' || permission === 'granted'
@@ -185,9 +188,11 @@ export function NotificationPrompt({
   }
 
   // Bell button: compact menu under the icon (not a centered overlay).
-  if (bellMenu) {
+  if (bellControlled) {
     return (
       <ChatNotifyMenu
+        $open={bellMenu}
+        aria-hidden={!bellMenu}
         ref={menuRef}
         tabIndex={-1}
         role="dialog"

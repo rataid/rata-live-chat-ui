@@ -7,7 +7,7 @@ import { tw } from '@nui/utils/tw'
 type DirectionProps = { $direction: ChatMessageDirection }
 
 export const ChatPageWrapper = styled.div.attrs({
-  className: tw`fixed inset-x-0 bottom-0 top-16 flex justify-center bg-[#E9EBEF] sm:p-4`,
+  className: tw`fixed inset-x-0 bottom-0 top-0 flex sm:top-16 justify-center bg-[#E9EBEF] sm:p-4`,
 })``
 
 export const ChatPageContainer = styled.div.attrs({
@@ -124,7 +124,8 @@ export const ChatQuickReplyButton = styled.button.attrs({
 })``
 
 export const ChatEditorWrapper = styled.footer.attrs({
-  className: tw`shrink-0 border-t border-gray-200 bg-white px-4 pb-4 pt-2`,
+  // Mobile: extra room above the home indicator / browser bar
+  className: tw`shrink-0 border-t border-gray-200 bg-white px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:pb-4`,
 })``
 
 export const ChatEditorToolbar = styled.div.attrs({
@@ -135,8 +136,9 @@ export const ChatEditorToolbarButton = styled.button.attrs({
   className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
 })``
 
+// Rendered as the Radix popover content, which sets data-state
 export const ChatAttachMenu = styled.div.attrs({
-  className: tw`z-20 grid w-[220px] grid-cols-3 gap-x-1.5 gap-y-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg`,
+  className: tw`z-20 grid w-[220px] origin-bottom-right grid-cols-3 gap-x-1.5 gap-y-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg duration-150 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-1`,
 })``
 
 export const ChatAttachItem = styled.button.attrs({
@@ -180,15 +182,15 @@ export const ChatCameraRetake = styled.button.attrs({
 })``
 
 export const ChatEditorBox = styled.div.attrs({
-  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 bg-white px-3 py-3 focus-within:border-primary-400`,
+  className: tw`flex items-end gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 focus-within:border-primary-400`,
 })``
 
 export const ChatEditorTextarea = styled.textarea.attrs({
-  className: tw`max-h-28 min-h-[2rem] min-w-0 flex-1 resize-none border-none bg-transparent py-1 px-0 text-sm leading-6 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0`,
+  className: tw`max-h-28 min-h-[2rem] min-w-0 flex-1 resize-none self-start border-none bg-transparent py-1 px-0 text-sm leading-6 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0`,
 })``
 
 export const ChatEditorSend = styled.button.attrs({
-  className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-primary-200`,
+  className: tw`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-primary-200`,
 })``
 
 export const ChatEmpty = styled.p.attrs({
@@ -211,9 +213,17 @@ export const ChatHeaderMute = styled.button.attrs({
   className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700`,
 })``
 
-export const ChatNotifyMenu = styled.div.attrs({
-  className: tw`absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-3 shadow-lg outline-none`,
-})``
+// Stays mounted so it can fade/scale both in and out
+export const ChatNotifyMenu = styled.div.attrs<{ $open: boolean }>(
+  ({ $open }) => ({
+    className: [
+      tw`absolute right-0 top-full z-20 mt-2 w-72 origin-top-right rounded-xl border border-gray-200 bg-white p-3 shadow-lg outline-none transition-all duration-150 ease-out motion-reduce:transition-none`,
+      $open
+        ? tw`visible translate-y-0 scale-100 opacity-100`
+        : tw`pointer-events-none invisible -translate-y-1 scale-95 opacity-0`,
+    ].join(' '),
+  })
+)<{ $open: boolean }>``
 
 export const ChatNotifyMenuTitle = styled.p.attrs({
   className: tw`text-sm font-semibold text-gray-900`,

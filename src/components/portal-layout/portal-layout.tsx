@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Outlet, useLoaderData } from 'react-router-dom'
+import { Outlet, useLoaderData, useLocation } from 'react-router-dom'
 
 import { LogoSmiledental } from '@/assets'
 import { AuthenticatedUser, useAuth } from '@/components/auth'
@@ -67,11 +67,12 @@ function PortalShell() {
   }, [])
   const { userData } = useAuth()
   const { unreadCount } = useLiveChat()
+  const { pathname } = useLocation()
 
   return (
     <PortalWrapper>
       <SessionActivity />
-      <PortalHeader>
+      <PortalHeader $hideOnMobile={pathname.startsWith('/livechat')}>
         <PortalHeaderInner>
           <PortalBrand to="/home">
             <PortalBrandLogo>

@@ -10,16 +10,6 @@ export const HOME_TOUR_INTRO = {
 
 export const HOME_TOUR_STEPS: TourStep[] = [
   {
-    element: '[data-tour="brand-tabs"]',
-    popover: {
-      title: 'Choose your treatment',
-      description:
-        'Switch between RATA Aligner, TANAM Implant and VINIR Veneer. Each has its own guides.',
-      side: 'bottom',
-      align: 'center',
-    },
-  },
-  {
     element: '[data-tour="aligner-tracker"]',
     popover: {
       title: 'Pantau Progres Aligner',

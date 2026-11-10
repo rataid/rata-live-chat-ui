@@ -84,7 +84,7 @@ export function ChatBubble({
           rel="noreferrer"
           className="block px-3.5 pt-2.5 text-sm underline"
         >
-          {filename || body || 'Attachment'}
+          {filename || body || 'Lampiran'}
         </a>
       )}
       {body && body !== filename && (

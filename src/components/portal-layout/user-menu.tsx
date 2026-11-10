@@ -52,16 +52,14 @@ export function UserMenu({ name }: { name?: string }) {
         </UserMenuAvatar>
         <Icon icon="lucide-chevron-down" size="xs" />
       </UserMenuButton>
-      {open && (
-        <UserMenuPanel>
-          <Form method="post" action="/logout">
-            <UserMenuItem type="submit">
-              <Icon icon="lucide-log-out" size="xs" />
-              Keluar akun
-            </UserMenuItem>
-          </Form>
-        </UserMenuPanel>
-      )}
+      <UserMenuPanel $open={open} aria-hidden={!open}>
+        <Form method="post" action="/logout">
+          <UserMenuItem type="submit" tabIndex={open ? undefined : -1}>
+            <Icon icon="lucide-log-out" size="xs" />
+            Keluar akun
+          </UserMenuItem>
+        </Form>
+      </UserMenuPanel>
     </UserMenuWrapper>
   )
 }

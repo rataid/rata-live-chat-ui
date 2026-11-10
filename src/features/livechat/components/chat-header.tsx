@@ -54,6 +54,11 @@ export function ChatHeader({
         <ChatHeaderBack to="/home" aria-label="Back to Home">
           <Icon icon="lucide-arrow-left" size="xs" />
         </ChatHeaderBack>
+        <ChatHeaderLogo>
+          <div className="w-1/2">
+            <LogoSmiledental />
+          </div>
+        </ChatHeaderLogo>
         <div className="min-w-0">
           <ChatHeaderTitle>{mobileTitle}</ChatHeaderTitle>
           {mobileSubtitle && (

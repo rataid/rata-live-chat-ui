@@ -9,10 +9,18 @@ export const PortalWrapper = styled.div.attrs({
   className: tw`min-h-screen bg-white`,
 })``
 
-// Fixed to the top; the page content is pushed down by PortalMain's padding
-export const PortalHeader = styled.header.attrs({
-  className: tw`fixed inset-x-0 top-0 z-50 h-16 border-b border-gray-200 bg-white`,
-})``
+type PortalHeaderProps = { $hideOnMobile?: boolean }
+
+// Fixed to the top; the page content is pushed down by PortalMain's padding.
+// Hidden on mobile for pages with their own header (live chat)
+export const PortalHeader = styled.header.attrs<PortalHeaderProps>(
+  ({ $hideOnMobile }) => ({
+    className: [
+      tw`fixed inset-x-0 top-0 z-50 h-16 border-b border-gray-200 bg-white`,
+      $hideOnMobile ? tw`hidden sm:block` : '',
+    ].join(' '),
+  })
+)<PortalHeaderProps>``
 
 export const PortalHeaderInner = styled.div.attrs({
   className: tw`mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-12`,
@@ -102,9 +110,17 @@ export const UserMenuAvatar = styled.span.attrs({
   className: tw`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200`,
 })``
 
-export const UserMenuPanel = styled.div.attrs({
-  className: tw`absolute right-0 top-full mt-2 w-56 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg`,
-})``
+// Stays mounted so it can fade/scale both in and out
+export const UserMenuPanel = styled.div.attrs<{ $open: boolean }>(
+  ({ $open }) => ({
+    className: [
+      tw`absolute right-0 top-full mt-2 w-56 origin-top-right overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-150 ease-out motion-reduce:transition-none`,
+      $open
+        ? tw`visible translate-y-0 scale-100 opacity-100`
+        : tw`pointer-events-none invisible -translate-y-1 scale-95 opacity-0`,
+    ].join(' '),
+  })
+)<{ $open: boolean }>``
 
 export const UserMenuName = styled.div.attrs({
   className: tw`truncate border-b border-gray-200 px-4 py-3 text-sm font-semibold text-gray-900`,
