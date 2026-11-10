@@ -136,8 +136,9 @@ export const ChatEditorToolbarButton = styled.button.attrs({
   className: tw`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 disabled:cursor-not-allowed enabled:hover:bg-gray-50 enabled:hover:text-gray-500`,
 })``
 
+// Rendered as the Radix popover content, which sets data-state
 export const ChatAttachMenu = styled.div.attrs({
-  className: tw`z-20 grid w-[220px] grid-cols-3 gap-x-1.5 gap-y-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg`,
+  className: tw`z-20 grid w-[220px] origin-bottom-right grid-cols-3 gap-x-1.5 gap-y-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg duration-150 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-1`,
 })``
 
 export const ChatAttachItem = styled.button.attrs({
