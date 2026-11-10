@@ -110,9 +110,17 @@ export const UserMenuAvatar = styled.span.attrs({
   className: tw`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200`,
 })``
 
-export const UserMenuPanel = styled.div.attrs({
-  className: tw`absolute right-0 top-full mt-2 w-56 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg`,
-})``
+// Stays mounted so it can fade/scale both in and out
+export const UserMenuPanel = styled.div.attrs<{ $open: boolean }>(
+  ({ $open }) => ({
+    className: [
+      tw`absolute right-0 top-full mt-2 w-56 origin-top-right overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-150 ease-out motion-reduce:transition-none`,
+      $open
+        ? tw`visible translate-y-0 scale-100 opacity-100`
+        : tw`pointer-events-none invisible -translate-y-1 scale-95 opacity-0`,
+    ].join(' '),
+  })
+)<{ $open: boolean }>``
 
 export const UserMenuName = styled.div.attrs({
   className: tw`truncate border-b border-gray-200 px-4 py-3 text-sm font-semibold text-gray-900`,
