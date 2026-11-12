@@ -82,7 +82,7 @@ export type RegisterPayload = {
   email: string
   phone: string
   password: string
-  recaptchaToken?: string
+  recaptchaToken: string
 }
 
 export type RegisterResponse = {
