@@ -39,7 +39,7 @@ export async function authRegisterAction({
       email,
       phone,
       password,
-      recaptchaToken,
+      recaptchaToken: recaptchaToken ?? '',
     })
     retryAfterSeconds = res.data?.retryAfterSeconds
   } catch (error) {

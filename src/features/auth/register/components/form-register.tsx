@@ -4,7 +4,7 @@ import { useActionData, useNavigation } from 'react-router-dom'
 
 import Recaptcha from '@/components/recaptcha'
 import { AuthErrorCode } from '@/constants/auth-error-code'
-import { PORTAL_NAME } from '@/constants/portal'
+import { PORTAL_NAME, WHATSAPP_URL_CONTACT_US } from '@/constants/portal'
 import { RECAPTCHA_ENABLED } from '@/constants/recaptcha'
 import { registerSchema } from '@/model/user'
 import {
@@ -44,8 +44,21 @@ export default function AuthFormRegister() {
 
     openDialog({
       title: 'Data tidak ditemukan',
-      message: `Kami tidak dapat menemukan data Anda di sistem kami. ${PORTAL_NAME} hanya tersedia untuk pasien yang terdaftar. Silakan hubungi kami jika ini merupakan kesalahan.`,
+      message: `Kami tidak dapat menemukan nomor telepon Anda di sistem kami. Fitur Live Chat hanya tersedia untuk pasien yang telah terdaftar. Silakan hubungi kami dengan menekan tombol dibawah ini.`,
       closable: true,
+      actions: [
+        {
+          label: 'Hubungi Kami',
+          onClick: () =>
+            window.open(
+              `${WHATSAPP_URL_CONTACT_US}?text=${encodeURIComponent(
+                `Halo, saya ada kendala data tidak ditemukan saat registrasi di ${PORTAL_NAME}`
+              )}`,
+              '_blank',
+              'noopener'
+            ),
+        },
+      ],
     })
   }, [actionData, isNotFound, openDialog])
 
