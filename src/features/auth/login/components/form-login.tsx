@@ -4,6 +4,7 @@ import { useActionData, useNavigation } from 'react-router-dom'
 
 import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
 import { getApiErrorMessage } from '@/api/shared/error'
+import { AuthErrorCode } from '@/constants/auth-error-code'
 import { loginSchema } from '@/model/user'
 import {
   Form,
@@ -28,15 +29,12 @@ import {
   AuthSubtitle,
   AuthTitle,
 } from '../../components/auth.style'
-import {
-  AuthLoginActionData,
-  LOGIN_ERROR_ACCOUNT_INACTIVE,
-} from '../pages/login.route'
+import { AuthLoginActionData } from '../pages/login.route'
 
 export default function AuthFormLogin() {
   const actionData = useActionData() as AuthLoginActionData | undefined
 
-  const isInactive = actionData?.code === LOGIN_ERROR_ACCOUNT_INACTIVE
+  const isInactive = actionData?.code === AuthErrorCode.ACCOUNT_INACTIVE
 
   const { openDialog } = useDialog()
 
