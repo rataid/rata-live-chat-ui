@@ -3,15 +3,37 @@ import { useEffect, useState } from 'react'
 
 import { LogoSmiledental } from '@/assets'
 import { PortalBrandLogo } from '@/components/portal-layout/portal-layout.style'
+import { PORTAL_NAME } from '@/constants/portal'
 import {
   NOTIFICATION_PROMPT_SETTLED_EVENT,
   isHomeNotificationPromptSettled,
   isHomeScreenApp,
   isIosDevice,
 } from '@/features/livechat/notification-preference'
-import Icon from '@nui/ui/icon'
 
-import { clearInstallPrompt, getInstallPrompt, isInstallReminderDue } from '../install-prompt'
+import {
+  clearInstallPrompt,
+  getInstallPrompt,
+  isInstallReminderDue,
+} from '../install-prompt'
+import {
+  InstallAppHost,
+  InstallAppName,
+  InstallButton,
+  InstallDescription,
+  InstallError,
+  InstallHandle,
+  InstallHeader,
+  InstallLater,
+  InstallOverlay,
+  InstallSheet,
+  InstallStepImage,
+  InstallStepItem,
+  InstallStepNumber,
+  InstallStepText,
+  InstallSteps,
+  InstallTitle,
+} from './install-home-screen.style'
 
 const lastShownKey = (placement: 'dashboard' | 'login') =>
   `smilehub.install.lastShownAt:${placement}`
@@ -20,8 +42,68 @@ const lastShownKey = (placement: 'dashboard' | 'login') =>
 const openedThisSession = new Set<string>()
 const dismissedThisSession = new Set<string>()
 
-const buttonClass =
-  'w-full rounded-lg bg-[#6941c6] px-4 py-3 text-sm font-medium text-white hover:bg-[#53389e] disabled:opacity-50'
+const INSTALL_IMAGE_PATH = '/assets/img/install'
+
+const INSTALL_ERROR = `Belum dapat memasang ${PORTAL_NAME}. Coba lagi atau gunakan menu Pasang aplikasi di browser Anda.`
+
+const INSTALL_STEPS: Record<
+  'android' | 'ios',
+  { text: React.ReactNode; image: string }[]
+> = {
+  android: [
+    {
+      text: (
+        <>
+          Klik <strong>Pasang {PORTAL_NAME}</strong>
+        </>
+      ),
+      image: 'android-1.png',
+    },
+    {
+      text: (
+        <>
+          Klik <strong>Instal</strong>
+        </>
+      ),
+      image: 'android-2.png',
+    },
+    {
+      text: (
+        <>
+          <strong>{PORTAL_NAME}</strong> langsung dapat digunakan di layar utama
+          Anda
+        </>
+      ),
+      image: 'android-3.png',
+    },
+  ],
+  ios: [
+    {
+      text: (
+        <>
+          Klik tombol <strong>bagikan</strong> di bagian bawah Safari.
+        </>
+      ),
+      image: 'ios-1.png',
+    },
+    {
+      text: (
+        <>
+          Cari dan Klik tombol <strong>Tambahkan ke Layar Utama</strong>
+        </>
+      ),
+      image: 'ios-2.png',
+    },
+    {
+      text: (
+        <>
+          Klik <strong>Tambah</strong> di kanan atas
+        </>
+      ),
+      image: 'ios-3.png',
+    },
+  ],
+}
 
 function readLastShown(placement: 'dashboard' | 'login') {
   const storageKey = lastShownKey(placement)
@@ -29,7 +111,8 @@ function readLastShown(placement: 'dashboard' | 'login') {
     let lastShown = Number(localStorage.getItem(storageKey)) || 0
     // Migrate the old shared key so Android tests do not suppress iOS login.
     if (!lastShown && placement === 'dashboard') {
-      lastShown = Number(localStorage.getItem('smilehub.install.lastShownAt')) || 0
+      lastShown =
+        Number(localStorage.getItem('smilehub.install.lastShownAt')) || 0
     }
     return lastShown
   } catch {
@@ -60,7 +143,8 @@ export function InstallHomeScreen({
   const [open, setOpen] = useState(
     () =>
       previewAndroid ||
-      (openedThisSession.has(storageKey) && !dismissedThisSession.has(storageKey))
+      (openedThisSession.has(storageKey) &&
+        !dismissedThisSession.has(storageKey))
   )
   const [installing, setInstalling] = useState(false)
   const [error, setError] = useState('')
@@ -120,9 +204,7 @@ export function InstallHomeScreen({
     }
     const prompt = getInstallPrompt()
     if (!prompt) {
-      setError(
-        'Belum dapat memasang Smile Hub. Coba lagi atau gunakan menu Pasang aplikasi di browser Anda.'
-      )
+      setError(INSTALL_ERROR)
       return
     }
     setInstalling(true)
@@ -133,13 +215,13 @@ export function InstallHomeScreen({
       clearInstallPrompt()
       dismiss()
     } catch {
-      setError(
-        'Belum dapat memasang Smile Hub. Coba lagi atau gunakan menu Pasang aplikasi di browser Anda.'
-      )
+      setError(INSTALL_ERROR)
     } finally {
       setInstalling(false)
     }
   }
+
+  const steps = INSTALL_STEPS[ios ? 'ios' : 'android']
 
   return (
     <Dialog.Root
@@ -149,120 +231,72 @@ export function InstallHomeScreen({
       }}
     >
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/20" />
+        <Dialog.Overlay asChild>
+          <InstallOverlay />
+        </Dialog.Overlay>
         <Dialog.Content
-          className="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] max-w-md overflow-y-auto rounded-t-3xl bg-white px-6 pb-8 pt-2 shadow-xl outline-none sm:bottom-6 sm:rounded-3xl"
+          asChild
           onEscapeKeyDown={(event) => event.preventDefault()}
           onInteractOutside={(event) => event.preventDefault()}
-          style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}
         >
-          <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-gray-200" />
-          <div className="mb-6 flex items-center gap-3">
-            <PortalBrandLogo
-              style={{ width: 48, height: 48, backgroundColor: '#6941c6' }}
-            >
-              <div className="w-1/2">
-                <LogoSmiledental />
+          <InstallSheet>
+            <InstallHandle />
+            <InstallHeader>
+              <PortalBrandLogo
+                style={{ width: 48, height: 48, backgroundColor: '#6941c6' }}
+              >
+                <div className="w-1/2">
+                  <LogoSmiledental />
+                </div>
+              </PortalBrandLogo>
+              <div>
+                <InstallAppName>{PORTAL_NAME}</InstallAppName>
+                <InstallAppHost>{window.location.hostname}</InstallAppHost>
               </div>
-            </PortalBrandLogo>
-            <div>
-              <p className="text-sm font-semibold">Smile Hub</p>
-              <p className="text-sm text-gray-500">
-                {window.location.hostname}
-              </p>
-            </div>
-          </div>
-          <Dialog.Title className="text-xl font-semibold leading-7 text-gray-900">
-            Pasang Smile Hub di {ios ? 'iPhone' : 'HP'} Anda
-          </Dialog.Title>
-          <Dialog.Description className="mt-2 text-sm leading-5 text-gray-500">
-            {ios
-              ? 'Ikuti 3 langkah ini agar Smile Hub bisa dibuka langsung dari layar utama.'
-              : 'Pantau progres aligner dan waktu lepas aligner lebih cepat, langsung dari layar utama.'}
-          </Dialog.Description>
-          {ios ? (
-            <ol className="my-5 overflow-hidden rounded-2xl border border-gray-200 text-sm leading-5 text-gray-900">
-              {[
-                <>
-                  Ketuk tombol <strong>Bagikan</strong> di bagian bawah Safari.
-                </>,
-                <>
-                  Cari dan ketuk tombol{' '}
-                  <strong>Tambahkan ke Layar Utama</strong>.
-                </>,
-                <>
-                  Ketuk <strong>Tambah</strong> di kanan atas.
-                </>,
-              ].map((step, index) => (
-                <li
-                  key={index}
-                  className="flex min-h-[72px] items-center gap-3 rounded-2xl border-b border-gray-200 px-3 py-4 last:border-b-0"
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-600">
-                    {index + 1}
-                  </span>
-                  <span className="flex-1">{step}</span>
-                  <span className="flex h-9 min-w-[36px] shrink-0 items-center justify-center rounded-lg bg-gray-100 px-2">
-                    {index === 2 ? (
-                      <span className="text-sm font-semibold text-blue-600">
-                        Tambah
-                      </span>
-                    ) : (
-                      <span
-                        className={
-                          index === 0 ? 'text-blue-600' : 'text-gray-900'
-                        }
-                      >
-                        <Icon
-                          icon={
-                            index === 0 ? 'lucide-share' : 'lucide-square-plus'
-                          }
-                          size="xs"
-                        />
-                      </span>
-                    )}
-                  </span>
-                </li>
+            </InstallHeader>
+            <Dialog.Title asChild>
+              <InstallTitle>
+                Pasang {PORTAL_NAME} di {ios ? 'iPhone' : 'HP'} Anda
+              </InstallTitle>
+            </Dialog.Title>
+            <Dialog.Description asChild>
+              <InstallDescription>
+                {ios
+                  ? `Ikuti 3 langkah ini agar ${PORTAL_NAME} bisa dibuka langsung dari layar utama.`
+                  : 'Pantau progres aligner dan waktu lepas aligner lebih cepat, langsung dari layar utama.'}
+              </InstallDescription>
+            </Dialog.Description>
+            <InstallSteps>
+              {steps.map((step, index) => (
+                <InstallStepItem key={step.image}>
+                  <InstallStepNumber>{index + 1}</InstallStepNumber>
+                  <InstallStepText>{step.text}</InstallStepText>
+                  <InstallStepImage
+                    src={`${INSTALL_IMAGE_PATH}/${step.image}`}
+                    alt=""
+                    loading="lazy"
+                  />
+                </InstallStepItem>
               ))}
-            </ol>
-          ) : (
-            <ul className="my-5 space-y-4 text-sm text-gray-700">
-              {[
-                ['lucide-layout-grid', 'Buka sekali ketuk dari layar utama'],
-                ['lucide-scan', 'Tampilan layar penuh, tanpa bilah browser'],
-                ['lucide-zap', 'Ringan, tanpa unduh dari Play Store'],
-              ].map(([icon, text]) => (
-                <li key={icon} className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
-                    <Icon icon={icon} size="sm" />
-                  </span>
-                  <span>{text}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {error && (
-            <p role="alert" className="mb-3 text-sm text-red-600">
-              {error}
-            </p>
-          )}
-          <button
-            type="button"
-            className={buttonClass}
-            disabled={installing}
-            onClick={ios ? dismiss : install}
-          >
-            {ios ? 'Mengerti' : installing ? 'Memasang...' : 'Pasang Smile Hub'}
-          </button>
-          {!ios && (
-            <button
+            </InstallSteps>
+            {error && <InstallError role="alert">{error}</InstallError>}
+            <InstallButton
               type="button"
-              onClick={dismiss}
-              className="mt-3 w-full py-2 text-sm text-gray-500"
+              disabled={installing}
+              onClick={ios ? dismiss : install}
             >
-              Nanti Saja
-            </button>
-          )}
+              {ios
+                ? 'Mengerti'
+                : installing
+                ? 'Memasang...'
+                : `Pasang ${PORTAL_NAME}`}
+            </InstallButton>
+            {!ios && (
+              <InstallLater type="button" onClick={dismiss}>
+                Nanti Saja
+              </InstallLater>
+            )}
+          </InstallSheet>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
