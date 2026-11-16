@@ -18,3 +18,12 @@ export const getLiveChatMessages = async ({
 
   return res.data?.data?.items ?? []
 }
+
+// Agent replies the customer has not read yet, counted by the backend
+export const getLiveChatUnreadCount = async (): Promise<number> => {
+  const res = await axiosInstance.get<ApiResponse<{ count?: number }>>(
+    '/livechat/messages/unread-count'
+  )
+
+  return res.data?.data?.count ?? 0
+}
