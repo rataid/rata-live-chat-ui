@@ -57,3 +57,21 @@ export async function setLiveChatAppBadge(count: number) {
 export function clearLiveChatAppBadge() {
   return setLiveChatAppBadge(0)
 }
+
+/**
+ * Notifications only close on tap (notificationclick). Opening the app from
+ * its icon leaves them in the shade, and the SW counts the shade for the
+ * badge, so close them whenever the app is shown.
+ */
+export async function closeLiveChatNotifications() {
+  try {
+    if (!('serviceWorker' in navigator)) return
+    const registration = await navigator.serviceWorker.ready
+    const list = await registration.getNotifications()
+    list
+      .filter((item) => item.tag.startsWith('livechat-'))
+      .forEach((item) => item.close())
+  } catch {
+    // Unsupported browser — nothing to close.
+  }
+}
