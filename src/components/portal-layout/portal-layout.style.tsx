@@ -78,7 +78,7 @@ export const PortalNavLabel = styled.span.attrs<{ $always?: boolean }>(
 )<{ $always?: boolean }>``
 
 export const PortalNavUnreadBadge = styled.span.attrs({
-  className: tw`inline-flex min-w-[1.125rem] items-center justify-center rounded-full bg-[#F97066] px-1 py-0.5 text-[10px] font-semibold leading-none text-white`,
+  className: tw`inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-danger px-1 text-xs font-semibold leading-none text-white`,
 })``
 
 export const PortalNavDivider = styled.span.attrs({

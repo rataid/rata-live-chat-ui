@@ -8,11 +8,12 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import {
   LIVECHAT_MESSAGES_PAGE_SIZE,
   getLiveChatMessages,
+  getLiveChatUnreadCount,
 } from '@/api/livechat/messages'
 import { uploadLivechatFile } from '@/api/livechat/upload'
 import { handleApiError } from '@/api/shared/error'
@@ -24,11 +25,7 @@ import {
   MessageType,
 } from '@/constants/message'
 import { isNotificationMuted } from '@/features/livechat/notification-preference'
-import { isWebPushSubscribed } from '@/features/livechat/push/push-client'
-import {
-  clearLiveChatAppBadge,
-  closeLiveChatNotifications,
-} from '@/libs/app-badge'
+import { clearLiveChatAppBadge, setLiveChatAppBadge } from '@/libs/app-badge'
 import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import {
   ChatMessage,
@@ -81,10 +78,6 @@ function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
   if (isReadingLiveChat()) return
-  // Hidden page with Web Push active: the SW shows this message (it only
-  // skips push while a page is visible). Showing it here too duplicates on
-  // iOS, which does not collapse notifications by tag.
-  if (document.hidden && isWebPushSubscribed()) return
 
   const body = message.body || 'Anda memiliki pesan baru.'
 
@@ -215,7 +208,6 @@ const LiveChatContext = createContext<LiveChatContextValue | null>(null)
 
 export function LiveChatProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
-  const { pathname } = useLocation()
 
   const pendingIdsRef = useRef<string[]>([])
 
@@ -224,7 +216,8 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [status, setStatus] = useState<LiveChatStatus>('connecting')
-  const [unreadIds, setUnreadIds] = useState<Set<string>>(() => new Set())
+  // GET /livechat/unread-count; socket replies add 1 until the next refresh
+  const [unreadCount, setUnreadCount] = useState(0)
 
   // History (GET /livechat/messages, newest first, cursor = oldest id)
   const [isLoadingHistory, setIsLoadingHistory] = useState(true)
@@ -232,19 +225,15 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
   const [hasOlder, setHasOlder] = useState(false)
   const [historyError, setHistoryError] = useState(false)
 
-  const mergeUnreadIds = useCallback(
-    (items: LivechatServerMessage[], mode: 'replace' | 'merge') => {
-      setUnreadIds((prev) => {
-        const next = mode === 'replace' ? new Set<string>() : new Set(prev)
-        for (const item of items) {
-          if (isUnreadClinicMessage(item)) next.add(item.id)
-          else next.delete(item.id)
-        }
-        return next
-      })
-    },
-    []
-  )
+  const refreshUnreadCount = useCallback(async () => {
+    try {
+      const count = await getLiveChatUnreadCount()
+      // The chat page marks everything read; a late response must not undo it
+      setUnreadCount(isReadingLiveChat() ? 0 : count)
+    } catch {
+      // Keep the last known count
+    }
+  }, [])
 
   const addFromServer = useCallback((items: LivechatServerMessage[]) => {
     if (items[0]?.chatRoomId) chatRoomIdRef.current = items[0].chatRoomId
@@ -258,14 +247,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     try {
       const items = await getLiveChatMessages()
       addFromServer(items)
-      mergeUnreadIds(items, 'replace')
       setHasOlder(items.length === LIVECHAT_MESSAGES_PAGE_SIZE)
     } catch {
       setHistoryError(true)
     } finally {
       setIsLoadingHistory(false)
     }
-  }, [addFromServer, mergeUnreadIds])
+  }, [addFromServer])
 
   const loadOlder = useCallback(async () => {
     const oldest = messages.find((message) => !isLocalId(message.id))
@@ -276,14 +264,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     try {
       const items = await getLiveChatMessages({ cursor: oldest.id })
       addFromServer(items)
-      mergeUnreadIds(items, 'merge')
       setHasOlder(items.length === LIVECHAT_MESSAGES_PAGE_SIZE)
     } catch (error) {
       handleApiError(error, { title: 'Gagal Memuat Pesan' })
     } finally {
       setIsLoadingOlder(false)
     }
-  }, [addFromServer, hasOlder, isLoadingOlder, mergeUnreadIds, messages])
+  }, [addFromServer, hasOlder, isLoadingOlder, messages])
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
@@ -337,7 +324,10 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
           recovering = false
         })
     }
-    const onConnect = () => setStatus('connected')
+    const onConnect = () => {
+      setStatus('connected')
+      void refreshUnreadCount()
+    }
     const onDisconnect = (reason: string) => {
       setStatus('reconnecting')
       if (reason === 'io server disconnect') recover()
@@ -371,12 +361,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       addFromServer([message])
       notifyClinicMessage(message)
       if (isUnreadClinicMessage(message) && !isReadingLiveChat()) {
-        setUnreadIds((prev) => {
-          if (prev.has(message.id)) return prev
-          const next = new Set(prev)
-          next.add(message.id)
-          return next
-        })
+        setUnreadCount((count) => count + 1)
       }
     }
 
@@ -416,7 +401,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
       socket.disconnect()
       pendingIdsRef.current = []
     }
-  }, [addFromServer, loadLatest, navigate])
+  }, [addFromServer, loadLatest, navigate, refreshUnreadCount])
 
   // Shows the message right away; message.sent only confirms it
   const sendOptimistic = useCallback(
@@ -462,7 +447,7 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     if (!id || !livechatSocket.connected) return
 
     readLivechatMessages({ id })
-    setUnreadIds((prev) => (prev.size === 0 ? prev : new Set()))
+    setUnreadCount(0)
   }, [])
 
   const sendFile = useCallback(async (file: File) => {
@@ -505,18 +490,11 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
-  const unreadCount = unreadIds.size
-
+  // iOS home-screen PWAs do not badge from notifications alone; keep the
+  // Badging API in sync with clinic replies the patient has not opened yet.
   useEffect(() => {
-    const onVisible = () => {
-      if (!isReadingLiveChat()) return
-      void clearLiveChatAppBadge()
-      void closeLiveChatNotifications()
-    }
-    onVisible()
-    document.addEventListener('visibilitychange', onVisible)
-    return () => document.removeEventListener('visibilitychange', onVisible)
-  }, [pathname])
+    void setLiveChatAppBadge(unreadCount)
+  }, [unreadCount])
 
   const value = useMemo(
     () => ({

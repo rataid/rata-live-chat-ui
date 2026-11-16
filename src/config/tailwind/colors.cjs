@@ -52,6 +52,7 @@ module.exports = {
     900: '#7a2e0e',
   },
   danger: {
+    DEFAULT: '#F1545C',
     25: '#fef9f9',
     50: '#fdf1f2',
     100: '#fae1e3',

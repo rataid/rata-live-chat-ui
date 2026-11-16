@@ -270,5 +270,5 @@ export const ContactUsButtonWrapper = styled(Button).attrs({
 })``
 
 export const ContactUsUnreadBadge = styled.span.attrs({
-  className: tw`ml-1 inline-flex min-w-[1.375rem] items-center justify-center rounded-full bg-[#F97066] px-1.5 py-0.5 text-xs font-semibold leading-none text-white`,
+  className: tw`ml-1 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-full bg-danger px-1 text-base font-semibold leading-none text-white`,
 })``
