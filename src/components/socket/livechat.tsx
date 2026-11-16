@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   LIVECHAT_MESSAGES_PAGE_SIZE,
@@ -24,7 +24,11 @@ import {
   MessageType,
 } from '@/constants/message'
 import { isNotificationMuted } from '@/features/livechat/notification-preference'
-import { clearLiveChatAppBadge, setLiveChatAppBadge } from '@/libs/app-badge'
+import { isWebPushSubscribed } from '@/features/livechat/push/push-client'
+import {
+  clearLiveChatAppBadge,
+  closeLiveChatNotifications,
+} from '@/libs/app-badge'
 import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import {
   ChatMessage,
@@ -77,6 +81,10 @@ function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
   if (isReadingLiveChat()) return
+  // Hidden page with Web Push active: the SW shows this message (it only
+  // skips push while a page is visible). Showing it here too duplicates on
+  // iOS, which does not collapse notifications by tag.
+  if (document.hidden && isWebPushSubscribed()) return
 
   const body = message.body || 'Anda memiliki pesan baru.'
 
@@ -207,6 +215,7 @@ const LiveChatContext = createContext<LiveChatContextValue | null>(null)
 
 export function LiveChatProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const pendingIdsRef = useRef<string[]>([])
 
@@ -498,11 +507,16 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
   const unreadCount = unreadIds.size
 
-  // iOS home-screen PWAs do not badge from notifications alone; keep the
-  // Badging API in sync with clinic replies the patient has not opened yet.
   useEffect(() => {
-    void setLiveChatAppBadge(unreadCount)
-  }, [unreadCount])
+    const onVisible = () => {
+      if (!isReadingLiveChat()) return
+      void clearLiveChatAppBadge()
+      void closeLiveChatNotifications()
+    }
+    onVisible()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [pathname])
 
   const value = useMemo(
     () => ({

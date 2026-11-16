@@ -72,21 +72,27 @@ self.addEventListener('push', (event) => {
     const enabled = await preferences((store) => store.get('enabled')).catch(() => undefined)
     if (enabled === false) return
 
-    // If Smile Hub already has an open page, the livechat socket shows one
-    // local notification. Showing push as well duplicates on iOS (same tag
+    // If Smile Hub is on screen, the livechat socket shows one local
+    // notification. Showing push as well duplicates on iOS (same tag
     // + renotify does not collapse the way Chromium does).
+    // Only a visible page counts: iOS keeps a backgrounded PWA in
+    // matchAll() while its socket is suspended, so skipping then would
+    // drop both the notification and the icon badge.
     const openClients = await self.clients.matchAll({
       type: 'window',
       includeUncontrolled: true,
     })
-    const appOpen = openClients.some((client) => {
+    const appVisible = openClients.some((client) => {
       try {
-        return new URL(client.url).origin === self.location.origin
+        return (
+          new URL(client.url).origin === self.location.origin &&
+          client.visibilityState === 'visible'
+        )
       } catch {
         return false
       }
     })
-    if (appOpen) return
+    if (appVisible) return
 
     let payload = {}
     try { payload = event.data?.json() || {} } catch {}
