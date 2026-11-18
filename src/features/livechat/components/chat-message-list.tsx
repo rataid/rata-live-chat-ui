@@ -30,9 +30,12 @@ type ChatMessageListProps = {
   hasOlder?: boolean
   isLoadingOlder?: boolean
   onLoadOlder?: () => void
+  scrollToId?: string
 }
 
 const LOAD_OLDER_THRESHOLD = 80
+
+const SCROLL_TARGET_OFFSET = 48
 
 // Within this distance from the bottom, new messages scroll into view
 const AT_BOTTOM_THRESHOLD = 80
@@ -77,6 +80,7 @@ export function ChatMessageList({
   hasOlder = false,
   isLoadingOlder = false,
   onLoadOlder,
+  scrollToId,
 }: ChatMessageListProps) {
   const listRef = useRef<HTMLElement>(null)
 
@@ -134,14 +138,31 @@ export function ChatMessageList({
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior })
   }
 
+  const scrollToMessage = (id: string) => {
+    const list = listRef.current
+    const target = list?.querySelector<HTMLElement>(
+      `[data-message-id="${CSS.escape(id)}"]`
+    )
+    if (!list || !target) return false
+
+    list.scrollTo({
+      top:
+        target.getBoundingClientRect().top -
+        list.getBoundingClientRect().top +
+        list.scrollTop -
+        SCROLL_TARGET_OFFSET,
+    })
+    return true
+  }
+
   useEffect(() => {
     const list = listRef.current
     const lastMessage = messages.at(-1)
     if (!list || !lastMessage) return
 
-    // First load: jump to the latest message
+    // First load: jump to the target message, else to the latest one
     if (!hasScrolledRef.current) {
-      scrollToBottom('auto')
+      if (!scrollToId || !scrollToMessage(scrollToId)) scrollToBottom('auto')
       hasScrolledRef.current = true
     } else if (lastMessage.direction === 'outgoing' || isAtBottomRef.current) {
       // The patient's own message, or they're already following the chat
@@ -220,6 +241,7 @@ export function ChatMessageList({
               {group.messages.map((message) => (
                 <ChatBubbleWrapper
                   key={message.id}
+                  data-message-id={message.id}
                   $animate={shouldAnimate(message)}
                 >
                   <ChatBubble

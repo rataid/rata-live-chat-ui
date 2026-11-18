@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   LIVECHAT_MESSAGES_PAGE_SIZE,
@@ -25,7 +25,12 @@ import {
   MessageType,
 } from '@/constants/message'
 import { isNotificationMuted } from '@/features/livechat/notification-preference'
-import { clearLiveChatAppBadge, setLiveChatAppBadge } from '@/libs/app-badge'
+import { isWebPushSubscribed } from '@/features/livechat/push/push-client'
+import {
+  clearLiveChatAppBadge,
+  closeLiveChatNotifications,
+  setLiveChatAppBadge,
+} from '@/libs/app-badge'
 import { isSessionExpired, refreshAccessToken } from '@/libs/session'
 import {
   ChatMessage,
@@ -78,12 +83,15 @@ function notifyClinicMessage(message: LivechatServerMessage) {
   if (message.direction !== MessageDirection.OUTGOING) return
   if (isNotificationMuted()) return
   if (isReadingLiveChat()) return
+  // Hidden page with Web Push active: the SW shows this message (it only
+  // skips push while a page is visible). Showing it here too duplicates on
+  // iOS, which does not collapse notifications by tag.
+  if (document.hidden && isWebPushSubscribed()) return
 
   const body = message.body || 'Anda memiliki pesan baru.'
 
-  // System notification only — no in-app snackbar. While the app is open the
-  // socket owns this alert; Web Push covers the fully-closed case (and the SW
-  // skips push when a Smile Hub window is already open, to avoid iOS doubles).
+  // System notification only — no in-app snackbar. While the app is on
+  // screen the socket owns this alert; Web Push covers a hidden or closed app.
   if (
     typeof Notification !== 'undefined' &&
     Notification.permission === 'granted'
@@ -100,6 +108,7 @@ async function showSystemNotification(body: string, messageId: string) {
       await registration.showNotification('Smile Hub', {
         body,
         tag: `livechat-${messageId}`,
+        data: { url: '/livechat', messageId },
         icon: '/icons/icon-192.png',
         requireInteraction: true,
         silent: false,
@@ -160,6 +169,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
       senderName: fromClinic ? PORTAL_NAME : undefined,
       body: button.body ?? message.body ?? '',
       createdAt: message.createdAt,
+      unread: isUnreadClinicMessage(message),
       quickReplies: button.buttons.map(({ id, text }) => ({
         label: text,
         value: id,
@@ -182,6 +192,7 @@ function toChatMessage(message: LivechatServerMessage): ChatMessage {
     status: fromClinic
       ? undefined
       : (message.status && statusMap[message.status]) || 'sent',
+    unread: isUnreadClinicMessage(message),
   }
 }
 
@@ -208,6 +219,7 @@ const LiveChatContext = createContext<LiveChatContextValue | null>(null)
 
 export function LiveChatProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const pendingIdsRef = useRef<string[]>([])
 
@@ -227,11 +239,13 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
   const refreshUnreadCount = useCallback(async () => {
     try {
-      const count = await getLiveChatUnreadCount()
       // The chat page marks everything read; a late response must not undo it
-      setUnreadCount(isReadingLiveChat() ? 0 : count)
+      const count = isReadingLiveChat() ? 0 : await getLiveChatUnreadCount()
+      setUnreadCount(count)
+      return count
     } catch {
       // Keep the last known count
+      return undefined
     }
   }, [])
 
@@ -448,6 +462,14 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
     readLivechatMessages({ id })
     setUnreadCount(0)
+    // Next visit scrolls to the bottom, not to replies already read
+    setMessages((prev) =>
+      prev.some((message) => message.unread)
+        ? prev.map((message) =>
+            message.unread ? { ...message, unread: false } : message
+          )
+        : prev
+    )
   }, [])
 
   const sendFile = useCallback(async (file: File) => {
@@ -492,9 +514,31 @@ export function LiveChatProvider({ children }: PropsWithChildren) {
 
   // iOS home-screen PWAs do not badge from notifications alone; keep the
   // Badging API in sync with clinic replies the patient has not opened yet.
+  // While hidden (iPhone background), the SW owns the badge and adds 1 per
+  // push, so the app stays out of it to avoid counting a reply twice.
   useEffect(() => {
-    void setLiveChatAppBadge(unreadCount)
+    if (!document.hidden) void setLiveChatAppBadge(unreadCount)
   }, [unreadCount])
+
+  // App shown again (icon, notification, or back from the background)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.hidden) return
+      if (isReadingLiveChat()) {
+        // Entering the chat reads everything: clear badge and shade together
+        void closeLiveChatNotifications()
+        void setLiveChatAppBadge(0)
+        return
+      }
+      // Replace what the SW counted in the background with the server count
+      void refreshUnreadCount().then((count) => {
+        if (count !== undefined) void setLiveChatAppBadge(count)
+      })
+    }
+    onVisible()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [pathname, refreshUnreadCount])
 
   const value = useMemo(
     () => ({
