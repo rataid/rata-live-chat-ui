@@ -38,16 +38,24 @@ async function badgeHosts(): Promise<AppBadgeHost[]> {
 
 /** Home-screen icon badge (iOS 16.4+ PWA / supported Chromium). */
 export async function setLiveChatAppBadge(count: number) {
+  const next = Math.max(0, Math.floor(count))
+
+  try {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.ready
+      registration.active?.postMessage({ type: 'SET_APP_BADGE', count: next })
+    }
+  } catch {}
+
   try {
     const hosts = await badgeHosts()
     if (!hosts.length) return
 
-    const next = Math.max(0, Math.floor(count))
     await Promise.all(
       hosts.map(async (host) => {
         if (next > 0) await host.setAppBadge?.(next)
         else await host.clearAppBadge?.()
-      }),
+      })
     )
   } catch {
     // Unsupported browser, or the app is not installed to the home screen.
@@ -56,4 +64,15 @@ export async function setLiveChatAppBadge(count: number) {
 
 export function clearLiveChatAppBadge() {
   return setLiveChatAppBadge(0)
+}
+
+export async function closeLiveChatNotifications() {
+  try {
+    if (!('serviceWorker' in navigator)) return
+    const registration = await navigator.serviceWorker.ready
+    const list = await registration.getNotifications()
+    list
+      .filter((item) => item.tag.startsWith('livechat-'))
+      .forEach((item) => item.close())
+  } catch {}
 }

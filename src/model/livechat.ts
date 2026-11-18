@@ -87,6 +87,7 @@ export type ChatMessage = {
   body: string
   createdAt: string
   status?: ChatMessageStatus
+  unread?: boolean
   quickReplies?: ChatQuickReply[]
   type?: MessageType
   mediaUrl?: string

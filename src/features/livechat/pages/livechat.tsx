@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 import { useLiveChat } from '@/components/socket'
 import { PORTAL_NAME } from '@/constants'
@@ -37,6 +38,12 @@ export function LiveChatPage() {
     (message) => message.direction === 'incoming'
   )?.id
 
+  const [searchParams] = useSearchParams()
+  const scrollToId = [
+    searchParams.get('message'),
+    messages.find((message) => message.unread)?.id,
+  ].find((id) => id && messages.some((message) => message.id === id))
+
   useEffect(() => {
     if (status === 'connected' && lastIncomingId) readMessages()
   }, [status, lastIncomingId, readMessages])
@@ -56,6 +63,7 @@ export function LiveChatPage() {
           hasOlder={hasOlder}
           isLoadingOlder={isLoadingOlder}
           onLoadOlder={loadOlder}
+          scrollToId={scrollToId ?? undefined}
           onQuickReply={(reply) => sendMessageButton(reply.label)}
           quickRepliesDisabled={status !== 'connected'}
         />
