@@ -224,8 +224,8 @@ export function ChatMessageList({
       )}
       {messages.length === 0 && !isLoading && !error && (
         <ChatEmpty>
-          Kirim pesan untuk mulai chat dengan klinik. Tim kami akan membalas di
-          sini.
+          Kirim pesan untuk memulai chat di Smile Hub. Tim kami akan membalas
+          pesan di sini.
         </ChatEmpty>
       )}
       {groupMessages(messages).map((group) => {
