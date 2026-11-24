@@ -1,5 +1,5 @@
 # ---------- Build ----------
-FROM node:22-alpine AS builder
+FROM node:24.22.3-alpine AS builder
 ENV PNPM_HOME="/pnpm" PATH="/pnpm:$PATH" COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 # Kosongkan = otomatis ikut lockfileVersion (5.x->7, 6.x->8, 9.x->9).
@@ -52,23 +52,7 @@ RUN rm -f .env
 # ---------- Runtime ----------
 FROM nginx:alpine-slim AS runner
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-RUN echo 'server { \
-    listen 80; \
-    server_name localhost; \
-    location /assets/ { \
-        root /usr/share/nginx/html; \
-        try_files $uri =404; \
-        expires 1y; \
-        add_header Cache-Control "public, immutable"; \
-    } \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html; \
-        try_files $uri $uri/ /index.html; \
-        add_header Cache-Control "no-cache"; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
