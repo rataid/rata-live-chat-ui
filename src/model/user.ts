@@ -101,6 +101,15 @@ export type RequestOtpResponse = {
   retryAfterSeconds: number
 }
 
+// POST /livechat/register/status. Unknown email, expired registration and
+// unclicked link all come back as false/false on purpose.
+export type RegisterStatusResponse = {
+  emailVerified: boolean
+  activated: boolean
+  // Only while emailVerified && !activated: OTP resend cooldown, may be 0
+  retryAfterSeconds?: number
+}
+
 export type ResetPasswordPayload = {
   token: string
   password: string
