@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { resendVerificationEmail } from '@/api/auth/resend-verification-email'
 import { handleApiError } from '@/api/shared/error'
@@ -17,13 +18,24 @@ import {
   getRegisterEmail,
   getRegisterEmailCooldown,
   setRegisterEmailResendAt,
+  setRegisterOtpResendAt,
 } from '../register-session'
+import { useRegisterStatus } from '../use-register-status'
+import { RESEND_OTP_COOLDOWN } from './form-verify-otp'
 
 export const RESEND_EMAIL_COOLDOWN = 60
 
 // Right after the register form: the email link leads to the WhatsApp OTP
 export default function AuthEmailSent() {
   const email = getRegisterEmail()
+
+  const navigate = useNavigate()
+
+  // Link opened in the browser: back in the PWA, continue to the OTP step
+  useRegisterStatus((retryAfterSeconds) => {
+    setRegisterOtpResendAt(retryAfterSeconds ?? RESEND_OTP_COOLDOWN)
+    navigate('/register/verify-otp', { replace: true })
+  })
 
   const [cooldown, setCooldown] = useState(
     () => getRegisterEmailCooldown() ?? RESEND_EMAIL_COOLDOWN

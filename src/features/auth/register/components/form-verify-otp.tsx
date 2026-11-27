@@ -40,6 +40,7 @@ import {
   getRegisterOtpCooldown,
   setRegisterOtpResendAt,
 } from '../register-session'
+import { useRegisterStatus } from '../use-register-status'
 
 export const RESEND_OTP_COOLDOWN = 1 * 60
 
@@ -68,6 +69,14 @@ function OtpForm({ otpFailed }: { otpFailed: boolean }) {
 
     return () => clearTimeout(timer)
   }, [cooldown])
+
+  // OTP finished elsewhere (e.g. the browser) → login. Otherwise keep the
+  // resend countdown in step with the backend.
+  useRegisterStatus((retryAfterSeconds) => {
+    if (retryAfterSeconds === undefined) return
+    setRegisterOtpResendAt(retryAfterSeconds)
+    setCooldown(retryAfterSeconds)
+  })
 
   const [isResending, setIsResending] = useState(false)
 
